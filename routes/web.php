@@ -18,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::get('/tesbranch', function() {
+    return 'gg';
+});
+
 Route::controller(CredentialController::class)->group(function(){
     Route::get('/', 'getLoginView')->name('getloginpage')->middleware(GuestMiddleware::class);
     Route::post('/login', 'login')->name('login');
