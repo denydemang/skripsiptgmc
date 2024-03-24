@@ -15,7 +15,7 @@ class Project_Detail_Realisation extends Model
     protected $fillable = [
         'code',
         'project_code',
-        'item_code',
+        'item_code', 
         'unit_code',
         'qty_estimated',
         'qty_used',

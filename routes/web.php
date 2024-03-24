@@ -1,5 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CredentialController;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\GuestMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +18,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::controller(CredentialController::class)->group(function(){
+    Route::get('/', 'getLoginView')->name('getloginpage')->middleware(GuestMiddleware::class);
+    Route::post('/login', 'login')->name('login');
+    Route::get('/logout', 'logout')->name('logout');
+
 });
+
+Route::middleware(AuthMiddleware::class)->group(function(){
+    Route::controller(AdminController::class)->group(function(){
+        Route::get('/admin', 'dashboard')->name('dashboard');
+    });    
+});
+
+
+
+

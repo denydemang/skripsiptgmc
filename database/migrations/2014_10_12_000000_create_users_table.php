@@ -15,7 +15,8 @@ return new class extends Migration
             $table->string('username', 100)->primary();
             $table->string('name', 100);
             $table->string('password');
-            $table->bigInteger('id_role');
+            $table->string('remember_token')->nullable();
+            $table->unsignedBigInteger('id_role');
             $table->boolean('active_status')->default(1);
             $table->char('created_by' , 50)->nullable();
             $table->char('updated_by' , 50)->nullable();
