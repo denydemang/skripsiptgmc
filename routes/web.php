@@ -5,7 +5,11 @@ use App\Http\Controllers\CredentialController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\GuestMiddleware;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+
+use App\Models\User;
+use Yajra\DataTables\Facades\DataTables;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,8 +22,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/tesbranch', function() {
-    return 'gg';
+Route::get('/admin/master/unit', function() {
+    if (request()->ajax()) {
+        $users = User::query();
+
+        return DataTables::of($users)
+            ->make();
+    }
+
+    return view('admin.master.unit',  [
+        'title' => 'Welcome To Dashboard',
+        'users' => Auth::user(),
+        'sessionRoute' =>  'unit'
+    ]);
 });
 
 Route::controller(CredentialController::class)->group(function(){

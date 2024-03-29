@@ -44,6 +44,7 @@
 <script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
 <!-- Argon JS -->
 <script src="{{ asset('/') }}assets/js/argon.js?v=1.0.0"></script>
+@stack('scripts')
 <!-- Demo JS - remove this in your project -->
 
 </html>
