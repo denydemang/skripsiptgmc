@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\Type_Project;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +13,7 @@ use Yajra\DataTables\DataTables;
 
 class ProjectController extends AdminController
 {
-    public function getViewTypeProject(Request $request, DataTables $dataTables){
+    public function getViewTypeProject(Request $request){
 
         $supplyData = [
             'title' => 'Project Type',
@@ -22,6 +24,19 @@ class ProjectController extends AdminController
             ];
 
         return response()->view("admin.project.typeproject",$supplyData);
+    }
+
+    public function getViewProject(Request $request){
+
+        $supplyData = [
+            'title' => 'Project',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+    
+
+            ];
+
+        return response()->view("admin.project.project",$supplyData);
     }
 
 
@@ -41,6 +56,82 @@ class ProjectController extends AdminController
                 </div>';
             })
             ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+
+        }
+
+    }
+    public function getDataProject(Request $request, DataTables $dataTables){
+
+    
+        if ($request->ajax()){
+
+        
+        $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
+        ->join('customers','projects.customer_code', '=', 'customers.code' )
+        ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 'customers.name as customer_name', 'customers.address as customer_address');
+    
+            return $dataTables->of($project)
+            ->editColumn('budget', function($row) {
+                return "Rp " .number_format($row->budget,2, '.');
+            })
+            ->editColumn('transaction_date', function($row) {
+                return Carbon::parse($row->transaction_date)->format('d/m/Y');
+            })
+            ->editColumn('start_date', function($row) {
+                return Carbon::parse($row->start_Date)->format('d/m/Y');
+            })
+            ->editColumn('end_date', function($row) {
+                return Carbon::parse($row->end_date)->format('d/m/Y');
+            })
+            ->editColumn('project_status', function($row) {
+                return $row->project_status == 0 ? "<span class='badge badge-danger'>Not Done</span>": "<span class='badge badge-primary'>Done</span>";
+            })
+            ->filterColumn('type_project_name', function($query, $keyword) {
+                $query->whereRaw("type_projects.name LIKE ?", ["%{$keyword}%"]);
+            })
+            ->filterColumn('type_project_description', function($query, $keyword) {
+                $query->whereRaw("type_projects.description LIKE ?", ["%{$keyword}%"]);
+            })
+            ->filterColumn('customer_name', function($query, $keyword) {
+                $query->whereRaw("customers.name LIKE ?", ["%{$keyword}%"]);
+            })
+            ->filterColumn('customer_address', function($query, $keyword) {
+                $query->whereRaw("customers.address LIKE ?", ["%{$keyword}%"]);
+            })
+            ->addColumn('action', function ($row) {
+                $html = '';
+                switch ($row->project_status) {
+                    case 0: //Not Started
+                        $html = '
+                        <div class="d-flex justify-content-center">
+                        <button class="btn btn-sm btn-primary editbtn" data-code="'.$row->code.'" title="Edit"><i class="fa fa-edit"></i></button>
+                        <button class="btn btn-sm btn-danger deletebtn" data-code="'.$row->code.'" title="Delete"><i class="fa fa-trash"></i></button>
+                        <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-sm btn-warning startbtn" data-code="'.$row->code.'" title="Start Project"><i class="ni ni-button-play"></i></button>
+                        </div>';
+
+                        # code...
+                        break;
+                    case 1: //Started
+                        $html = '
+                        <div class="d-flex justify-content-center">
+                        <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
+                        <button class="btn btn-sm btn-warning startbtn" data-code="'.$row->code.'" title="Start Project"><i class="ni ni-button-play"></i></button>
+                        </div>';
+
+                        # code...
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+
+                return $html;
+            })
+            ->rawColumns(['action','project_status' ])
             ->addIndexColumn()
             ->make(true);
 

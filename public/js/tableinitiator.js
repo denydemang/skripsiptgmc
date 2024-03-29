@@ -21,7 +21,7 @@ export default class tableInitiator {
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        data: data
+        data: this.data
       },
       columns: this.columns
     });
