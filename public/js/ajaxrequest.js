@@ -11,7 +11,10 @@ export default class AjaxRequest {
         url: this.url,
         method: this.method,
         dataType: 'json',
-        data: this.data
+        data: this.data,
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
       });
       return response; // Mengembalikan respons jika permintaan berhasil
     } catch (error) {

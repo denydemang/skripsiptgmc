@@ -95,8 +95,8 @@
 
 
 	{{-- MODAL FORM --}}
-	<div class="modal fade" id="modal-projecttype" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-		<div class="modal-dialog modal-primary" role="document">
+	<div class="modal fade" id="modal-detailproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog modal-lg modal-success" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title"></h5>
@@ -106,34 +106,46 @@
 				</div>
 				<div class="modal-body">
 					<div class="row">
-						<div class="col-12">
-							<form id="formProjectType" action="asdasda" method="post">
-								@csrf
-								<div class="form-group">
-									<label for="code">Code</label>
-									<input class="form-control code" type="text" name="code" style="font-weight: bolder">
-								</div>
-								<div class="form-group">
-									<label for="name">Name</label>
-									<input class="form-control name" type="text" name="name" style="font-weight: bolder">
-									<div class="invalid-feedback">
-										<b>Name Cannot Be Blank </b>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="description">Description</label>
-									<input class="form-control description" type="text" name="description" style="font-weight: bolder">
-									<div class="invalid-feedback">
-										<b>Description Cannot Be Blank </b>
-									</div>
-								</div>
+						<h3 class="text-white">Material :</h3>
+						<div class="col-12" style="max-height:200px ;overflow-y: scroll">
+							<table class="table-sm listbb table-wrap table">
+								<thead>
+									<tr class="row">
+
+										<th class="col-1">No</th>
+										<th class="col-3">Item Code</th>
+										<th class="col-3">Item Name</th>
+										<th class="col-2">Qty</th>
+										<th class="col-3">Unit</th>
+									</tr>
+								<tbody>
+
+								</tbody>
+							</table>
+						</div>
+						<h3 class="text-white">Upah :</h3>
+						<div class="col-12" style="max-height:200px ;overflow-y: scroll">
+							<div>
+								<table class="table-sm listupah table">
+									<thead>
+										<tr class="row">
+											<th class="col-1">No</th>
+											<th class="col-2">Upah Code</th>
+											<th class="col-2">Job</th>
+											<th class="col-1">Qty</th>
+											<th class="col-1">Unit</th>
+											<th class="col-2">Tarif</th>
+											<th class="col-3">Total</th>
+										</tr>
+									</thead>
+									<tbody>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-success btnsave">Save changes</button>
-					</form>
 				</div>
 			</div>
 		</div>

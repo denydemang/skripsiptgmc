@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\Project_Detail;
+use App\Models\ProjectDetailB;
 use App\Models\Type_Project;
+use App\Models\Upah;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -86,7 +89,21 @@ class ProjectController extends AdminController
                 return Carbon::parse($row->end_date)->format('d/m/Y');
             })
             ->editColumn('project_status', function($row) {
-                return $row->project_status == 0 ? "<span class='badge badge-danger'>Not Done</span>": "<span class='badge badge-primary'>Done</span>";
+                $html ="";
+                switch ($row->project_status) {
+                    case 0:
+                        $html= "<span class='badge badge-danger'>Not Started</span>";
+                        break;
+                    case 1:
+                        $html= "<span class='badge badge-warning'>On Progress</span>";
+                        break;
+                    case 2:
+                        $html= "<span class='badge badge-success'>Done</span>";
+                        break;
+                    default:
+                        break;
+                }
+                return $html;
             })
             ->filterColumn('type_project_name', function($query, $keyword) {
                 $query->whereRaw("type_projects.name LIKE ?", ["%{$keyword}%"]);
@@ -118,7 +135,14 @@ class ProjectController extends AdminController
                         $html = '
                         <div class="d-flex justify-content-center">
                         <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
-                        <button class="btn btn-sm btn-warning startbtn" data-code="'.$row->code.'" title="Start Project"><i class="ni ni-button-play"></i></button>
+                        </div>';
+
+                        # code...
+                        break;
+                    case 2: //Done
+                        $html = '
+                        <div class="d-flex justify-content-center">
+                        <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
                         </div>';
 
                         # code...
@@ -202,11 +226,47 @@ class ProjectController extends AdminController
 
 
     }
+
+    public function deleteProject($code){
+        try {
+            Project::where("code",$code )->delete();
+
+            return response()->redirectToRoute("admin.project")->with("success", "Data $code Successfully Deleted");
+        } catch (\Throwable $th) {
+            // Sess ion::flash('error', $th->getMessage());
+            return response()->redirectToRoute("admin.project")->with("error", $th->getMessage());
+        }
+
+
+    }
+
     public function getDataTypeProjectRaw($id,Request $request ){
         if ($request->ajax()){
             $dataProjectType = Type_Project::query()->where("code", $id)->first();
             
             return json_encode($dataProjectType);
+
+        }
+
+    }
+    public function getDataDetailProjectRaw($id,Request $request ){
+
+        if ($request->ajax()){
+            $project_detail = new ProjectDetailController();
+            $project_detail = $project_detail->getDetail($id);
+            $dataBahanBaku = $project_detail->get();
+            
+
+            $project_detail_b = new ProjectDetailBController();
+            $project_detail_b = $project_detail_b->getDetailB($id);
+            $dataUpah = $project_detail_b->get();
+            $data = [
+                'dataBahanBaku' => $dataBahanBaku,
+                'dataUpah' => $dataUpah
+            ];
+        
+            
+            return json_encode($data);
 
         }
 

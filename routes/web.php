@@ -38,7 +38,9 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
+        Route::get('/admin/project/delete/{id}', 'deleteProject')->name('admin.deleteDataProject');
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
+        Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
     });  
 });
 
