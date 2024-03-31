@@ -70,7 +70,7 @@
 										</div>
 										<div>
 											<div class="mr-1">
-												<h4>Transaction Date</h4>
+												<h4>Transaction Date (Created Project)</h4>
 												<div class="form-group mb-3">
 													@include('daterangetemplate')
 												</div>
@@ -146,15 +146,19 @@
 		<div class="modal-dialog modal-lg modal-success" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title"></h5>
+					<h5 class="modal-title titleview"></h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
 					<div class="row">
+
+						<h3 class="title-detail text-white"></h3>
+					</div>
+					<div class="row">
 						<h3 class="text-white">Material :</h3>
-						<div class="col-12" style="max-height:200px ;overflow-y: scroll">
+						<div class="col-12 mb-2" style="max-height:200px ;overflow-y: scroll">
 							<table class="table-sm listbb table-wrap table">
 								<thead>
 									<tr class="row">
@@ -170,7 +174,7 @@
 								</tbody>
 							</table>
 						</div>
-						<h3 class="text-white">Upah :</h3>
+						<h3 class="mt-1 text-white">Upah :</h3>
 						<div class="col-12" style="max-height:200px ;overflow-y: scroll">
 							<div>
 								<table class="table-sm listupah table">

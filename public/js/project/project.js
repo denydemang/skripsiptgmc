@@ -11,11 +11,12 @@ $(document).ready(function () {
   const listUpah = $('.listupah tbody');
   const listMaterial = $('.listbb tbody');
   const modalDetailProject = $('#modal-detailproject');
-  const modalTitle = $('.modal-title');
+  const modalTitle = $('.titleview');
   const checkstartdate = $('.checkstartdate');
   const checkenddate = $('.checkenddate');
   const daterangegroup2 = $('.daterangegroup2');
   const daterangegroup3 = $('.daterangegroup3');
+  const titledetail = $('.title-detail');
 
   let supplyData = {
     status: '',
@@ -223,6 +224,12 @@ $(document).ready(function () {
     </tr>
     `;
     listUpah.html(htmlUpah);
+
+    // Populate Title Detail
+    let codeProyek = Material[0].project_code;
+    let namaProyek = Material[0].project_name;
+
+    titledetail.html(`${codeProyek} - ${namaProyek}`);
   }
   // -------------------------------------------------------------------
 
