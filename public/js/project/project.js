@@ -169,6 +169,12 @@ $(document).ready(function () {
   }
 
   function populateData(Material = [], upah = []) {
+    // Populate Title Detail
+    let codeProyek = Material[0].project_code;
+    let namaProyek = Material[0].project_name;
+
+    titledetail.html(`${codeProyek} - ${namaProyek}`);
+
     let htmlMaterial = '';
     let counterMaterial = 1;
 
@@ -224,12 +230,6 @@ $(document).ready(function () {
     </tr>
     `;
     listUpah.html(htmlUpah);
-
-    // Populate Title Detail
-    let codeProyek = Material[0].project_code;
-    let namaProyek = Material[0].project_name;
-
-    titledetail.html(`${codeProyek} - ${namaProyek}`);
   }
   // -------------------------------------------------------------------
 
