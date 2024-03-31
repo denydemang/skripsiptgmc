@@ -23,9 +23,11 @@
 		type="text/css" />
 	<link rel="stylesheet"
 		href="{{ asset('/') }}assets/Datatables/FixedColumns-5.0.0/css/fixedColumns.foundation.min.css" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/fontawesome/css/fontawesome.min.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/izitoast/css/iziToast.min.css" type="text/css" />
-	<link rel="stylesheet" href="{{ asset('/') }}assets/jquery-confirm-v3.3.4/css/jquery-confirm.css" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('/') }}assets/jquery-confirm-v3.3.4/css/jquery-confirm.css"
+		type="text/css" />
 	{{-- <script src="{{ mix('js/ziggy.js') }}"></script> --}}
 	@routes
 </head>
@@ -59,6 +61,8 @@
 <script src="{{ asset('/') }}assets/fontawesome/js/fontawesome.min.js"></script>
 <script src="{{ asset('/') }}assets/izitoast/js/iziToast.min.js"></script>
 <script src="{{ asset('/') }}assets/jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
+<script src="{{ asset('/') }}assets/daterangepicker-master/moment.min.js"></script>
+<script src="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.js"></script>
 
 <!-- Argon JS -->
 <script src="{{ asset('/') }}assets/js/argon.js?v=1.0.0"></script>

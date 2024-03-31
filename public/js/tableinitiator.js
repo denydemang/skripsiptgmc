@@ -6,6 +6,7 @@ export default class tableInitiator {
     this.url = url;
     this.data = data;
     this.table = $(this.tableName).DataTable({
+      retrieve: true,
       processing: true,
       serverSide: true,
       fixedColumns: {
@@ -29,5 +30,8 @@ export default class tableInitiator {
 
   showTable() {
     this.table.draw();
+  }
+  destroyTable() {
+    this.table.destroy();
   }
 }

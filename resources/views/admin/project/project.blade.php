@@ -31,6 +31,53 @@
 								<h3 class="mb-0">PROJECTS</h3>
 							</div>
 							<div class="card-body">
+								<div class="row">
+									<div class="col-lg-12 d-lg-flex justify-content-between">
+										<div>
+											<div class="mb-2" style="width: 200px">
+												<h4>Status</h4>
+												<select class="form-control" id="statusSelect">
+													<option selected value="">All</option>
+													<option value="0">Not Started</option>
+													<option value="1"> On Progress</option>
+													<option value="2">Done</option>
+												</select>
+											</div>
+											<div class="d-lg-flex" style="width: 600px">
+												<div class="mr-2">
+													<div class="d-flex align-items-center">
+														<h4 class="mr-2">Start Date Project</h4>
+														<div class="form-group pt-3">
+															<input class="checkstartdate" style="display:flex" type="checkbox">
+														</div>
+													</div>
+													<div class="form-group daterangegroup2 d-none mb-3">
+														@include('daterangetemplate2')
+													</div>
+												</div>
+												<div>
+													<div class="d-flex align-items-center">
+														<h4 class="mr-2">End Date Project</h4>
+														<div class="form-group pt-3">
+															<input class="checkenddate" style="display:flex;" type="checkbox">
+														</div>
+													</div>
+													<div class="form-group daterangegroup3 d-none">
+														@include('daterangetemplate3')
+													</div>
+												</div>
+											</div>
+										</div>
+										<div>
+											<div class="mr-1">
+												<h4>Transaction Date</h4>
+												<div class="form-group mb-3">
+													@include('daterangetemplate')
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
 								<div class="btn btn-outline-primary btn-sm addbtn mb-2"><i class="fas fa-plus"></i> ADD NEW</div>
 								<div>
 									<table class="align-items-center table-flush projecttable w-100 table">
