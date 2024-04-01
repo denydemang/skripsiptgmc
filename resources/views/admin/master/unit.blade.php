@@ -1,158 +1,117 @@
 @extends('layout.template')
 @section('content')
-<div class="container-fluid mt--6">
-  <div class="row">
-    <div class="col-xl-8">
-      <div class="card">
-        <div class="card-header border-0">
-          <div class="row align-items-center">
-            <div class="col">
-              <h3 class="mb-0">Page Units</h3>
-            </div>
-            <div class="col text-right">
-              <a href="#!" class="btn btn-sm btn-primary">See all</a>
-            </div>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <!-- Projects table -->
-          <table class="align-items-center table-flush table">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col">name</th>
-                <th scope="col">Unit Code</th>
-                <th scope="col">min stock</th>
-                <th scope="col">category code</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{-- ... --}}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-    <div class="col-xl-4">
-      <div class="card">
-        <div class="card-header border-0">
-          <div class="row align-items-center">
-            <div class="col">
-              <h3 class="mb-0">Social traffic</h3>
-            </div>
-            <div class="col text-right">
-              <a href="#!" class="btn btn-sm btn-primary">See all</a>
-            </div>
-          </div>
-        </div>
-        <div class="table-responsive">
-          <!-- Projects table -->
-          <table class="align-items-center table-flush table" id="tbl_list">
-            <thead class="thead-light">
-              <tr>
-                <th scope="col">Referral</th>
-                <th scope="col">Visitors</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">Facebook</th>
-                <td>1,480</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">60%</span>
-                    <div>
-                      <div class="progress">
-                        <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0"
-                          aria-valuemax="100" style="width: 60%"></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Facebook</th>
-                <td>5,480</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">70%</span>
-                    <div>
-                      <div class="progress">
-                        <div class="progress-bar bg-gradient-success" role="progressbar" aria-valuenow="70"
-                          aria-valuemin="0" aria-valuemax="100" style="width: 70%"></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Google</th>
-                <td>4,807</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">80%</span>
-                    <div>
-                      <div class="progress">
-                        <div class="progress-bar bg-gradient-primary" role="progressbar" aria-valuenow="80"
-                          aria-valuemin="0" aria-valuemax="100" style="width: 80%"></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Instagram</th>
-                <td>3,678</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">75%</span>
-                    <div>
-                      <div class="progress">
-                        <div class="progress-bar bg-gradient-info" role="progressbar" aria-valuenow="75" aria-valuemin="0"
-                          aria-valuemax="100" style="width: 75%"></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">twitter</th>
-                <td>2,645</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">30%</span>
-                    <div>
-                      <div class="progress">
-                        <div class="progress-bar bg-gradient-warning" role="progressbar" aria-valuenow="30"
-                          aria-valuemin="0" aria-valuemax="100" style="width: 30%"></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+<div class="header bg-primary pb-6">
+  <div class="container-fluid">
+    <div class="header-body">
+      <div class="row align-items-center py-4">
+        <div class="col-lg-6 col-7">
+          <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+              <li class="breadcrumb-item">
+                <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
+              </li>
+              <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
+              <li class="breadcrumb-item active" aria-current="page">Units</li>
+            </ol>
+          </nav>
         </div>
       </div>
     </div>
   </div>
 </div>
-@endsection
-@push('scripts')
-<script type="text/javascript">
-$(document).ready(function () {
-   $('#tbl_list').DataTable({
-        processing: true,
-        serverSide: true,
-        ajax: '{{ url()->current() }}',
-        columns: [
-            { data: 'name', name: 'name' },
-            { data: 'unit_code', name: 'unit_code' },
-            { data: 'min_stock', name: 'min_stock' },
-            { data: 'category_code', name: 'category_code' },
+<!-- Page content -->
+<div class="container-fluid mt--6">
+  <div class="row">
+    <div class="col-xl-12 col-lg-12">
+      <div class="row">
+        <div class="col">
+          <div class="card" style="min-height: 800px">
+            <!-- Card header -->
+            <div class="card-header border-0">
+              <h3 class="mb-0">Units</h3>
+            </div>
+            <div class="card-body">
+              <div class="btn btn-outline-primary btn-sm addbtn mb-2"><i class="fas fa-plus"></i> ADD NEW</div>
+              <div>
+                <table class="align-items-center table-flush globalTabledata w-100 table">
+                  <tbody class="list">
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer -->
+  <footer class="footer pt-0">
+    <div class="row align-items-center justify-content-lg-between">
+      <div class="col-lg-6">
+        <div class="copyright text-lg-left text-muted text-center">
+          &copy; 2018
+          <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">PT GENTA MULTI JAYYA</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <ul class="nav nav-footer justify-content-center justify-content-lg-end">
+          <li class="nav-item">
+            <a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
+          </li>
+          <li class="nav-item">
+            <a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
+          </li>
+          <li class="nav-item">
+            <a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+          </li>
+          <li class="nav-item">
+            <a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+</div>
 
-        ]
-    });
- });
-</script>
-@endpush
+
+{{-- MODAL FORM --}}
+<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-primary" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <form id="formProjectType" action="asdasda" method="post">
+              @csrf
+              <div class="form-group">
+                <label for="code">Code</label>
+                <input class="form-control code" type="text" name="code" style="font-weight: bolder">
+              </div>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input class="form-control name" type="text" name="name" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Name Cannot Be Blank </b>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success btnsave">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{-- Notif Flash Message --}}
+@include('flashmessage')
+<script src="{{ asset('/') }}js/units/units.js" type="module"></script>
+@endsection

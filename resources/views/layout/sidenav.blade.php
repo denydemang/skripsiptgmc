@@ -29,18 +29,19 @@
 						</a>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#navbar-projects" data-toggle="collapse" role="button" aria-expanded="false"
+						<a class="nav-link {{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.project' ? 'active' : '' }}"
+							href="#navbar-projects" data-toggle="collapse" role="button" aria-expanded="false"
 							aria-controls="navbar-projects">
 							<i class="ni ni-settings text-orange"></i>
 							<span class="nav-link-text">Projects</span>
 						</a>
 						<div class="collapse" id="navbar-projects">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item">
-									<a href="./pages/examples/pricing.html" class="nav-link">Project Type</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.projecttype' ? 'active' : '' }}">
+									<a href="{{ route('admin.projecttype') }}" class="nav-link">Project Type</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/pricing.html" class="nav-link">Project</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.project' ? 'active' : '' }}">
+									<a href="{{ route('admin.project') }}" class="nav-link">Project</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/examples/login.html" class="nav-link">Project Realisation</a>
@@ -56,26 +57,26 @@
 						</a>
 						<div class="collapse" id="navbar-master">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item">
-									<a href="./pages/examples/pricing.html" class="nav-link">Master Supplier</a>
+								<li class="nav-item {{ $sessionRoute == 'r_supplier.index' ? 'active' : '' }}">
+									<a href="{{ route('r_supplier.index') }}" class="nav-link">Master Supplier</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/pricing.html" class="nav-link">Master Category Item</a>
+								<li class="nav-item {{ $sessionRoute == 'r_category.index' ? 'active' : '' }}">
+									<a href="{{ route('r_category.index') }}" class="nav-link">Master Category Item</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/login.html" class="nav-link">Master Item</a>
+								<li class="nav-item {{ $sessionRoute == 'r_item.index' ? 'active' : '' }}">
+									<a href="{{ route('r_item.index') }}" class="nav-link">Master Item</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/register.html" class="nav-link">Master Customer</a>
+								<li class="nav-item {{ $sessionRoute == 'r_customer.index' ? 'active' : '' }}">
+									<a href="{{ route('r_customer.index') }}" class="nav-link">Master Customer</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/lock.html" class="nav-link">Master Unit</a>
+								<li class="nav-item {{ $sessionRoute == 'r_unit.index' ? 'active' : '' }}">
+									<a href="{{ route('r_unit.index') }}" class="nav-link">Master Unit</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/lock.html" class="nav-link">Master User</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.users' ? 'active' : '' }}">
+									<a href="{{ route('admin.users') }}" class="nav-link">Master User</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/lock.html" class="nav-link">Master Role</a>
+								<li class="nav-item {{ $sessionRoute == 'r_role.index' ? 'active' : '' }}">
+									<a href="{{ route('r_role.index') }}" class="nav-link">Master Role</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/examples/lock.html" class="nav-link">Master COA</a>

@@ -28,6 +28,7 @@ class User extends Authenticatable
         'username',
         'name',
         'password',
+        'id_role',
         'created_at',
         'created_by',
         'updated_at',

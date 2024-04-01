@@ -29,7 +29,7 @@
 				<div class="header-body mb-7 text-center">
 					<div class="row justify-content-center">
 						<div class="col-xl-5 col-lg-6 col-md-8 px-4">
-							<h1 class="text-white">PT GENTA MULTI JAYA</h1>
+							<h1 class="text-white">PT GENTA MULTI JAYYA</h1>
 							<h3 class="text-white">Accounting Information System</h3>
 						</div>
 					</div>
@@ -103,7 +103,7 @@
 				<div class="col-xl-12 col-md-12">
 					<div class="text-center">
 						&copy; 2024 <a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">PT Genta Multi
-							Jaya</a>
+							Jayya</a>
 					</div>
 				</div>
 			</div>
