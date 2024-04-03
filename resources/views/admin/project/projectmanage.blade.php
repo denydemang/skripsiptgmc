@@ -77,7 +77,13 @@
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Transaction Date <span
 														style="color: red">*</span></label>
-												<input type="date" class="form-control form-control-sm inputtransdate" id="example3cols1Input">
+												<div class="input-group date mr-2" id="dtptransdate" data-target-input="nearest">
+													<input type="text" style="cursor: pointer" class="form-control form-control-sm inputtransdate"
+														data-target="#dtptransdate" readonly />
+													<div class="input-group-append" data-target="#dtptransdate" data-toggle="dtptransdate">
+														<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -98,7 +104,8 @@
 										<div class="col-lg-4">
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Budget <span style="color: red">*</span></label>
-												<input type="text" class="form-control form-control-sm inputbudget" id="e xample3cols1Input">
+												<input type="text" class="form-control form-control-sm inputbudget" id="e xample3cols1Input"
+													style="font-weight:bold;color:brown">
 											</div>
 										</div>
 									</div>
@@ -246,7 +253,7 @@
 										<input type="file" class="form-control">
 									</div>
 								</div>
-								<button class="btn btn-primary mt-2 py-2 submitbtn"><i class="fas fa-save mr-2" style="font-size: 16px"></i>
+								<button class="btn btn-primary submitbtn mt-2 py-2"><i class="fas fa-save mr-2" style="font-size: 16px"></i>
 									Save</button>
 							</div>
 						</div>

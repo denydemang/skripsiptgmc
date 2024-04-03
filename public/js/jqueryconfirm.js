@@ -38,7 +38,15 @@ export const showconfirmapprove = (id, name, funcapprove = null, menuname) => {
 export const showerror = (message, title = 'Error', backColor = 'red') => {
   $.alert({
     title: title,
-    icon: 'fas fa-warning',
+    icon: 'fas fa-exclamation-triangle',
+    type: backColor,
+    content: message
+  });
+};
+export const showwarning = (message, title = 'Warning', backColor = 'orange') => {
+  $.alert({
+    title: title,
+    icon: 'fas fa-exclamation-triangle',
     type: backColor,
     content: message
   });

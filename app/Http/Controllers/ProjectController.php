@@ -104,8 +104,8 @@ class ProjectController extends AdminController
 
 
             $status = intval($request->status) >=  0  ? $request->status : null ;
-            $startDate = $request->startDate;
-            $endDate = $request->endDate;
+            $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
+            $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
             $startProject = $request->startProject ?  $request->startProject :null;
             $startProject2 = $request->startProject2 ?  $request->startProject2 : null;
             $EndProject = $request->EndProject ?  $request->EndProject : null;
@@ -136,10 +136,19 @@ class ProjectController extends AdminController
                     return Carbon::parse($row->transaction_date)->format('d/m/Y');
                 })
                 ->editColumn('start_date', function($row) {
-                    return Carbon::parse($row->start_Date)->format('d/m/Y');
+                    if ($row->start_Date !== null){
+
+                        return Carbon::parse($row->start_Date)->format('d/m/Y');
+                    } else {
+                        return '';
+                    }
                 })
                 ->editColumn('end_date', function($row) {
-                    return Carbon::parse($row->end_date)->format('d/m/Y');
+                    if ($row->end_date !== null){
+                        return Carbon::parse($row->end_date)->format('d/m/Y');
+                    } else {
+                        return '';
+                    }
                 })
                 ->editColumn('project_status', function($row) {
                     $html ="";
@@ -211,6 +220,7 @@ class ProjectController extends AdminController
                 ->rawColumns(['action','project_status' ])
                 ->addIndexColumn()
                 ->make(true);
+                
      
         }
 

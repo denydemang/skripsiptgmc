@@ -5,11 +5,26 @@ import { formatRupiah1 } from '../rupiahformatter.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
 import daterangeInitiator from '../daterangeinitiator.js';
+import initiatedtp from '../datepickerinitiator.js';
+import managedate from '../managedate.js';
 
 $(document).ready(function () {
-  // Inputan Element dan SupplyData untuk params datatable
+  // Inputan element dan inisiasi property
   // ------------------------------------
+  const Date = new managedate();
   const listUpah = $('.listupah tbody');
+  const dtpstarttrans = $('#dtpstarttrans');
+  const dtplasttrans = $('#dtplasttrans');
+  const inputstartdatetrans = $('.inputstartdatetrans');
+  const inputlastdatetrans = $('.inputlastdatetrans');
+  const dtpstartdateproject1 = $('#dtpstartdateproject1');
+  const dtpstartdateproject2 = $('#dtpstartdateproject2');
+  const dtpenddateproject1 = $('#dtpenddateproject1');
+  const dtpenddateproject2 = $('#dtpenddateproject2');
+  const inputstartdateproject1 = $('.inputstartdateproject1');
+  const inputstartdateproject2 = $('.inputstartdateproject2');
+  const inputenddateproject1 = $('.inputenddateproject1');
+  const inputenddateproject2 = $('.inputenddateproject2');
   const listMaterial = $('.listbb tbody');
   const modalDetailProject = $('#modal-detailproject');
   const modalTitle = $('.titleview');
@@ -19,10 +34,12 @@ $(document).ready(function () {
   const daterangegroup3 = $('.daterangegroup3');
   const titledetail = $('.title-detail');
 
+  const startMONTH = Date.getFirstMonth();
+  const lastMONTH = Date.getLastMonth();
   let supplyData = {
     status: '',
-    startDate: moment().startOf('month').format('YYYY-MM-DD'),
-    endDate: moment().endOf('month').format('YYYY-MM-DD'),
+    startDate: startMONTH,
+    endDate: lastMONTH,
     startProject: '',
     startProject2: '',
     EndProject: '',
@@ -71,55 +88,20 @@ $(document).ready(function () {
   reloadTable(method, tableName, columns, getDataProject, supplyData);
   // --------------------------------------------------------------------
 
-  // INISIASI DATERANGE dan Trigger DATERANGE
-  // ---------------------------------------------------------------------
-  const objectNameDateRange = $('#daterange'); //Transaction Date
-  const objectDateRangeSpan = $('#daterange span');
-  const objectNameDateRange2 = $('#daterange2'); //Start Date Project
-  const objectDateRangeSpan2 = $('#daterange2 span');
-  const objectNameDateRange3 = $('#daterange3'); //EndDate Project
-  const objectDateRangeSpan3 = $('#daterange3 span');
+  // INISIASI DATEPICKER
+  // ---------------------------------------------
 
-  function drawDateRange(objectNameDateRange, objectDateRangeSpan, func) {
-    let dateRange = new daterangeInitiator(objectNameDateRange, objectDateRangeSpan, func);
+  initiatedtp(dtpstarttrans);
+  initiatedtp(dtplasttrans);
+  initiatedtp(dtpstartdateproject1);
+  initiatedtp(dtpstartdateproject1);
+  initiatedtp(dtpenddateproject1);
+  initiatedtp(dtpenddateproject2);
 
-    dateRange.drawDateRange();
-  }
-  function getDateFromDaterange(startDate, EndDate) {
-    supplyData.startDate = startDate.format('YYYY-MM-DD');
-    supplyData.endDate = EndDate.format('YYYY-MM-DD');
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
+  inputstartdatetrans.val(supplyData.startDate);
+  inputlastdatetrans.val(supplyData.endDate);
 
-  function drawDateRange2(objectNameDateRange2, objectDateRangeSpan2, func2) {
-    let dateRange = new daterangeInitiator(objectNameDateRange2, objectDateRangeSpan2, func2);
-
-    dateRange.drawDateRange();
-  }
-
-  function getDateFromDaterange2(startDate, EndDate) {
-    supplyData.startProject = startDate.format('YYYY-MM-DD');
-    supplyData.startProject2 = EndDate.format('YYYY-MM-DD');
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  function drawDateRange3(objectNameDateRange3, objectDateRangeSpan3, func3) {
-    let dateRange = new daterangeInitiator(objectNameDateRange3, objectDateRangeSpan3, func3);
-
-    dateRange.drawDateRange();
-  }
-
-  function getDateFromDaterange3(startDate, EndDate) {
-    supplyData.EndProject = startDate.format('YYYY-MM-DD');
-    supplyData.EndProject2 = EndDate.format('YYYY-MM-DD');
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  drawDateRange(objectNameDateRange, objectDateRangeSpan, getDateFromDaterange);
-  drawDateRange2(objectNameDateRange2, objectDateRangeSpan2, getDateFromDaterange2);
-  drawDateRange3(objectNameDateRange3, objectDateRangeSpan3, getDateFromDaterange3);
-
-  // ----------------------------------------------------------------------------------
+  // --------------------------------------------
 
   // Function
   // ------------------------------------------------------------
@@ -142,7 +124,14 @@ $(document).ready(function () {
     if (isCheckedstartDate) {
       daterangegroup2.addClass('d-block');
       daterangegroup2.removeClass('d-none');
-      drawDateRange2(objectNameDateRange2, objectDateRangeSpan2, getDateFromDaterange2);
+
+      inputstartdateproject1.val(startMONTH);
+      inputstartdateproject2.val(lastMONTH);
+
+      supplyData.startProject = startMONTH;
+      supplyData.startProject2 = lastMONTH;
+
+      reloadTable(method, tableName, columns, getDataProject, supplyData);
     } else {
       daterangegroup2.addClass('d-none');
       daterangegroup2.removeClass('d-block');
@@ -154,12 +143,20 @@ $(document).ready(function () {
     if (isCheckedendDate) {
       daterangegroup3.addClass('d-block');
       daterangegroup3.removeClass('d-none');
-      drawDateRange3(objectNameDateRange3, objectDateRangeSpan3, getDateFromDaterange3);
+
+      inputenddateproject1.val(startMONTH);
+      inputenddateproject2.val(lastMONTH);
+
+      supplyData.EndProject = startMONTH;
+      supplyData.EndProject2 = lastMONTH;
+
+      reloadTable(method, tableName, columns, getDataProject, supplyData);
     } else {
       daterangegroup3.addClass('d-none');
       daterangegroup3.removeClass('d-block');
       supplyData.EndProject = '';
       supplyData.EndProject2 = '';
+
       reloadTable(method, tableName, columns, getDataProject, supplyData);
     }
   }
@@ -231,10 +228,20 @@ $(document).ready(function () {
     `;
     listUpah.html(htmlUpah);
   }
+
+  function updateDTPTransDateValue() {
+    let startTrans = inputstartdatetrans.val();
+    let lastTrans = inputlastdatetrans.val();
+
+    supplyData.startDate = startTrans;
+    supplyData.endDate = lastTrans;
+
+    reloadTable(method, tableName, columns, getDataProject, supplyData);
+  }
   // -------------------------------------------------------------------
 
   // CRUD AND EVENT
-  // ------------------------------------------------------------
+  // ----------------------------------------------------------------
 
   // View Button
   $(document).on('click', '.viewbtn', async function () {
@@ -271,6 +278,12 @@ $(document).ready(function () {
   $(document).on('change', '.checkenddate', function () {
     checkValueCheckbox();
   });
+
+  // check perubahan value disemua datepicker TRANS DATE
+  $(document).on('change', '.datetimepicker-input', function () {
+    updateDTPTransDateValue();
+  });
+
   // ----------------------------------------------------------
 
   // Trigger Toast

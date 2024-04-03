@@ -52,7 +52,23 @@
 														</div>
 													</div>
 													<div class="form-group daterangegroup2 d-none mb-3">
-														@include('daterangetemplate2')
+														<div class="d-flex">
+															<div class="input-group date mr-2" id="dtpstartdateproject1" data-target-input="nearest">
+																<input type="text" class="form-control form-control-sm inputstartdateproject1"
+																	data-target="#dtpstartdateproject1" style="cursor: pointer" readonly />
+																<div class="input-group-append" data-target="#dtpstartdateproject1" data-toggle="dtpstartdateproject1">
+																	<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+																</div>
+															</div>
+															<span class="mr-1">to </span>
+															<div class="input-group date" id="dtpstartdateproject2" data-target-input="nearest">
+																<input type="text" style="cursor: pointer" class="form-control form-control-sm inputstartdateproject2"
+																	data-target="#dtpstartdateproject2" readonly />
+																<div class="input-group-append" data-target="#dtpstartdateproject2" data-toggle="dtpstartdateproject2">
+																	<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+																</div>
+															</div>
+														</div>
 													</div>
 												</div>
 												<div>
@@ -63,16 +79,47 @@
 														</div>
 													</div>
 													<div class="form-group daterangegroup3 d-none">
-														@include('daterangetemplate3')
+														<div class="d-flex">
+															<div class="input-group date mr-2" id="dtpenddateproject1" data-target-input="nearest">
+																<input type="text" class="form-control form-control-sm inputenddateproject1"
+																	data-target="#dtpenddateproject1" style="cursor: pointer" readonly />
+																<div class="input-group-append" data-target="#dtpenddateproject1" data-toggle="dtpenddateproject1">
+																	<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+																</div>
+															</div>
+															<span class="mr-1">to </span>
+															<div class="input-group date" id="dtpenddateproject2" data-target-input="nearest">
+																<input type="text" class="form-control form-control-sm inputenddateproject2"
+																	data-target="#dtpenddateproject2" style="cursor: pointer" readonly />
+																<div class="input-group-append" data-target="#dtpenddateproject2" data-toggle="dtpenddateproject2">
+																	<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+																</div>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
 										<div>
 											<div class="mr-1">
-												<h4>Transaction Date (Created Project)</h4>
-												<div class="form-group mb-3">
-													@include('daterangetemplate')
+												<h4>Transaction Date</h4>
+												<div class="d-flex">
+													<div class="input-group date mr-2" id="dtpstarttrans" data-target-input="nearest">
+														<input type="text" class="form-control form-control-sm datetimepicker-input inputstartdatetrans"
+															data-target="#dtpstarttrans" style="cursor: pointer" readonly />
+														<div class="input-group-append" data-target="#dtpstarttrans" data-toggle="dtpstarttrans">
+															<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+														</div>
+													</div>
+													<span class="mr-1">to </span>
+													<div class="input-group date" id="dtplasttrans" data-target-input="nearest">
+														<input type="text" style="cursor: pointer"
+															class="form-control form-control-sm datetimepicker-input inputlastdatetrans" data-target="#dtplasttrans"
+															readonly />
+														<div class="input-group-append" data-target="#dtplasttrans" data-toggle="dtplasttrans">
+															<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
@@ -88,6 +135,7 @@
 											<tr>
 												<th scope="col">Actions</th>
 												<th scope="col">Code</th>
+												<th scope="col">Project Name</th>
 												<th scope="col">Transaction Date</th>
 												<th scope="col">Project Type Code</th>
 												<th scope="col">Project Type</th>

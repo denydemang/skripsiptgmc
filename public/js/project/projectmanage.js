@@ -1,16 +1,18 @@
 import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
-import { showerror } from '../jqueryconfirm.js';
+import { showwarning } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
 import validateInput from '../validateInput.js';
+import initiatedtp from '../datepickerinitiator.js';
 import { formatRupiah1 } from '../rupiahformatter.js';
+import managedate from '../managedate.js';
 
 $(document).ready(function () {
-  //
-
+  const Date = new managedate();
   const modalItemSearch = $('#modalItemSearch');
   const modalUpahSearch = $('#modalUpahSearch');
   const inputcode = $('.inputcode');
+  const dtptransdate = $('#dtptransdate');
   const inputpic = $('.inputpic');
   const inputtransdate = $('.inputtransdate');
   const inputlocation = $('.inputlocation');
@@ -21,7 +23,7 @@ $(document).ready(function () {
   const inputcoapayable = $('.inputcoapayable');
   const inputdescription = $('.inputdescription');
 
-  let dataInput = ['.inputpic', '.inputtransdate', '.inputlocation', '.inputduration', '.inputbudget', '.inputname', '.inputdescription'];
+  let dataInput = ['.inputpic', '.inputlocation', '.inputduration', '.inputbudget', '.inputname'];
 
   let PostData = {
     code: '',
@@ -59,40 +61,53 @@ $(document).ready(function () {
   let tampungMaterial = [];
   let tampungUpah = [];
 
+  // inisiasi datapicker dan input
+  // ------------------------------------------------------
+  initiatedtp(dtptransdate);
+  inputtransdate.val(Date.getNowDate());
+  inputbudget.val(formatRupiah1(0));
+
+  //  ---------------------------------------------------
+
   // Function and procedures
   // -----------------------------------------------------
 
   function customValidation() {
     const customerCode = localStorage.getItem('customerCode');
     const projecttypeCode = localStorage.getItem('projecttypeCode');
+    if (inputtransdate.val() == '') {
+      inputtransdate.focus();
+      showwarning('Transaction Date Cannot Be Empty');
+      return false;
+    }
     if (customerCode == '' || customerCode == null) {
       $('.customerCode').focus();
       // console.log(localStorage.getItem('customerCode'));
-      showerror('Customer Code Cannot Be Empty');
+      showwarning('Customer Code Cannot Be Empty');
       return false;
     }
     if (projecttypeCode == '' || projecttypeCode == null) {
       $('.projecttypecode').focus();
-      showerror('ProjectType Code Cannot Be Empty');
+      showwarning('ProjectType Code Cannot Be Empty');
       return false;
     }
     if (inputcoaekspense.val() == '' || inputcoaekspense.val() == null) {
       inputcoaekspense.focus();
-      showerror('Coa Expense Cannot Be Empty');
+      showwarning('Coa Expense Cannot Be Empty');
       return false;
     }
     if (inputcoapayable.val() == '' || inputcoapayable.val() == null) {
       inputcoapayable.focus();
-      showerror('Coa Payable Cannot Be Empty');
+      showwarning('Coa Payable Cannot Be Empty');
       return false;
     }
 
     if (tampungMaterial.length <= 0) {
-      showerror('Please Input Material List!');
+      showwarning('Please Input Material List!');
       return false;
     }
     if (tampungUpah.length <= 0) {
-      showerror('Please Input Upah List!');
+      showwarning('Please Input Upah List!');
       return false;
     }
     return true;
@@ -243,7 +258,7 @@ $(document).ready(function () {
 
   function populatePostData() {
     PostData.code = '';
-    PostData.budget = inputbudget.val();
+    PostData.budget = parseToNominal(inputbudget.val());
     PostData.coa_expense = inputcoaekspense.val();
     PostData.coa_payable = inputcoapayable.val();
     PostData.customer_code = localStorage.getItem('customerCode');
@@ -288,7 +303,34 @@ $(document).ready(function () {
       return response;
     } catch (error) {
       showerror(error);
-      return null;
+      return false;
+    }
+  }
+
+  function parseToNominal(value) {
+    if (typeof value == 'string') {
+      // Menghapus karakter non-digit dan non-titik
+      var cleanInput = value.replace(/[^\d,.]/g, '');
+
+      // Mengganti koma menjadi titik
+      var dotFormatted = cleanInput.replace(',', '.');
+
+      // Menghapus karakter titik tambahan
+      var finalResult = dotFormatted.replace(/\.(?=.*\.)/g, '');
+
+      return parseFloat(finalResult);
+    } else {
+      return parseFloat(value);
+    }
+  }
+
+  function inputOnlyNumber(objectElement) {
+    let val = objectElement.val();
+    // Regular expression to allow only digits and dot
+    var regex = /^[0-9.]*$/;
+    if (!regex.test(val)) {
+      // Jika input tidak sesuai, hapus karakter terakhir
+      objectElement.val(val.slice(0, -1));
     }
   }
 
@@ -393,6 +435,19 @@ $(document).ready(function () {
         window.location.href = urlRedirect;
       }
     }
+  });
+
+  $(document).on('focusin', '.inputbudget', function (e) {
+    let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val());
+    $(this).val(X);
+  });
+
+  $(document).on('blur', '.inputbudget', function (e) {
+    $(this).val(formatRupiah1($(this).val()));
+  });
+  $(document).on('keyup', '.inputbudget', function (event) {
+    var object = $(this);
+    inputOnlyNumber(object);
   });
 
   // Trigger Notif Toast
