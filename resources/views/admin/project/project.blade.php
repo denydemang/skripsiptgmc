@@ -27,7 +27,7 @@
 					<div class="col">
 						<div class="card" style="min-height: 800px">
 							<!-- Card header -->
-							<div class="card-header border-0">
+							<div class="card-header">
 								<h3 class="mb-0">PROJECTS</h3>
 							</div>
 							<div class="card-body">
@@ -78,7 +78,10 @@
 										</div>
 									</div>
 								</div>
-								<div class="btn btn-outline-primary btn-sm addbtn mb-2"><i class="fas fa-plus"></i> ADD NEW</div>
+								<a href="{{ route('admin.addProject') }}">
+									<button class="btn btn-outline-primary btn-sm addbtn mb-2">
+										<i class="fas fa-plus"></i> ADD NEW
+									</button></a>
 								<div>
 									<table class="align-items-center table-flush projecttable w-100 table">
 										<thead class="thead-light">

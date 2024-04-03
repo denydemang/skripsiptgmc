@@ -16,10 +16,11 @@ export default class AjaxRequest {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
       });
-      return response; // Mengembalikan respons jika permintaan berhasil
+      return response;
+      console.log(response);
     } catch (error) {
-      console.error('Error:', error); // Menangani kesalahan jika terjadi
-      throw error; // Melempar kembali kesalahan untuk menangani di luar fungsi
+      console.log(error);
+      throw error.responseJSON.message;
     }
   }
 }

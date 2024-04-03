@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
@@ -42,14 +43,28 @@ class ProjectController extends AdminController
         return response()->view("admin.project.project",$supplyData);
     }
 
+    public function getViewProjectManage(Request $request){
+
+        $supplyData = [
+            'title' => 'Add New Project',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+    
+
+            ];
+
+        return response()->view("admin.project.projectmanage",$supplyData);
+    }
+
 
     public function getDataTypeProject(Request $request, DataTables $dataTables){
         if ($request->ajax()){
 
-
             $projectType = Type_Project::query();
     
+            
             return $dataTables->of($projectType)
+            
             ->addColumn('action', function ($row) {
                 
                 return '
@@ -63,6 +78,23 @@ class ProjectController extends AdminController
             ->make(true);
 
         }
+
+    }
+    public function getSearchtable(Request $request, DataTables $dataTables){
+
+        $projectType = Type_Project::query();
+        return $dataTables->of($projectType)
+            
+        ->addColumn('action', function ($row) {
+            
+            return '
+            <div class="d-flex justify-content-center">
+            <button class="btn btn-sm btn-success selectprojecttype" data-code="'.$row->code.'" data-name="'.$row->name.'" title="Select Type"><i class="fa fa-check"></i> Select</button>
+            </div>';
+        })
+        ->rawColumns(['action'])
+        ->addIndexColumn()
+        ->make(true);
 
     }
     public function getDataProject(Request $request, DataTables $dataTables){
@@ -234,6 +266,84 @@ class ProjectController extends AdminController
 
 
     }
+
+    public function addProject(Request $request ){
+
+        if($request->ajax()){
+
+            try {
+                //code...
+                DB::beginTransaction();
+                $project = Project::orderBy("code", "desc")->lockforUpdate()->first();
+                $data = $request->all();
+                $project_code = $this->automaticCode('PRJ' ,$project, true,  'code');
+    
+                $dataprojectdetails = $data['project_details'];
+                $dataprojectdetailb = $data['project_detail_b'];
+    
+                $data['code'] =  $project_code;
+
+                $stock =  new StockController();
+
+                foreach($dataprojectdetails as $i){
+                    $stock->stockout($i['item_code'],$i['qty'], $data['transaction_date'], $project_code);
+                }
+
+
+                $project = new Project();
+                $project->code = $data['code'];
+                $project->name = $data['name'];
+                $project->transaction_date = $data['transaction_date'];
+                $project->project_type_code = $data['project_type_code'];
+                $project->customer_code = $data['customer_code'];
+                $project->location = $data['location'];
+                $project->budget = $data['budget'];
+                $project->project_status = 0;
+                $project->description = $data['description'];
+                $project->coa_expense = $data['coa_expense'];
+                $project->coa_payable = $data['coa_payable'];
+                $project->pic = $data['pic'];
+                $project->duration_days = $data['duration_days'];
+                $project->created_by = Auth::user()->username;
+                $project->save();
+
+
+                foreach($dataprojectdetails as $i){
+                    $project_details= new Project_Detail();
+                    $project_details->project_code = $project_code;
+                    $project_details->item_code = $i['item_code'];
+                    $project_details->unit_code = $i['unit_code'];
+                    $project_details->qty = $i['qty'];
+                    $project_details->created_by = Auth::user()->username;
+                    $project_details->save();
+                }
+
+                foreach($dataprojectdetailb as $x){
+                    $projectdetailb = new ProjectDetailB();
+                    $projectdetailb->project_code = $project_code;
+                    $projectdetailb->upah_code = $x['upah_code'];
+                    $projectdetailb->unit = $x['unit'];
+                    $projectdetailb->qty = $x['qty'];
+                    $projectdetailb->price = $x['price'];
+                    $projectdetailb->total = $x['total'];
+                    $projectdetailb->created_by =  Auth::user()->username;
+                    $projectdetailb->save();
+                }
+
+
+                DB::commit();
+                Session::flash('success',  "New Project :  $project_code Succesfully Created");
+                return json_encode(true);
+                
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+
+
+        }
+    }
     
     public function deleteProjectType($code){
         try {
@@ -292,6 +402,8 @@ class ProjectController extends AdminController
         }
 
     }
+
+
 
 
 }

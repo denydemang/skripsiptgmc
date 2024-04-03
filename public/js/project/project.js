@@ -1,5 +1,6 @@
 import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
+import { showerror } from '../jqueryconfirm.js';
 import { formatRupiah1 } from '../rupiahformatter.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
@@ -130,7 +131,7 @@ $(document).ready(function () {
       const ajx = new AjaxRequest(urlRequest, method);
       return await ajx.getData();
     } catch (error) {
-      console.error('Error:', error);
+      showerror(error);
       return null;
     }
   }
@@ -174,7 +175,6 @@ $(document).ready(function () {
     let namaProyek = Material[0].project_name;
 
     titledetail.html(`${codeProyek} - ${namaProyek}`);
-
     let htmlMaterial = '';
     let counterMaterial = 1;
 

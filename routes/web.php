@@ -1,8 +1,13 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\UpahController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\GuestMiddleware;
@@ -31,17 +36,51 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
     });  
     Route::controller(ProjectController::class)->group(function(){
+        // View
         Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');  
         Route::get('/admin/project', 'getViewProject')->name('admin.project');  
+        Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProject');  
+
+
+
+        // CRUD
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
+        Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
         Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
         Route::get('/admin/project/delete/{id}', 'deleteProject')->name('admin.deleteDataProject');
+        Route::post('/admin/project/add', 'addProject')->name('admin.addproject');
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
         Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
+
     });  
+    Route::controller(CustomerController::class)->group(function(){
+
+        Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
+
+    });
+    Route::controller(COAController::class)->group(function(){
+
+        Route::get("admin/coa/gettablesearch", 'getCOATableSearch')->name('admin.getCOATableSearch');
+
+    });
+    Route::controller(ItemController::class)->group(function(){
+
+        Route::get('admin/item/gettableitemsearch', 'getTableItemSearch')->name('admin.getTableItemSearch');
+    });
+
+    Route::controller(UpahController::class)->group(function(){
+
+        Route::get('admin/upah/gettableupahsearch', 'getTableUpahSearch')->name('admin.getTableUpahSearch');
+    });
+    Route::controller(StockController::class)->group(function(){
+
+        Route::get('admin/stocks/stockout/{id}', 'stockout')->name('admin.stockout');
+    });
+
+    
 });
 
 

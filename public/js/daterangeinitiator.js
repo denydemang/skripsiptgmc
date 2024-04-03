@@ -1,5 +1,5 @@
 export default class daterangeInitiator {
-  constructor(objectName, htmlInner, func = function () {}, formatDate = 'MMMM D, YYYY') {
+  constructor(objectName, htmlInner, func = function () {}, formatDate = 'DD/MM/YYYY') {
     this.startDate = moment().startOf('month');
 
     this.endDate = moment().endOf('month');
