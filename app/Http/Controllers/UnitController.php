@@ -15,7 +15,7 @@ class UnitController extends AdminController
     public function index(Request $request)
     {
         $supplyData = [
-            'title' => 'Users Type',
+            'title' => 'Unit',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
 
@@ -61,7 +61,26 @@ class UnitController extends AdminController
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+            $supplyModel = Unit::orderBy("code", "desc")->lockForUpdate()->first();
+            $code = $this->automaticCode("UN_0" ,$supplyModel, false,"code");
+            $name = $request->post("name");
+
+
+            $typeProject = new Unit();
+            $typeProject->code = $code;
+            $typeProject->name =  $name;
+            $typeProject->created_by = Auth::user()->username;
+            $typeProject->save();
+
+            // Session::flash('error', `Data Berhasil Disimpan`);
+
+            return response()->redirectToRoute("r_unit.index")->with("success", "Data $code Succesfully Created");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+        }
     }
 
     /**
@@ -75,9 +94,14 @@ class UnitController extends AdminController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        if ($request->ajax()){
+            $dataProjectType = Unit::query()->where("code", $id)->first();
+
+            return json_encode($dataProjectType);
+
+        }
     }
 
     /**
@@ -85,7 +109,19 @@ class UnitController extends AdminController
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $name = $request->post("name");
+            $getRole = Unit::find($id );
+            $getRole->name = $name;
+            $getRole->updated_by = Auth::user()->username;
+            $getRole->update();
+
+            return response()->redirectToRoute("r_unit.index")->with("success", "Data ".$name." Successfully Updated");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+        }
     }
 
     /**
@@ -93,6 +129,13 @@ class UnitController extends AdminController
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            unit::where("code",$id )->delete();
+
+            return response()->redirectToRoute("r_unit.index")->with("success", "Data Successfully Deleted");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+        }
     }
 }

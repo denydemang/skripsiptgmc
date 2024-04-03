@@ -16,29 +16,38 @@ class UnitSeeder extends Seeder
         Unit::create([
             "code" => "UN_0001",
             "name" => "Laptop",
-            "created_by" => now(),
-            "updated_by" => now(),
+            "created_by" => 'admin',
+            "updated_by" => 'admin',
 
         ]);
         Unit::create([
             "code" => "UN_0002",
             "name" => "VGA",
-            "created_by" => now(),
-            "updated_by" => now(),
+            "created_by" => 'admin',
+            "updated_by" => 'admin',
 
         ]);
         Unit::create([
             "code" => "UN_0003",
             "name" => "RAM",
-            "created_by" => now(),
-            "updated_by" => now(),
+            "created_by" => 'admin',
+            "updated_by" => 'admin',
 
         ]);
         Unit::create([
             "code" => "UN_0004",
             "name" => "Joys stick",
-            "created_by" => now(),
-            "updated_by" => now(),
+            "created_by" => 'admin',
+            "updated_by" => 'admin',
+
+        ]);
+
+        $supplyModel = Unit::orderBy("code", "desc")->lockForUpdate()->first();
+        Unit::create([
+            "code" => automaticCode_H("UN_0" ,$supplyModel, false,"code"),
+            "name" => "Mouse",
+            "created_by" => 'admin',
+            "updated_by" => 'admin',
 
         ]);
     }

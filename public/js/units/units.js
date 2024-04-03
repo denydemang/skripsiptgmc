@@ -29,6 +29,43 @@ $(document).ready(function () {
   const Table = new tableInitiator(method, tableName, columns, getDataProject);
   Table.showTable();
 
+  // Function Get Edit Data
+  // ------------------------------------------------------------
+  async function getData(tondo = '') {
+    const urlRequest = route('r_unit.edit', tondo);
+    const method = 'GET';
+    const data = {
+      id: tondo
+    };
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method, data);
+      return await ajx.getData();
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
+  async function formdeleteData(tondo = '') {
+    // let token = $('meta[name="csrf-token"]').attr('content');
+    const urlRequest = route('r_unit.destroy', tondo);
+    const method = 'DELETE';
+    const data = {
+      id: tondo,
+    };
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method, data);
+
+      return await ajx.formU_DeData();
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
+
   // FN VALIDATE
   function validate() {
     NameInput.removeClass('is-invalid');
@@ -59,7 +96,7 @@ $(document).ready(function () {
         $(this).attr('action', addProjectTypeURL);
         $(this)[0].submit();
       } else {
-        var tondo = $('.id').val();
+        var tondo = $('.code').val();
         var inputMethod = $('<input>').attr({
             type: 'hidden',
             name: '_method',
@@ -74,6 +111,51 @@ $(document).ready(function () {
         $(this)[0].submit();
       }
     }
+  });
+
+  // Delay Edit Data
+  function isFetchingData() {
+    let text = 'Fetching Data .....';
+    NameInput.val(text);
+
+  }
+
+  // Define populate
+  function populateForm(data) {
+    if (data || data != null) {
+      NameInput.val(data.name);
+    }
+  }
+
+  // Btn Edit
+  $(document).on('click', '.editbtn', async function () {
+    let code = $(this).data('code');
+    modalTitle.html('Edit Unit');
+    updateMode = true;
+    modalTypeProject.modal('show');
+    // idInput.prop('readonly', true);
+    $('.code').val(code);
+    isFetchingData();
+
+    const respons = await getData(code);
+    populateForm(respons);
+  });
+
+  // Function Delete Data
+  function deleteData(tondo, name) {
+    formdeleteData(tondo);
+    window.location.href = route('r_unit.index');
+  }
+
+   // Click Delete Button
+   $(document).on('click', '.deletebtn', function () {
+    let code = $(this).data('code');
+    showconfirmdelete(code, code, deleteData, 'Code :');
+  });
+
+  // Close Modal
+  modalTypeProject.on('hidden.bs.modal', function (e) {
+    clear();
   });
 
   // Trigger Toast

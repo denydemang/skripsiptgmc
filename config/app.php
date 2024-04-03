@@ -171,7 +171,9 @@ return [
         App\Providers\RouteServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
-    ])->toArray(),  
+
+        App\Providers\MyHelperProvider::class,
+    ])->toArray(),
 
     /*
     |--------------------------------------------------------------------------
