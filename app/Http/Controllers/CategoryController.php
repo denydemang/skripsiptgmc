@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
-class CategoryController extends Controller
+class CategoryController extends AdminController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $supplyData = [
-            'title' => 'Users Type',
+            'title' => 'Categorys',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
 
@@ -61,7 +61,28 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+            $supplyModel = Category::orderBy("code", "desc")->lockForUpdate()->first();
+            $code = $this->automaticCode("CATE_" ,$supplyModel, false,"code");
+            $name = $request->post("name");
+            $coa_code = $request->post("coa_code");
+
+
+            $typeProject = new Category();
+            $typeProject->code = $code;
+            $typeProject->name =  $name;
+            $typeProject->coa_code =  $coa_code;
+            $typeProject->created_by = Auth::user()->username;
+            $typeProject->save();
+
+            // Session::flash('error', `Data Berhasil Disimpan`);
+
+            return response()->redirectToRoute("r_category.index")->with("success", "Data $code Succesfully Created");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
+        }
     }
 
     /**
@@ -75,9 +96,14 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        if ($request->ajax()){
+            $dataProjectType = Category::query()->where("code", $id)->first();
+
+            return json_encode($dataProjectType);
+
+        }
     }
 
     /**
@@ -85,7 +111,21 @@ class CategoryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $name = $request->post("name");
+            $coa_code = $request->post("coa_code");
+            $getRole = Category::find($id );
+            $getRole->name = $name;
+            $getRole->coa_code = $coa_code;
+            $getRole->updated_by = Auth::user()->username;
+            $getRole->update();
+
+            return response()->redirectToRoute("r_category.index")->with("success", "Data ".$name." Successfully Updated");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
+        }
     }
 
     /**
@@ -93,6 +133,13 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            Category::where("code",$id )->delete();
+
+            return response()->redirectToRoute("r_category.index")->with("success", "Data Successfully Deleted");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
+        }
     }
 }

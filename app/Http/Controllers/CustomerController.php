@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
-class CustomerController extends Controller
+class CustomerController extends AdminController
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $supplyData = [
-            'title' => 'Users Type',
+            'title' => 'Customers',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
 
@@ -61,7 +61,38 @@ class CustomerController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+
+            $supplyModel = Customer::orderBy("code", "desc")->lockForUpdate()->first();
+            $code = $this->automaticCode("CUSTOM_" ,$supplyModel, false,"code");
+            $name = $request->post("name");
+            $address = $request->post("address");
+            $zip_code = $request->post("zip_code");
+            $npwp = $request->post("npwp");
+            $email = $request->post("email");
+            $phone = $request->post("phone");
+            $coa_code = $request->post("coa_code");
+
+
+            $typeProject = new Customer();
+            $typeProject->code = $code;
+            $typeProject->name =  $name;
+            $typeProject->address =  $address;
+            $typeProject->zip_code =  $zip_code;
+            $typeProject->npwp =  $npwp;
+            $typeProject->email =  $email;
+            $typeProject->phone =  $phone;
+            $typeProject->coa_code =  $coa_code;
+            $typeProject->created_by = Auth::user()->username;
+            $typeProject->save();
+
+            // Session::flash('error', `Data Berhasil Disimpan`);
+
+            return response()->redirectToRoute("r_customer.index")->with("success", "Data $code Succesfully Created");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+        }
     }
 
     /**
@@ -75,9 +106,14 @@ class CustomerController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id, Request $request)
     {
-        //
+        if ($request->ajax()){
+            $dataProjectType = Customer::query()->where("code", $id)->first();
+
+            return json_encode($dataProjectType);
+
+        }
     }
 
     /**
@@ -85,7 +121,33 @@ class CustomerController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $name = $request->post("name");
+            $address = $request->post("address");
+            $zip_code = $request->post("zip_code");
+            $npwp = $request->post("npwp");
+            $email = $request->post("email");
+            $phone = $request->post("phone");
+            $coa_code = $request->post("coa_code");
+            $getRole = Customer::find($id );
+
+            $getRole->name = $name;
+            $getRole->coa_code = $coa_code;
+            $getRole->address = $address;
+            $getRole->zip_code = $zip_code;
+            $getRole->npwp = $npwp;
+            $getRole->email = $email;
+            $getRole->phone = $phone;
+            $getRole->coa_code = $coa_code;
+            $getRole->updated_by = Auth::user()->username;
+            $getRole->update();
+
+            return response()->redirectToRoute("r_customer.index")->with("success", "Data ".$name." Successfully Updated");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+        }
     }
 
     /**
@@ -93,6 +155,13 @@ class CustomerController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            Customer::where("code",$id )->delete();
+
+            return response()->redirectToRoute("r_customer.index")->with("success", "Data Successfully Deleted");
+        } catch (\Throwable $th) {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+        }
     }
 }

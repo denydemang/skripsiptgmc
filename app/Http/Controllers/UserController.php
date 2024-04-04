@@ -31,7 +31,7 @@ class UserController extends AdminController
     function getViewUsers(Request $request)
     {
         $supplyData = [
-            'title' => 'Users Type',
+            'title' => 'Users',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
 
@@ -108,14 +108,14 @@ class UserController extends AdminController
         try {
             $username =  $request->post("username");
             $name = $request->post("name");
-            $passrword = $request->post("passrword");
+            $password = Hash::make($request->post("password"));
             $role = $request->post("role");
 
             $getUser = User::where("username", $username )->first();
 
             $getUser->username = $username;
             $getUser->name = $name;
-            $getUser->password = $passrword!='' ? $passrword : $getUser->password ;
+            $getUser->password = $password!='' ? $password : $getUser->password ;
             $getUser->id_role = $role;
             $getUser->updated_by = Auth::user()->username;
             $getUser->update();

@@ -16,9 +16,9 @@ class CustomerSeeder extends Seeder
     {
         $limit = 10;
 
-        for ($i=1; $i <=$limit; $i++) { 
+        for ($i=1; $i <=$limit; $i++) {
             Customer::updateOrCreate([
-                "code" => "CATE_00".$i,
+                "code" => "CUSTOMER_00".$i,
                 "name" => "Customer".$i,
                 "address" => "pandean",
                 "zip_code" => "",

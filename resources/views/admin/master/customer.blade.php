@@ -75,7 +75,7 @@
 
 
 {{-- MODAL FORM --}}
-<div class="modal fade" id="modal-users" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog modal-primary" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -101,10 +101,38 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="description">Description</label>
-                <input class="form-control description" type="text" name="description" style="font-weight: bolder">
+                <label for="address">Address</label>
+                <input class="form-control address" type="text" name="address" style="font-weight: bolder">
                 <div class="invalid-feedback">
-                  <b>Description Cannot Be Blank </b>
+                  <b>Address Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="zip_code">Zip Code</label>
+                <input class="form-control zip_code" type="text" name="zip_code" style="font-weight: bolder">
+              </div>
+              <div class="form-group">
+                <label for="npwp">NPWP</label>
+                <input class="form-control npwp" type="text" name="npwp" style="font-weight: bolder">
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input class="form-control email" type="text" name="email" style="font-weight: bolder">
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone</label>
+                <input class="form-control phone" type="text" name="phone" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Phone Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="role">COA</label>
+                {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
+                <select class="form-control coa_code" name="coa_code" id="coa_code">
+                </select>
+                <div class="invalid-feedback">
+                  <b>Coa Code Cannot Be Blank </b>
                 </div>
               </div>
           </div>

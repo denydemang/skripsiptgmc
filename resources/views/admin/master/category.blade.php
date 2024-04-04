@@ -75,7 +75,7 @@
 
 
 {{-- MODAL FORM --}}
-<div class="modal fade" id="modal-users" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog modal-primary" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -101,10 +101,12 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="description">Description</label>
-                <input class="form-control description" type="text" name="description" style="font-weight: bolder">
+                <label for="role">COA</label>
+                {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
+                <select class="form-control coa_code" name="coa_code" id="coa_code">
+                </select>
                 <div class="invalid-feedback">
-                  <b>Description Cannot Be Blank </b>
+                  <b>Coa Code Cannot Be Blank </b>
                 </div>
               </div>
           </div>

@@ -15,7 +15,7 @@ class RoleController extends AdminController
     public function index(Request $request)
     {
         $supplyData = [
-            'title' => 'Users Type',
+            'title' => 'Roles',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
 

@@ -75,7 +75,7 @@
 
 
 {{-- MODAL FORM --}}
-<div class="modal fade" id="modal-users" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog modal-primary" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -101,10 +101,35 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="description">Description</label>
-                <input class="form-control description" type="text" name="description" style="font-weight: bolder">
+                <label for="role">Unit Code</label>
+                {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
+                <select class="form-control unit_code" name="unit_code" id="unit_code">
+                </select>
                 <div class="invalid-feedback">
-                  <b>Description Cannot Be Blank </b>
+                    <b>Unit Code Cannot Be Blank </b>
+                  </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Min Stock</label>
+                <input class="form-control min_stock" type="number" name="min_stock" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Min Stock Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Max Stock</label>
+                <input class="form-control max_stock" type="number" name="max_stock" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Max Stock Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="role">Category Code</label>
+                {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
+                <select class="form-control category_code" name="category_code" id="category_code">
+                </select>
+                <div class="invalid-feedback">
+                  <b>Category Code Cannot Be Blank </b>
                 </div>
               </div>
           </div>

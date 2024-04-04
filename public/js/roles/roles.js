@@ -78,10 +78,16 @@ $(document).ready(function () {
     return true;
   }
 
+  //   Clear input
+  function clear() {
+    NameInput.removeClass('is-invalid');
+    NameInput.val('');
+  }
+
   // CLICK ADD Button
   $(document).on('click', '.addbtn', function () {
     modalTypeProject.modal('show');
-    modalTitle.html('Add New Project Type');
+    modalTitle.html('Add New Role');
     updateMode = false;
   });
 
@@ -129,7 +135,7 @@ $(document).ready(function () {
   // Btn Edit
   $(document).on('click', '.editbtn', async function () {
     let id = $(this).data('id');
-    modalTitle.html('Edit Users Type');
+    modalTitle.html('Edit Role');
     updateMode = true;
     modalTypeProject.modal('show');
     // idInput.prop('readonly', true);
@@ -155,6 +161,11 @@ $(document).ready(function () {
   // Close Modal
   modalTypeProject.on('hidden.bs.modal', function (e) {
     clear();
+  });
+
+  // Open Modal
+  modalTypeProject.on('shown.bs.modal', function (e) {
+    NameInput.focus();
   });
 
   // Trigger Toast

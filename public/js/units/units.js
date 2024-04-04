@@ -80,11 +80,17 @@ $(document).ready(function () {
   // CLICK ADD Button
   $(document).on('click', '.addbtn', function () {
     modalTypeProject.modal('show');
-    modalTitle.html('Add New Unit Type');
+    modalTitle.html('Add New Unit');
     CodeInput.val('AUTO');
     CodeInput.prop('readonly', true);
     updateMode = false;
   });
+
+//   Clear input
+  function clear() {
+    NameInput.removeClass('is-invalid');
+    NameInput.val('');
+  }
 
   // Submit Form
   $(document).on('submit', '#formProjectType', function (e) {
@@ -116,6 +122,7 @@ $(document).ready(function () {
   // Delay Edit Data
   function isFetchingData() {
     let text = 'Fetching Data .....';
+    CodeInput.val(text);
     NameInput.val(text);
 
   }
@@ -123,6 +130,7 @@ $(document).ready(function () {
   // Define populate
   function populateForm(data) {
     if (data || data != null) {
+      CodeInput.val(data.code);
       NameInput.val(data.name);
     }
   }
@@ -133,7 +141,7 @@ $(document).ready(function () {
     modalTitle.html('Edit Unit');
     updateMode = true;
     modalTypeProject.modal('show');
-    // idInput.prop('readonly', true);
+    CodeInput.prop('readonly', true);
     $('.code').val(code);
     isFetchingData();
 
@@ -156,6 +164,11 @@ $(document).ready(function () {
   // Close Modal
   modalTypeProject.on('hidden.bs.modal', function (e) {
     clear();
+  });
+
+  // Open Modal
+  modalTypeProject.on('shown.bs.modal', function (e) {
+    NameInput.focus();
   });
 
   // Trigger Toast

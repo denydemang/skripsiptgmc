@@ -13,6 +13,10 @@ use App\Http\Controllers\UserController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\GuestMiddleware;
+use App\Models\Category;
+use App\Models\COA;
+use App\Models\Role;
+use App\Models\Unit;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -55,41 +59,41 @@ Route::controller(CredentialController::class)->group(function(){
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(ProjectController::class)->group(function(){
-        Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');  
-        Route::get('/admin/project', 'getViewProject')->name('admin.project');  
+        Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
+        Route::get('/admin/project', 'getViewProject')->name('admin.project');
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
         Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
-    });  
+    });
 });
 
 // -----------------    user
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(UserController::class)->group(function(){
-        Route::get('/admin/users', 'getViewUsers')->name('admin.users');  
-        // Route::get('/admin/project', 'getViewProject')->name('admin.project');  
+        Route::get('/admin/users', 'getViewUsers')->name('admin.users');
+        // Route::get('/admin/project', 'getViewProject')->name('admin.project');
         Route::post('/admin/users/getdata', 'getDataUsers')->name('admin.getDataUsers');
         // Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
         Route::post('/admin/users/update', 'updateUser')->name('admin.updateDataUser');
         Route::post('/admin/users/add', 'addUsers')->name('admin.addDataUsers');
         Route::get('/admin/users/delete/{username}', 'deleteUser')->name('admin.deleteDataUser');
         Route::get('/admin/users/edit/{username}', 'editDataUsers')->name('admin.editUsers');
-    });  
+    });
 });
 
 // -----------------    unit
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(UnitController::class)->group(function(){
         Route::resource('/admin/unit', UnitController::class)->names([
             'index' => 'r_unit.index',
@@ -99,17 +103,17 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'edit' => 'r_unit.edit',
             'update' => 'r_unit.update',
             'destroy' => 'r_unit.destroy',
-        ]);  
-        Route::post('/admin/unit/getdata', 'getDataUnits')->name('admin.getUnits');  
-        
-    });  
+        ]);
+        Route::post('/admin/unit/getdata', 'getDataUnits')->name('admin.getUnits');
+
+    });
 });
 
 // -----------------    item
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(ItemController::class)->group(function(){
         Route::resource('/admin/item', ItemController::class)->names([
             'index' => 'r_item.index',
@@ -119,17 +123,17 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'edit' => 'r_item.edit',
             'update' => 'r_item.update',
             'destroy' => 'r_item.destroy',
-        ]);  
-        Route::post('/admin/item/getdata', 'getDataitems')->name('admin.getitems');  
-        
-    });  
+        ]);
+        Route::post('/admin/item/getdata', 'getDataitems')->name('admin.getitems');
+
+    });
 });
 
 // -----------------    category
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(CategoryController::class)->group(function(){
         Route::resource('/admin/category', CategoryController::class)->names([
             'index' => 'r_category.index',
@@ -139,17 +143,17 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'edit' => 'r_category.edit',
             'update' => 'r_category.update',
             'destroy' => 'r_category.destroy',
-        ]);  
-        Route::post('/admin/category/getdata', 'getDatacategorys')->name('admin.getcategorys');  
-        
-    });  
+        ]);
+        Route::post('/admin/category/getdata', 'getDatacategorys')->name('admin.getcategorys');
+
+    });
 });
 
 // -----------------    customer
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(CustomerController::class)->group(function(){
         Route::resource('/admin/customer', CustomerController::class)->names([
             'index' => 'r_customer.index',
@@ -159,17 +163,17 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'edit' => 'r_customer.edit',
             'update' => 'r_customer.update',
             'destroy' => 'r_customer.destroy',
-        ]);  
-        Route::post('/admin/customer/getdata', 'getDatacustomers')->name('admin.getcustomers');  
-        
-    });  
+        ]);
+        Route::post('/admin/customer/getdata', 'getDatacustomers')->name('admin.getcustomers');
+
+    });
 });
 
 // -----------------    supplier
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(SupplierController::class)->group(function(){
         Route::resource('/admin/supplier', SupplierController::class)->names([
             'index' => 'r_supplier.index',
@@ -179,17 +183,17 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'edit' => 'r_supplier.edit',
             'update' => 'r_supplier.update',
             'destroy' => 'r_supplier.destroy',
-        ]);  
-        Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');  
-        
-    });  
+        ]);
+        Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');
+
+    });
 });
 
 // -----------------    role
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');
-    });  
+    });
     Route::controller(RoleController::class)->group(function(){
         Route::resource('/admin/role', RoleController::class)->names([
             'index' => 'r_role.index',
@@ -199,10 +203,46 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'edit' => 'r_role.edit',
             'update' => 'r_role.update',
             'destroy' => 'r_role.destroy',
-        ]);  
-        Route::post('/admin/role/getdata', 'getDataroles')->name('admin.getroles');  
-        
-    });  
+        ]);
+        Route::post('/admin/role/getdata', 'getDataroles')->name('admin.getroles');
+
+    });
+});
+
+// -----------------    role
+Route::middleware(AuthMiddleware::class)->group(function(){
+    Route::controller(AdminController::class)->group(function(){
+        Route::get('/admin', 'dashboard')->name('dashboard');
+    });
+    Route::get('/admin/coa', function() {
+    if (request()->ajax()) {
+        $coaAll = COA::all(['code','name','type','level']);
+        return json_encode($coaAll);
+    }
+
+    } )->name('admin.coa');
+    Route::get('/admin/JSONunit', function() {
+    if (request()->ajax()) {
+        $All = Unit::all(['code','name']);
+        return json_encode($All);
+    }
+
+    } )->name('admin.JSONunit');
+    Route::get('/admin/JSONcategory', function() {
+    if (request()->ajax()) {
+        $All = Category::all(['code','name', 'coa_code']);
+        return json_encode($All);
+    }
+
+    } )->name('admin.JSONcategory');
+    Route::get('/admin/JSONrole', function() {
+    if (request()->ajax()) {
+        $All = Role::all(['id','name']);
+        return json_encode($All);
+    }
+
+    } )->name('admin.JSONrole');
+
 });
 
 

@@ -4,7 +4,7 @@ import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 
 
-$(document).ready(function () {
+$(document).ready(async function () {
   let modalTitle = $('.modal-title');
   let UsernameInput = $('.username');
   let NameInput = $('.name');
@@ -12,6 +12,31 @@ $(document).ready(function () {
   let RoleInput = $('.role');
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
+
+  const pilih = $('<option value="" id="pilih" selected="">-- Pilih Role --</option>')
+
+
+  try {
+    // Panggil fungsi getDataRelasi dengan await untuk menunggu hasilnya
+    const result = await getDataRelasi();
+
+    // Lakukan sesuatu dengan hasilnya
+    console.log(result);
+    if (result.length != 0) {
+        const selectElement = $('#role');
+        selectElement.append(pilih);
+        result.forEach(item => {
+            const option = $('<option></option>');
+            option.attr('value', item.id); // Atur nilai option sesuai dengan data
+            option.text(`${item.name}`); // Atur teks option sesuai dengan data
+            selectElement.append(option); // Masukkan option ke dalam elemen select
+        });
+
+    }
+} catch (error) {
+    // Tangani kesalahan jika terjadi
+    console.error('Error:', error);
+}
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
@@ -53,10 +78,27 @@ $(document).ready(function () {
     }
   }
 
+  async function getDataRelasi(tondo = '') {
+    const urlRequest = route('admin.JSONrole', tondo);
+    const method = 'GET';
+    const data = {
+      parameter1: 'test'
+    };
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method, data);
+      return await ajx.getData();
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
   // FN VALIDATE
   function validate() {
     UsernameInput.removeClass('is-invalid');
     NameInput.removeClass('is-invalid');
+    // PasswordInput.removeClass('is-invalid');
     RoleInput.removeClass('is-invalid');
 
     if (UsernameInput.val() == '') {
@@ -69,11 +111,16 @@ $(document).ready(function () {
       NameInput.focus();
       return false;
     }
-    // if (PasswordInput.val() == '') {
-    //   PasswordInput.addClass('is-invalid');
-    //   PasswordInput.focus();
-    //   return false;
-    // }
+
+    const modalTitle = $('.modal-title').text()
+    if (modalTitle == 'Add New User') {
+      if (PasswordInput.val() == '') {
+        PasswordInput.addClass('is-invalid');
+        PasswordInput.focus();
+        return false;
+      }
+    }
+
     if (RoleInput.val() == '') {
       RoleInput.addClass('is-invalid');
       RoleInput.focus();
@@ -82,10 +129,22 @@ $(document).ready(function () {
     return true;
   }
 
+  //   Clear input
+  function clear() {
+    UsernameInput.removeClass('is-invalid');
+    NameInput.removeClass('is-invalid');
+    PasswordInput.removeClass('is-invalid');
+    RoleInput.removeClass('is-invalid');
+    UsernameInput.val('');
+    NameInput.val('');
+    PasswordInput.val('');
+    RoleInput.val('');
+  }
+
   // CLICK ADD Button
   $(document).on('click', '.addbtn', function () {
     modalTypeProject.modal('show');
-    modalTitle.html('Add New Project Type');
+    modalTitle.html('Add New User');
     updateMode = false;
   });
 
@@ -111,21 +170,18 @@ $(document).ready(function () {
     let text = 'Fetching Data .....';
     UsernameInput.val(text);
     NameInput.val(text);
+    // PasswordInput.val(text);
     RoleInput.val(text);
-    
+
   }
-  
+
   // Define populate
   function populateForm(data) {
     if (data || data != null) {
       UsernameInput.val(data.username);
       NameInput.val(data.name);
-      console.log(data.id_role);
-      // $('#role').val(data.role);
-      // $('#role option').removeAttr('selected');
-      // // Menambahkan atribut 'selected' pada opsi yang sesuai dengan hasil AJAX
-      // $('#role option[value="' + data.id_role + '"]').attr('selected', 'selected');
-
+    //   PasswordInput.val(data.password);
+    //   console.log(data.id_role);
       RoleInput.val(data.id_role);
     }
   }
@@ -133,7 +189,7 @@ $(document).ready(function () {
   // Btn Edit
   $(document).on('click', '.editbtn', async function () {
     let Username = $(this).data('username');
-    modalTitle.html('Edit Users Type');
+    modalTitle.html('Edit Users');
     updateMode = true;
     modalTypeProject.modal('show');
     UsernameInput.prop('readonly', true);
@@ -162,7 +218,7 @@ $(document).ready(function () {
 
   // Open Modal
   modalTypeProject.on('shown.bs.modal', function (e) {
-    NameInput.focus();
+    UsernameInput.focus();
   });
 
 

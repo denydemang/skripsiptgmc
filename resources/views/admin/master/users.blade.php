@@ -106,18 +106,18 @@
               <div class="form-group">
                 <label for="name">Password</label>
                 <input class="form-control password" type="text" name="password" style="font-weight: bolder">
-                {{-- <div class="invalid-feedback">
+                <div class="invalid-feedback">
                   <b>Password Cannot Be Blank </b>
-                </div> --}}
+                </div>
               </div>
               <div class="form-group">
                 <label for="role">Role</label>
                 {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
                 <select class="form-control role" name="role" id="role">
-                  <option value="0">Pilih Role</option>
-                  <option value="1">Admin</option>
-                  <option value="2">customer</option>
                 </select>
+                <div class="invalid-feedback">
+                  <b>Role Cannot Be Blank </b>
+                </div>
               </div>
           </div>
         </div>
