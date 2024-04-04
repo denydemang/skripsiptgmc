@@ -250,11 +250,13 @@
 								<div class="row">
 									<div class="col-lg-6">
 										<label for="">File Dokumen</label>
-										<input type="file" class="form-control">
+										<input type="file" class="form-control fileinput">
+										<small> <i>Type File : jpg | jpeg | png | gif | xls </i></small><br>
+										<small><i>Max File: 2MB</i> </small>
 									</div>
 								</div>
 								<button class="btn btn-primary submitbtn mt-2 py-2"><i class="fas fa-save mr-2" style="font-size: 16px"></i>
-									Save</button>
+									<span>Save</span> </button>
 							</div>
 						</div>
 					</div>
@@ -268,25 +270,9 @@
 			<div class="row align-items-center justify-content-lg-between">
 				<div class="col-lg-6">
 					<div class="copyright text-lg-left text-muted text-center">
-						&copy; 2018
+						&copy; 2024
 						<a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">PT GENTA MULTI JAYYA</a>
 					</div>
-				</div>
-				<div class="col-lg-6">
-					<ul class="nav nav-footer justify-content-center justify-content-lg-end">
-						<li class="nav-item">
-							<a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
-						</li>
-						<li class="nav-item">
-							<a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
-						</li>
-						<li class="nav-item">
-							<a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
-						</li>
-						<li class="nav-item">
-							<a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>
-						</li>
-					</ul>
 				</div>
 			</div>
 		</footer>

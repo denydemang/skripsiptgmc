@@ -9,7 +9,6 @@
 			</div>
 			<div class="modal-body">
 				<table class="align-items-center table-flush upahsearchtable w-100 table">
-
 				</table>
 			</div>
 			<div class="modal-footer">

@@ -9,17 +9,6 @@
 			</div>
 			<div class="modal-body">
 				<table class="align-items-center table-flush COASearchtable w-100 table">
-					<thead class="thead-light">
-						<tr>
-							<th scope="col">Actions</th>
-							<th scope="col">Code</th>
-							<th scope="col">Name</th>
-							<th scope="col">Type</th>
-							<th scope="col">Description</th>
-						</tr>
-					</thead>
-					<tbody class="list">
-					</tbody>
 				</table>
 			</div>
 			<div class="modal-footer">

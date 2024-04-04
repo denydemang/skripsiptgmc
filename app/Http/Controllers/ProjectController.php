@@ -284,21 +284,28 @@ class ProjectController extends AdminController
             try {
                 //code...
                 DB::beginTransaction();
+                $fileName = '';
                 $project = Project::orderBy("code", "desc")->lockforUpdate()->first();
                 $data = $request->all();
                 $project_code = $this->automaticCode('PRJ' ,$project, true,  'code');
     
-                $dataprojectdetails = $data['project_details'];
-                $dataprojectdetailb = $data['project_detail_b'];
+                $dataprojectdetails = json_decode($data['project_details']);
+                $dataprojectdetailb = json_decode($data['project_detail_b']);
+                $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
     
                 $data['code'] =  $project_code;
 
                 $stock =  new StockController();
 
                 foreach($dataprojectdetails as $i){
-                    $stock->stockout($i['item_code'],$i['qty'], $data['transaction_date'], $project_code);
+                    $stock->stockout($i->item_code,$i->qty, $data['transaction_date'], $project_code);
                 }
 
+                if ($data['file']){
+
+                    $fileController = new FileController();
+                    $fileName = $fileController->uploadFile($data['file']);
+                }
 
                 $project = new Project();
                 $project->code = $data['code'];
@@ -313,6 +320,7 @@ class ProjectController extends AdminController
                 $project->coa_expense = $data['coa_expense'];
                 $project->coa_payable = $data['coa_payable'];
                 $project->pic = $data['pic'];
+                $project->project_document = $fileName;
                 $project->duration_days = $data['duration_days'];
                 $project->created_by = Auth::user()->username;
                 $project->save();
@@ -321,9 +329,9 @@ class ProjectController extends AdminController
                 foreach($dataprojectdetails as $i){
                     $project_details= new Project_Detail();
                     $project_details->project_code = $project_code;
-                    $project_details->item_code = $i['item_code'];
-                    $project_details->unit_code = $i['unit_code'];
-                    $project_details->qty = $i['qty'];
+                    $project_details->item_code = $i->item_code;
+                    $project_details->unit_code = $i->unit_code;
+                    $project_details->qty = $i->qty;
                     $project_details->created_by = Auth::user()->username;
                     $project_details->save();
                 }
@@ -331,11 +339,11 @@ class ProjectController extends AdminController
                 foreach($dataprojectdetailb as $x){
                     $projectdetailb = new ProjectDetailB();
                     $projectdetailb->project_code = $project_code;
-                    $projectdetailb->upah_code = $x['upah_code'];
-                    $projectdetailb->unit = $x['unit'];
-                    $projectdetailb->qty = $x['qty'];
-                    $projectdetailb->price = $x['price'];
-                    $projectdetailb->total = $x['total'];
+                    $projectdetailb->upah_code = $x->upah_code;
+                    $projectdetailb->unit = $x->unit;
+                    $projectdetailb->qty = $x->qty;
+                    $projectdetailb->price = $x->price;
+                    $projectdetailb->total = $x->total;
                     $projectdetailb->created_by =  Auth::user()->username;
                     $projectdetailb->save();
                 }

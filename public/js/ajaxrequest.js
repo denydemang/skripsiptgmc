@@ -14,7 +14,9 @@ export default class AjaxRequest {
         data: this.data,
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
+        },
+        contentType: false,
+        processData: false
       });
       return response;
       console.log(response);

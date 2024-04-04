@@ -1,6 +1,6 @@
 import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
-import { showwarning } from '../jqueryconfirm.js';
+import { showwarning, showerror } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
 import validateInput from '../validateInput.js';
 import initiatedtp from '../datepickerinitiator.js';
@@ -22,6 +22,9 @@ $(document).ready(function () {
   const inputcoaekspense = $('.inputcoaekspense');
   const inputcoapayable = $('.inputcoapayable');
   const inputdescription = $('.inputdescription');
+  const fileinput = $('.fileinput');
+  const updateMode = false;
+  const isPosting = false;
 
   let dataInput = ['.inputpic', '.inputlocation', '.inputduration', '.inputbudget', '.inputname'];
 
@@ -40,7 +43,8 @@ $(document).ready(function () {
     pic: '',
     duration_days: 0,
     project_details: [],
-    project_detail_b: []
+    project_detail_b: [],
+    file: null
   };
   let project_details_prototype = {
     project_code: '',
@@ -256,8 +260,40 @@ $(document).ready(function () {
     createHmtlTbodyUpah();
   }
 
+  function chekcFileValidation() {
+    const file = fileinput[0].files[0];
+    if (file) {
+      var fileSize = fileinput[0].files[0].size; // Mendapatkan ukuran file dalam bytes
+      var fileName = fileinput[0].files[0].name; // Mendapatkan nama file
+      var fileExtension = fileName.split('.').pop().toLowerCase(); // Mendapatkan ekstensi file
+
+      var maxSize = 2 * 1024 * 1024; // 2 MB dalam bytes
+
+      if (fileSize > maxSize) {
+        fileinput.focus();
+        showwarning('Max File Upload 2MB !');
+        return false;
+      }
+
+      // Validasi ekstensi file
+      var allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'xls'];
+      if (!allowedExtensions.includes(fileExtension)) {
+        fileinput.focus();
+        showwarning('The File Extension Not Allowed !');
+        return false;
+      }
+
+      return true;
+    }
+
+    return true;
+  }
+
   function populatePostData() {
+    const file = fileinput[0].files[0];
+
     PostData.code = '';
+    PostData.file = file ? file : '';
     PostData.budget = parseToNominal(inputbudget.val());
     PostData.coa_expense = inputcoaekspense.val();
     PostData.coa_payable = inputcoapayable.val();
@@ -268,15 +304,15 @@ $(document).ready(function () {
     PostData.name = inputname.val();
     PostData.pic = inputpic.val();
     PostData.project_type_code = localStorage.getItem('projecttypeCode');
-    PostData.transaction_date = moment(inputtransdate.val()).format('YYYY-MM-DD');
-
+    PostData.transaction_date = inputtransdate.val();
+    PostData.project_details = [];
+    PostData.project_detail_b = [];
     tampungMaterial.forEach((item) => {
       project_details_prototype.item_code = item.code;
       project_details_prototype.project_code = '';
       project_details_prototype.qty = item.qty;
       project_details_prototype.unit_code = item.unit;
 
-      PostData.project_details = [];
       PostData.project_details.push({ ...project_details_prototype });
     });
 
@@ -288,7 +324,6 @@ $(document).ready(function () {
       project_detail_b_prototype.price = item.price;
       project_detail_b_prototype.project_code = '';
 
-      PostData.project_detail_b = [];
       PostData.project_detail_b.push({ ...project_detail_b_prototype });
     });
   }
@@ -296,15 +331,36 @@ $(document).ready(function () {
     const urlRequest = route('admin.addProject');
     const method = 'POST';
     let response = '';
-
+    let formData = createFormData();
     try {
-      const ajx = new AjaxRequest(urlRequest, method, PostData);
+      const ajx = new AjaxRequest(urlRequest, method, formData);
       response = await ajx.getData();
       return response;
     } catch (error) {
       showerror(error);
       return false;
     }
+  }
+  function createFormData() {
+    var formData = new FormData();
+
+    formData.append('file', PostData.file);
+    formData.append('name', PostData.name);
+    formData.append('budget', PostData.budget);
+    formData.append('coa_expense', PostData.coa_expense);
+    formData.append('coa_payable', PostData.coa_payable);
+    formData.append('customer_code', PostData.customer_code);
+    formData.append('description', PostData.description);
+    formData.append('duration_days', PostData.duration_days);
+    formData.append('location', PostData.location);
+    formData.append('pic', PostData.pic);
+    formData.append('project_type_code', PostData.project_type_code);
+    formData.append('transaction_date', PostData.transaction_date);
+    formData.append('code', PostData.code);
+    formData.append('project_details', JSON.stringify(PostData.project_details));
+    formData.append('project_detail_b', JSON.stringify(PostData.project_detail_b));
+
+    return formData;
   }
 
   function parseToNominal(value) {
@@ -427,13 +483,17 @@ $(document).ready(function () {
 
   // Submit Button
   $(document).on('click', '.submitbtn', async function () {
-    if (validateInput(dataInput, customValidation)) {
+    if (validateInput(dataInput, customValidation) && chekcFileValidation()) {
+      $(this).find('span').html('Loading...');
+      $(this).prop('disabled', true);
       populatePostData();
       const response = await postAjax();
       const urlRedirect = route('admin.project');
       if (response) {
         window.location.href = urlRedirect;
       }
+      $(this).find('span').html('Save');
+      $(this).prop('disabled', false);
     }
   });
 

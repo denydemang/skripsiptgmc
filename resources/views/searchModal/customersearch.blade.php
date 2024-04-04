@@ -9,18 +9,6 @@
 			</div>
 			<div class="modal-body">
 				<table class="align-items-center table-flush customersearchtable w-100 table">
-					<thead class="thead-light">
-						<tr>
-							<th scope="col">Actions</th>
-							<th scope="col">Code</th>
-							<th scope="col">Name</th>
-							<th scope="col">Address</th>
-							<th scope="col">Zip Code</th>
-							<th scope="col">Email</th>
-						</tr>
-					</thead>
-					<tbody class="list">
-					</tbody>
 				</table>
 			</div>
 			<div class="modal-footer">

@@ -31,7 +31,8 @@
 					<li class="nav-item">
 						<a
 							class="nav-link {{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProject' ? 'active' : '' }}"
-							href="#navbar-projects" data-toggle="collapse" role="button" aria-expanded="true"
+							href="#navbar-projects" data-toggle="collapse" role="button"
+							aria-expanded="{{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProject' ? 'true' : '' }}"
 							aria-controls="navbar-projects">
 							<i class="ni ni-settings text-orange"></i>
 							<span class="nav-link-text">Projects</span>
