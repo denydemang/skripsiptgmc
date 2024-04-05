@@ -209,7 +209,7 @@ Route::middleware(AuthMiddleware::class)->group(function(){
     });
 });
 
-// -----------------    role
+// -----------------    Request Ajax
 Route::middleware(AuthMiddleware::class)->group(function(){
     Route::controller(AdminController::class)->group(function(){
         Route::get('/admin', 'dashboard')->name('dashboard');

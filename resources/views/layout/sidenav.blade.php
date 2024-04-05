@@ -50,12 +50,15 @@
 						</div>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="false"
+                        @php
+                            $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index']
+                        @endphp
+						<a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="{{ in_array($sessionRoute, $allmaster) ? 'true' : 'false' }}"
 							aria-controls="navbar-examples">
 							<i class="ni ni-ungroup text-orange"></i>
 							<span class="nav-link-text">Master</span>
 						</a>
-						<div class="collapse" id="navbar-master">
+						<div class="collapse {{ in_array($sessionRoute, $allmaster) ? 'show' : '' }}" id="navbar-master">
 							<ul class="nav nav-sm flex-column">
 								<li class="nav-item {{ $sessionRoute == 'r_supplier.index' ? 'active' : '' }}">
 									<a href="{{ route('r_supplier.index') }}" class="nav-link">Master Supplier</a>
