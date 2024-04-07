@@ -167,6 +167,14 @@ class ProjectController extends AdminController
                     }
                     return $html;
                 })
+                ->editColumn('project_document', function($row) {
+                    if( $row->project_document){
+
+                        return "<a href='" . route('admin.download', ['idfile' => $row->project_document]) . "'><i class='fas fa-file-download' style='font-size:20px'></i> Download</a>";
+                    } else{
+                        return 'No File uploaded';
+                    }
+                })
                 ->filterColumn('type_project_name', function($query, $keyword) {
                     $query->whereRaw("type_projects.name LIKE ?", ["%{$keyword}%"]);
                 })
@@ -217,7 +225,7 @@ class ProjectController extends AdminController
     
                     return $html;
                 })
-                ->rawColumns(['action','project_status' ])
+                ->rawColumns(['action','project_status','project_document' ])
                 ->addIndexColumn()
                 ->make(true);
                 

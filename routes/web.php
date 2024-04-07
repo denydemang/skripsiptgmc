@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\StockController;
@@ -80,6 +81,10 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::get('admin/stocks/stockout/{id}', 'stockout')->name('admin.stockout');
     });
 
+    Route::controller(FileController::class)->group(function(){
+
+        Route::get('admin/download/{idfile}', 'downloadFile')->name('admin.download');
+    });
     
 });
 

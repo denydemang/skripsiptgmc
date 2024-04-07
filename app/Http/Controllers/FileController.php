@@ -15,4 +15,13 @@ class FileController extends Controller
         return $filename;
 
     }
+    public function downloadFile($fileName){
+        try {
+            
+            $path =  public_path('uploads/'. $fileName);
+            return response()->download($path)->deleteFileAfterSend(true);
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+    }
 }
