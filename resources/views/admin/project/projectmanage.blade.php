@@ -34,7 +34,11 @@
 								</li>
 								<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
 								<li class="breadcrumb-item"><a href="{{ route('admin.project') }}">Project</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Add</li>
+								@if ($sessionRoute == 'admin.addProjectView')
+									<li class="breadcrumb-item active" aria-current="page">Add</li>
+								@else
+									<li class="breadcrumb-item active" aria-current="page">Edit</li>
+								@endif
 							</ol>
 						</nav>
 					</div>
@@ -51,7 +55,7 @@
 						<div class="card">
 							<!-- Card header -->
 							<div class="card-header border-0">
-								@if ($sessionRoute == 'admin.addProject')
+								@if ($sessionRoute == 'admin.addProjectView')
 									<h3 class="mb-0">ADD NEW PROJECTS</h3>
 								@else
 									<h3 class="mb-0">EDIT PROJECTS</h3>
@@ -62,15 +66,16 @@
 										<div class="col-lg-4">
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Code <span style="color: red">*</span></label>
-												<input type="text" class="form-control form-control-sm inputcode"
-													{{ $sessionRoute == 'admin.addProject' ? 'readonly' : '' }}
-													value="{{ $sessionRoute == 'admin.addProject' ? 'AUTO' : '' }}" id="example3cols1Input">
+												<input type="text" class="form-control form-control-sm inputcode" readonly
+													value="{{ $sessionRoute == 'admin.addProjectView' ? 'AUTO' : $data['dataProject']['code'] }}"
+													id="example3cols1Input">
 											</div>
 										</div>
 										<div class="col-lg-4">
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">PIC <span style="color: red">*</span></label>
-												<input type="text" class="form-control form-control-sm inputpic" id="example3cols1Input">
+												<input type="text" class="form-control form-control-sm inputpic" id="example3cols1Input"
+													value="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['pic'] }}">
 											</div>
 										</div>
 										<div class="col-lg-4">
@@ -79,7 +84,8 @@
 														style="color: red">*</span></label>
 												<div class="input-group date mr-2" id="dtptransdate" data-target-input="nearest">
 													<input type="text" style="cursor: pointer" class="form-control form-control-sm inputtransdate"
-														data-target="#dtptransdate" readonly />
+														data-target="#dtptransdate" readonly
+														data-transdate="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['transaction_date'] }}" />
 													<div class="input-group-append" data-target="#dtptransdate" data-toggle="dtptransdate">
 														<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
 													</div>
@@ -91,20 +97,23 @@
 										<div class="col-lg-4">
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Location<span style="color: red">*</span></label>
-												<input type="text" class="form-control form-control-sm inputlocation" id="example3cols1Input">
+												<input type="text" class="form-control form-control-sm inputlocation" id="example3cols1Input"
+													value="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['location'] }}">
 											</div>
 										</div>
 										<div class="col-lg-4">
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Duration(Days) <span
 														style="color: red">*</span></label>
-												<input type="number" class="form-control form-control-sm inputduration" id="example3cols1Input">
+												<input type="number" class="form-control form-control-sm inputduration" id="example3cols1Input"
+													value="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['duration_days'] }}">
 											</div>
 										</div>
 										<div class="col-lg-4">
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Budget <span style="color: red">*</span></label>
-												<input type="text" class="form-control form-control-sm inputbudget" id="e xample3cols1Input"
+												<input type="text" class="form-control form-control-sm inputbudget" id="example3cols1Input"
+													data-budget="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['budget'] }}"
 													style="font-weight:bold;color:brown">
 											</div>
 										</div>
@@ -114,7 +123,8 @@
 											<div class="form-group">
 												<label class="form-control-label" for="example3cols1Input">Project Name<span
 														style="color: red">*</span></label>
-												<input type="text" class="form-control form-control-sm inputname" id="example3cols1Input">
+												<input type="text" class="form-control form-control-sm inputname" id="example3cols1Input"
+													value="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['name'] }}">
 											</div>
 										</div>
 									</div>
@@ -130,9 +140,15 @@
 								<div class="row">
 									<div class="col-lg-6">
 										@include('component.customerCode')
+										<div class="datacustomercode"
+											data-customercode="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['customer_code'] }}">
+										</div>
 									</div>
 									<div class="col-lg-6">
 										@include('component.customerName')
+										<div class="datacustomername"
+											data-customername="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['customer_name'] }}">
+										</div>
 									</div>
 								</div>
 							</div>
@@ -144,9 +160,15 @@
 								<div class="row">
 									<div class="col-lg-6">
 										@include('component.projectTypeCode')
+										<div class="dataprojecttypecode"
+											data-projecttypecode="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['project_type_code'] }}">
+										</div>
 									</div>
 									<div class="col-lg-6">
 										@include('component.projectTypeName')
+										<div class="dataprojecttypename"
+											data-projecttypename="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['type_project_name'] }}">
+										</div>
 									</div>
 								</div>
 							</div>
@@ -161,11 +183,15 @@
 									<div class="col-lg-4">
 										<h5 class="text-primary">Material</h5>
 										<div class="form-group">
+											<div class="databahanbaku"
+												data-bahanbaku="{{ $sessionRoute == 'admin.addProjectView' ? '' : json_encode($data['databahanBaku']) }}">
+											</div>
 											<label class="form-control-label" for="example3cols1Input">COA For Expense <span
 													style="color: red">*</span></label>
 											<div class="d-flex">
 												<input type="text" readonly class="form-control form-control-sm inputcoaekspense"
-													id="example3cols1Input">
+													id="example3cols1Input"
+													value="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['coa_expense'] }}">
 												@include('component.btnsearchcoa')
 												@include('component.btnadditem')
 											</div>
@@ -178,9 +204,10 @@
 											<thead style="font-size: 6px">
 												<tr class="row">
 													<th class="col-2 text-left" style="font-size: 10px">Item Code</th>
-													<th class="col-3 text-left" style="font-size: 10px">Item Name</th>
+													<th class="col-2 text-left" style="font-size: 10px">Item Name</th>
 													<th class="col-2" style="font-size: 10px">Unit</th>
 													<th class="col-2" style="font-size: 10px">Qty</th>
+													<th class="col-2" style="font-size: 10px">Available Stocks</th>
 													<th class="col-2" style="font-size: 10px">...</th>
 												</tr>
 											</thead>
@@ -200,10 +227,14 @@
 									<div class="col-lg-4">
 										<h5 class="text-primary">Upah</h5>
 										<div class="form-group">
+											<div class="dataupah"
+												data-upah="{{ $sessionRoute == 'admin.addProjectView' ? '' : json_encode($data['dataUpah']) }}">
+											</div>
 											<label class="form-control-label" for="example3cols1Input">COA For Account Payable <span
 													style="color: red">*</span></label>
 											<div class="d-flex">
 												<input type="text" readonly class="form-control form-control-sm inputcoapayable"
+													value="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['coa_payable'] }}"
 													id="example3cols1Input">
 												@include('component.btnsearchcoa')
 												@include('component.btnaddupah')
@@ -243,7 +274,7 @@
 									<div class="col-lg-6">
 										<div class="form-group">
 											<label class="form-control-label" for="example3cols1Input">Description</label>
-											<textarea class="form-control inputdescription" name="" id="" cols="30" rows="5"></textarea>
+											<textarea class="form-control inputdescription" name="" id="" cols="30" rows="5">{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['description'] }}</textarea>
 										</div>
 									</div>
 								</div>
@@ -251,12 +282,23 @@
 									<div class="col-lg-6">
 										<label for="">File Dokumen</label>
 										<input type="file" class="form-control fileinput">
-										<small> <i>Type File : jpg | jpeg | png | gif | xls </i></small><br>
-										<small><i>Max File: 2MB</i> </small>
+										<small class="text-danger"> <i>Type File : pdf | jpg | jpeg | png | xls </i></small><br>
+										<small class="text-danger"><i>Max File: 2MB</i> </small>
+										@if ($sessionRoute != 'admin.addProjectView')
+											<small class="text-danger"><i>- If No file changes, leave blank !</i> </small>
+										@endif
+
 									</div>
 								</div>
 								<button class="btn btn-primary submitbtn mt-2 py-2"><i class="fas fa-save mr-2" style="font-size: 16px"></i>
-									<span>Save</span> </button>
+
+									@if ($sessionRoute != 'admin.addProjectView')
+										<span>Update</span>
+									@else
+										<span>Save</span>
+									@endif
+
+								</button>
 							</div>
 						</div>
 					</div>
@@ -265,17 +307,7 @@
 			</div>
 		</div>
 
-		<!-- Footer -->
-		<footer class="footer pt-0">
-			<div class="row align-items-center justify-content-lg-between">
-				<div class="col-lg-6">
-					<div class="copyright text-lg-left text-muted text-center">
-						&copy; 2024
-						<a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">PT GENTA MULTI JAYYA</a>
-					</div>
-				</div>
-			</div>
-		</footer>
+		@include('layout.footer')
 	</div>
 
 

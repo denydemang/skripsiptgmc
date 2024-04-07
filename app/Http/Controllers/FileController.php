@@ -24,4 +24,15 @@ class FileController extends Controller
             abort(404);
         }
     }
+    public function deleteFile($filename){
+        try {
+            $path =  public_path('uploads/'. $filename);
+
+            if (file_exists($path)) {
+                unlink($path);
+            } 
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        }
+    }
 }

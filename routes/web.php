@@ -40,9 +40,8 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         // View
         Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');  
         Route::get('/admin/project', 'getViewProject')->name('admin.project');  
-        Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProject');  
-
-
+        Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');  
+        Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
 
         // CRUD
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
@@ -52,7 +51,8 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
         Route::get('/admin/project/delete/{id}', 'deleteProject')->name('admin.deleteDataProject');
-        Route::post('/admin/project/add', 'addProject')->name('admin.addproject');
+        Route::post('/admin/project/add', 'addProject')->name('admin.addprojects');
+        Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
         Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
 

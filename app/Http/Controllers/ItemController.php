@@ -21,16 +21,10 @@ class ItemController extends AdminController
     
                 return $dataTables->of($items)
                 ->addColumn('action', function ($row) {
-                    $data = '';
-                    if($row->stocks <= 0){
-                        $data = '<div class="d-flex justify-content-center">
-                        <button style="cursor: not-allowed" onmouseover="this.style.cursor="crosshair"" disabled class="btn btn-sm btn-success selectitembtn" data-stocks="'.$row->stocks.'" data-min_stock="'.$row->min_stock.'" data-max_stock="'.$row->max_stock.'" data-unit="'.$row->unit_code.'" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Not Allowed Not Enough Stock"><i class="fa fa-check"></i> Select</button>
-                        </div>';
-                    } else {
-                        $data = '<div class="d-flex justify-content-center">
-                        <button class="btn btn-sm btn-success selectitembtn" data-stocks="'.$row->stocks.'" data-min_stock="'.$row->min_stock.'" data-max_stock="'.$row->max_stock.'" data-unit="'.$row->unit_code.'" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select Item"><i class="fa fa-check"></i> Select</button>
-                        </div>';
-                    }
+                
+                    $data = '<div class="d-flex justify-content-center">
+                    <button class="btn btn-sm btn-success selectitembtn" data-stocks="'.$row->stocks.'" data-min_stock="'.$row->min_stock.'" data-max_stock="'.$row->max_stock.'" data-unit="'.$row->unit_code.'" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select Item"><i class="fa fa-check"></i> Select</button>
+                    </div>';
     
                     return $data;
                 })

@@ -11,12 +11,12 @@ $(document).ready(function () {
   const tableProject = '.projecttypesearchtable';
   const methodGetProjectType = 'post';
   const columnsProjectType = [
-    { data: 'action', name: 'actions', searchable: false, orderable: false, width: '10%' },
-    { data: 'code', name: 'Code', searchable: true },
-    { data: 'name', name: 'Name', searchable: true },
-    { data: 'description', name: 'Description', searchable: true },
-    { data: 'updated_by', name: 'Updated_By', searchable: true },
-    { data: 'created_by', name: 'Created_By', searchable: true }
+    { data: 'action', name: 'actions', title: 'Action', searchable: false, orderable: false, width: '10%' },
+    { data: 'code', name: 'Code', title: 'Code', searchable: true },
+    { data: 'name', name: 'Name', title: 'Name', searchable: true },
+    { data: 'description', name: 'Description', title: 'Description', searchable: true },
+    { data: 'updated_by', name: 'Updated_By', title: 'Updated_By', searchable: true },
+    { data: 'created_by', name: 'Created_By', title: 'Created_By', searchable: true }
   ];
   const data = {
     search: true

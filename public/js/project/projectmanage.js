@@ -1,4 +1,3 @@
-import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showwarning, showerror } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
@@ -11,6 +10,8 @@ $(document).ready(function () {
   const Date = new managedate();
   const modalItemSearch = $('#modalItemSearch');
   const modalUpahSearch = $('#modalUpahSearch');
+
+  // Html Input
   const inputcode = $('.inputcode');
   const dtptransdate = $('#dtptransdate');
   const inputpic = $('.inputpic');
@@ -23,8 +24,25 @@ $(document).ready(function () {
   const inputcoapayable = $('.inputcoapayable');
   const inputdescription = $('.inputdescription');
   const fileinput = $('.fileinput');
-  const updateMode = false;
+  const customerCode = $('.customerCode');
+  const customerName = $('.customerName');
+  const projectypecode = $('.projecttypecode');
+  const projecttypename = $('.projecttypename');
+  // end html input
+
+  const updateMode = route().current() == 'admin.editProjectView';
   const isPosting = false;
+
+  // Property when in update mode
+  const datacustomercode = $('.datacustomercode');
+  const datacustomername = $('.datacustomername');
+  const dataprojecttypecode = $('.dataprojecttypecode');
+  const dataprojecttypename = $('.dataprojecttypename');
+  const databahanbaku = $('.databahanbaku');
+  const dataupah = $('.dataupah');
+  // Tampungan Parsing hasil data
+  let bahanbaku = [];
+  let upah = [];
 
   let dataInput = ['.inputpic', '.inputlocation', '.inputduration', '.inputbudget', '.inputname'];
 
@@ -68,30 +86,70 @@ $(document).ready(function () {
   // inisiasi datapicker dan input
   // ------------------------------------------------------
   initiatedtp(dtptransdate);
-  inputtransdate.val(Date.getNowDate());
-  inputbudget.val(formatRupiah1(0));
 
-  //  ---------------------------------------------------
+  if (updateMode) {
+    prepareEdit();
+  } else {
+    inputtransdate.val(Date.getNowDate());
+    inputbudget.val(formatRupiah1(0));
+  }
+  // ----------------------------------------------------------
 
   // Function and procedures
   // -----------------------------------------------------
 
+  function prepareEdit() {
+    bahanbaku = JSON.parse(JSON.parse(databahanbaku.data('bahanbaku')));
+    upah = JSON.parse(JSON.parse(dataupah.data('upah')));
+    customerCode.val(datacustomercode.data('customercode'));
+    customerName.val(datacustomername.data('customername'));
+    projectypecode.val(dataprojecttypecode.data('projecttypecode'));
+    projecttypename.val(dataprojecttypename.data('projecttypename'));
+    inputtransdate.val(moment(inputtransdate.data('transdate')).format('DD/MM/YYYY'));
+    inputbudget.val(formatRupiah1(inputbudget.data('budget')));
+
+    bahanbaku.forEach((item) => {
+      let dataMaterial = {
+        code: item.item_code,
+        stocks: parseFloat(item.stocks) + parseFloat(item.qty),
+        min_stock: 0,
+        max_stock: 0,
+        unit: item.unit_code,
+        name: item.item_name,
+        qty: parseFloat(item.qty)
+      };
+
+      populateMaterial(dataMaterial);
+    });
+
+    upah.forEach((item) => {
+      let dataUpah = {
+        code: item.upah_code,
+        job: item.job,
+        unit: item.unit,
+        description: '-',
+        price: parseFloat(item.price),
+        qty: parseFloat(item.qty),
+        total: parseFloat(item.total)
+      };
+
+      populateUpah(dataUpah);
+    });
+  }
+
   function customValidation() {
-    const customerCode = localStorage.getItem('customerCode');
-    const projecttypeCode = localStorage.getItem('projecttypeCode');
     if (inputtransdate.val() == '') {
       inputtransdate.focus();
       showwarning('Transaction Date Cannot Be Empty');
       return false;
     }
-    if (customerCode == '' || customerCode == null) {
-      $('.customerCode').focus();
-      // console.log(localStorage.getItem('customerCode'));
+    if (customerCode.val() == null) {
+      customerCode.focus();
       showwarning('Customer Code Cannot Be Empty');
       return false;
     }
-    if (projecttypeCode == '' || projecttypeCode == null) {
-      $('.projecttypecode').focus();
+    if (projectypecode.val() == '') {
+      projectypecode.focus();
       showwarning('ProjectType Code Cannot Be Empty');
       return false;
     }
@@ -136,12 +194,13 @@ $(document).ready(function () {
     
       <tr class="row">
         <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.code}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;font-size:10px">${item.name}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:10px">${item.name}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.unit}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px"><input
             style="width:100%" type="number" min="1" class="custom-input inputqtymaterial" data-stocks="${item.stocks}" data-code="${item.code}" value="${item.qty}">
         </td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px"><button data-code="${item.code}" class="btn btn-danger btndeletematerial btn-sm">X</button></td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.stocks}</td>
+        <td class="col-1" style="white-space:normal;word-wrap: break-word;font-size: 10px"><button data-code="${item.code}" class="btn btn-danger btndeletematerial btn-sm">X</button></td>
       </tr>
       `;
     });
@@ -198,7 +257,12 @@ $(document).ready(function () {
       // incrementqty + 1
       const editedMaterial = tampungMaterial.map((item) => {
         if (item.code === data.code) {
-          return { ...item, qty: parseFloat(item.qty) + parseFloat(data.qty) };
+          let qtytotal = parseFloat(item.qty) + parseFloat(data.qty);
+
+          if (qtytotal > parseFloat(data.stocks)) {
+            qtytotal = parseFloat(data.stocks);
+          }
+          return { ...item, qty: qtytotal };
         } else {
           return item;
         }
@@ -207,6 +271,11 @@ $(document).ready(function () {
     } else {
       // Direct Push
       tampungMaterial.push(data);
+
+      if (parseFloat(data.stocks) <= 0) {
+        showwarning(`Cannot Add Item ${data.code} , Stock 0`);
+        deleteMaterialFromList(data.code);
+      }
     }
 
     createHmtlTbodyMaterial();
@@ -276,7 +345,7 @@ $(document).ready(function () {
       }
 
       // Validasi ekstensi file
-      var allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'xls'];
+      var allowedExtensions = ['jpg', 'jpeg', 'png', 'xls', 'pdf'];
       if (!allowedExtensions.includes(fileExtension)) {
         fileinput.focus();
         showwarning('The File Extension Not Allowed !');
@@ -297,13 +366,13 @@ $(document).ready(function () {
     PostData.budget = parseToNominal(inputbudget.val());
     PostData.coa_expense = inputcoaekspense.val();
     PostData.coa_payable = inputcoapayable.val();
-    PostData.customer_code = localStorage.getItem('customerCode');
+    PostData.customer_code = customerCode.val();
     PostData.description = inputdescription.val();
     PostData.duration_days = parseInt(inputduration.val());
     PostData.location = inputlocation.val();
     PostData.name = inputname.val();
     PostData.pic = inputpic.val();
-    PostData.project_type_code = localStorage.getItem('projecttypeCode');
+    PostData.project_type_code = projectypecode.val();
     PostData.transaction_date = inputtransdate.val();
     PostData.project_details = [];
     PostData.project_detail_b = [];
@@ -328,7 +397,14 @@ $(document).ready(function () {
     });
   }
   async function postAjax() {
-    const urlRequest = route('admin.addProject');
+    let urlRequest = '';
+
+    if (updateMode) {
+      let code = inputcode.val();
+      urlRequest = route('admin.editproject', code);
+    } else {
+      urlRequest = route('admin.addprojects');
+    }
     const method = 'POST';
     let response = '';
     let formData = createFormData();
@@ -403,20 +479,50 @@ $(document).ready(function () {
     let max_stock = parseFloat($(this).data('max_stock'));
     let unit = $(this).data('unit');
     let name = $(this).data('name');
+    let counter = 0;
+    let dataMaterial = {};
+    if (updateMode) {
+      bahanbaku.forEach((item) => {
+        if (item.item_code == code) {
+          counter++;
+          dataMaterial = {
+            code: code,
+            stocks: parseFloat(item.stocks) + parseFloat(item.qty),
+            min_stock: min_stock,
+            max_stock: max_stock,
+            unit: unit,
+            name: name,
+            qty: 1
+          };
+        }
+      });
 
-    let dataMaterial = {
-      code: code,
-      stocks: stocks,
-      min_stock: min_stock,
-      max_stock: max_stock,
-      unit: unit,
-      name: name,
-      qty: 1
-    };
+      if (counter == 0) {
+        dataMaterial = {
+          code: code,
+          stocks: stocks,
+          min_stock: min_stock,
+          max_stock: max_stock,
+          unit: unit,
+          name: name,
+          qty: 1
+        };
+      }
+    } else {
+      dataMaterial = {
+        code: code,
+        stocks: stocks,
+        min_stock: min_stock,
+        max_stock: max_stock,
+        unit: unit,
+        name: name,
+        qty: 1
+      };
+    }
 
     populateMaterial(dataMaterial);
 
-    modalItemSearch.modal('hide');
+    // modalItemSearch.modal('hide');
   });
 
   // Delete Material From List
@@ -445,7 +551,7 @@ $(document).ready(function () {
 
     populateUpah(dataUpah);
 
-    modalUpahSearch.modal('hide');
+    // modalUpahSearch.modal('hide');
   });
   // Delete Upah From List
   $(document).on('click', '.btndeleteupah', function () {

@@ -270,6 +270,14 @@ $(document).ready(function () {
     reloadTable(method, tableName, columns, getDataProject, supplyData);
   });
 
+  // Click Edit Button
+  $(document).on('click', '.editbtn', function () {
+    let code = $(this).data('code');
+    let url = route('admin.editProjectView', code);
+
+    window.location.href = url;
+  });
+
   // checked startdate project
   $(document).on('change', '.checkstartdate', function () {
     checkValueCheckbox();

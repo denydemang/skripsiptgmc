@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\Project_Detail;
 use App\Models\ProjectDetailB;
+use App\Models\Stock;
 use App\Models\Type_Project;
 use App\Models\Upah;
 use Carbon\Carbon;
@@ -43,14 +44,35 @@ class ProjectController extends AdminController
         return response()->view("admin.project.project",$supplyData);
     }
 
-    public function getViewProjectManage(Request $request){
+    public function getViewProjectManage( Request $request, $code=null){
 
+        $data = [];
+        if ($code){ //If In Update Mode
+
+            $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
+            ->join('customers','projects.customer_code', '=', 'customers.code' )
+            ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 
+            'customers.name as customer_name', 'customers.address as customer_address')
+            ->where('projects.code', $code)->first();
+
+            $project_detail = new ProjectDetailController();
+            $project_detail = $project_detail->getDetail($code);
+            $dataBahanBaku = $project_detail->get();            
+
+            $project_detail_b = new ProjectDetailBController();
+            $project_detail_b = $project_detail_b->getDetailB($code);
+            $dataUpah = $project_detail_b->get();
+            $data = [
+                'dataProject' => $project,
+                'databahanBaku' =>json_encode($dataBahanBaku),
+                'dataUpah' => json_encode($dataUpah)
+            ];
+        }
         $supplyData = [
-            'title' => 'Add New Project',
+            'title' =>$request->route()->getName() == 'admin.addProjectView' ?  'Add New Project' : 'Edit Project',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
-    
-
+            'data' => $data
             ];
 
         return response()->view("admin.project.projectmanage",$supplyData);
@@ -256,6 +278,86 @@ class ProjectController extends AdminController
 
 
     }
+    public function editProject($id, Request $request){
+        if($request->ajax()){
+            try {
+                //code...
+                DB::beginTransaction();
+                $fileName = '';
+                $data = $request->all();
+    
+                $dataprojectdetails = json_decode($data['project_details']);
+                $dataprojectdetailb = json_decode($data['project_detail_b']);
+                $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+
+                $stock =  new StockController();
+                $project = Project::where('code', $id)->first();
+
+                foreach($dataprojectdetails as $i){
+                    $stock->refreshstock($i->item_code,floatval($i->qty), $data['transaction_date'], $id);
+                }
+
+                if ($data['file']){
+
+                    $fileController = new FileController();
+                    $fileController->deleteFile($project->project_document);
+                    $fileName = $fileController->uploadFile($data['file']);
+                    $project->project_document = $fileName;
+                }
+
+                $project->name = $data['name'];
+                $project->transaction_date = $data['transaction_date'];
+                $project->project_type_code = $data['project_type_code'];
+                $project->customer_code = $data['customer_code'];
+                $project->location = $data['location'];
+                $project->budget = $data['budget'];
+                $project->project_status = 0;
+                $project->description = $data['description'];
+                $project->coa_expense = $data['coa_expense'];
+                $project->coa_payable = $data['coa_payable'];
+                $project->pic = $data['pic'];
+                $project->duration_days = $data['duration_days'];
+                $project->updated_by = Auth::user()->username;
+                $project->update();
+
+
+                Project_Detail::where('project_code' , $id)->delete();
+                foreach($dataprojectdetails as $i){
+                    $project_details= new Project_Detail();
+                    $project_details->project_code = $id;
+                    $project_details->item_code = $i->item_code;
+                    $project_details->unit_code = $i->unit_code;
+                    $project_details->qty = $i->qty;
+                    $project_details->updated_by = Auth::user()->username;
+                    $project_details->created_by = Auth::user()->username;
+                    $project_details->save();
+                }
+
+                ProjectDetailB::where('project_code', $id)->delete();
+                foreach($dataprojectdetailb as $x){
+                    $projectdetailb = new ProjectDetailB();
+                    $projectdetailb->project_code = $id;
+                    $projectdetailb->upah_code = $x->upah_code;
+                    $projectdetailb->unit = $x->unit;
+                    $projectdetailb->qty = $x->qty;
+                    $projectdetailb->price = $x->price;
+                    $projectdetailb->total = $x->total;
+                    $projectdetailb->created_by =  Auth::user()->username;
+                    $projectdetailb->updated_by =  Auth::user()->username;
+                    $projectdetailb->save();
+                }
+
+
+                DB::commit();
+                Session::flash('success',  "Project :  $id Succesfully Updated");
+                return json_encode(true);
+                
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+        }
+    }
 
     
     public function addProjectType(Request $request){
@@ -374,7 +476,7 @@ class ProjectController extends AdminController
     public function deleteProjectType($code){
         try {
             Type_Project::where("code",$code )->delete();
-
+            
             return response()->redirectToRoute("admin.projecttype")->with("success", "Data $code Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
@@ -386,10 +488,18 @@ class ProjectController extends AdminController
 
     public function deleteProject($code){
         try {
+            DB::beginTransaction();
+            $project = Project::where("code", $code)->first();
+            $stockcontroller =new  StockController();
+            $stockcontroller->revertstock($code);
             Project::where("code",$code )->delete();
+            $filecontroller = new FileController();
+            $filecontroller->deleteFile($project->project_document);
+            DB::commit();
 
             return response()->redirectToRoute("admin.project")->with("success", "Data $code Successfully Deleted");
         } catch (\Throwable $th) {
+            DB::rollBack();
             // Sess ion::flash('error', $th->getMessage());
             return response()->redirectToRoute("admin.project")->with("error", $th->getMessage());
         }

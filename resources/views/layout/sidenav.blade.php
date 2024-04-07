@@ -29,23 +29,22 @@
 						</a>
 					</li>
 					<li class="nav-item">
-						<a
-							class="nav-link {{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProject' ? 'active' : '' }}"
-							href="#navbar-projects" data-toggle="collapse" role="button"
-							aria-expanded="{{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProject' ? 'true' : '' }}"
+						@php
+							$projectRoute = ['admin.projecttype', 'admin.project', 'admin.addProjectView', 'admin.editProjectView'];
+						@endphp
+						<a class="nav-link {{ in_array($sessionRoute, $projectRoute) ? 'active' : '' }}" href="#navbar-projects"
+							data-toggle="collapse" role="button" aria-expanded="{{ in_array($sessionRoute, $projectRoute) ? 'true' : '' }}"
 							aria-controls="navbar-projects">
 							<i class="ni ni-settings text-orange"></i>
 							<span class="nav-link-text">Projects</span>
 						</a>
-						<div
-							class="{{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProject' ? 'show' : '' }} collapse"
-							id="navbar-projects">
+						<div class="{{ in_array($sessionRoute, $projectRoute) ? 'show' : '' }} collapse" id="navbar-projects">
 							<ul class="nav nav-sm flex-column">
 								<li class="nav-item {{ $sessionRoute == 'admin.projecttype' ? 'active' : '' }}">
 									<a href="{{ route('admin.projecttype') }}" class="nav-link">Project Type</a>
 								</li>
 								<li
-									class="nav-item {{ $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProject' ? 'active' : '' }}">
+									class="nav-item {{ $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProjectView' || $sessionRoute == 'admin.editProjectView' ? 'active' : '' }}">
 									<a href="{{ route('admin.project') }}" class="nav-link">Project</a>
 								</li>
 								<li class="nav-item">

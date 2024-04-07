@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class StockController extends Controller
 {
-    public function stockout($itemcode = "ITEM_00",$qty = 5200, $transdate='2023-01-01', $transcode){
+    public function stockout($itemcode = "",$qty = 0, $transdate='', $transcode){
 
         try {
 
@@ -66,10 +66,46 @@ class StockController extends Controller
 
 
         } catch (\Throwable $th) {
-          throw new \Exception($th->getMessage());
+            throw new \Exception($th->getMessage());
             
         }
 
 
     }
+    public function refreshstock($itemcode = "",$qty = 0, $transdate='', $transcode){
+        try {
+            $stockout =  Stocks_Out::where('ref_no', $transcode)->where("item_code", $itemcode)->get();
+
+
+            foreach($stockout as $s){
+            $stock = Stock::where("id" , $s->stock_id)->first();
+            $stock->used_stock -= floatval($s->qty);
+            $stock->update();
+            $s->delete();
+            }
+            $this->stockout($itemcode,$qty,$transdate,$transcode);
+            
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        }
+    }
+
+    public function revertstock($transcode){
+        try {
+            $stockout =  Stocks_Out::where('ref_no', $transcode)->get();
+
+
+            foreach($stockout as $s){
+                $stock = Stock::where("id" , $s->stock_id)->first();
+                $stock->used_stock -= floatval($s->qty);
+                $stock->update();
+                $s->delete();
+            }
+            
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        }
+    }
+
+
 }
