@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Journal;
+use App\Models\Journal_Detail;
 use App\Models\Project;
 use App\Models\Project_Detail;
 use App\Models\ProjectDetailB;
 use App\Models\Stock;
+use App\Models\Stocks_Out;
 use App\Models\Type_Project;
 use App\Models\Upah;
 use Carbon\Carbon;
@@ -158,19 +161,10 @@ class ProjectController extends AdminController
                     return Carbon::parse($row->transaction_date)->format('d/m/Y');
                 })
                 ->editColumn('start_date', function($row) {
-                    if ($row->start_Date !== null){
-
-                        return Carbon::parse($row->start_Date)->format('d/m/Y');
-                    } else {
-                        return '';
-                    }
+                        return $row->start_date ? Carbon::parse($row->start_date)->format('d/m/Y') : '';
                 })
                 ->editColumn('end_date', function($row) {
-                    if ($row->end_date !== null){
-                        return Carbon::parse($row->end_date)->format('d/m/Y');
-                    } else {
-                        return '';
-                    }
+                    return $row->end_date ? Carbon::parse($row->end_date)->format('d/m/Y') : '';
                 })
                 ->editColumn('project_status', function($row) {
                     $html ="";
@@ -252,8 +246,10 @@ class ProjectController extends AdminController
                 ->make(true);
                 
      
+        } else {
+            abort(404);
         }
-
+        
     }
 
     public function updateProjectType(Request $request){
@@ -278,6 +274,7 @@ class ProjectController extends AdminController
 
 
     }
+    
     public function editProject($id, Request $request){
         if($request->ajax()){
             try {
@@ -470,6 +467,8 @@ class ProjectController extends AdminController
 
 
 
+        } else {
+            abort(404);
         }
     }
     
@@ -513,6 +512,8 @@ class ProjectController extends AdminController
             
             return json_encode($dataProjectType);
 
+        } else {
+            abort(404);
         }
 
     }
@@ -535,7 +536,45 @@ class ProjectController extends AdminController
             
             return json_encode($data);
 
+        } else {
+            abort(404);
         }
+
+    }
+
+    public function startProject($code, Request $request){
+
+        if($request->ajax()){
+
+            try {
+                DB::beginTransaction();
+    
+            
+                $project = Project::where("code", $code)->first();
+                $accounting = new AccountingController();
+                $accounting->journalstartproject($code, "JU", $project);
+
+                // Update status project
+                $project->project_status = 1;
+                $project->start_date = Carbon::now();
+                $project->update();
+    
+            
+    
+                DB::commit();
+                Session::flash('success',  "Project : $project->code Succesfully Started");
+                return json_encode(true);
+    
+    
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+        } else {
+            abort(404);
+        }
+
 
     }
 

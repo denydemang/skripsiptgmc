@@ -35,6 +35,25 @@ export const showconfirmapprove = (id, name, funcapprove = null, menuname) => {
   });
 };
 
+export const showconfirmstart = (id, name, funcapprove = null, menuname) => {
+  $.confirm({
+    buttons: {
+      START: function () {
+        funcapprove(id, name);
+      },
+      CANCEL: {
+        action: function () {}
+      }
+    },
+    title: `Start Project ?`,
+    content: `${menuname} : ${name} Will Be Started & Cannot Be Undone`,
+    icon: 'fa fa-question-circle-o',
+    theme: 'supervan',
+    animation: 'scale',
+    type: 'blue'
+  });
+};
+
 export const showerror = (message, title = 'Error', backColor = 'red') => {
   $.alert({
     title: title,

@@ -2,7 +2,7 @@ import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showerror } from '../jqueryconfirm.js';
 import { formatRupiah1 } from '../rupiahformatter.js';
-import { showconfirmdelete } from '../jqueryconfirm.js';
+import { showconfirmdelete, showconfirmstart } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
 import daterangeInitiator from '../daterangeinitiator.js';
 import initiatedtp from '../datepickerinitiator.js';
@@ -238,6 +238,28 @@ $(document).ready(function () {
 
     reloadTable(method, tableName, columns, getDataProject, supplyData);
   }
+
+  async function startProject(code) {
+    const urlRequest = route('admin.startProject', code);
+
+    const method = 'POST';
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method);
+      return await ajx.getData();
+    } catch (error) {
+      showerror(error);
+      return null;
+    }
+  }
+
+  async function redirectSuccess(code) {
+    const urlRedirect = route('admin.project');
+    const response = await startProject(code);
+    if (response) {
+      window.location.href = urlRedirect;
+    }
+  }
   // -------------------------------------------------------------------
 
   // CRUD AND EVENT
@@ -290,6 +312,12 @@ $(document).ready(function () {
   // check perubahan value disemua datepicker TRANS DATE
   $(document).on('change', '.datetimepicker-input', function () {
     updateDTPTransDateValue();
+  });
+
+  // Click Start Project
+  $(document).on('click', '.startbtn', async function () {
+    let code = $(this).data('code');
+    showconfirmstart(code, code, redirectSuccess, 'Project ');
   });
 
   // ----------------------------------------------------------

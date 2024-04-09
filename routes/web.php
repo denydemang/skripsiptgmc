@@ -55,6 +55,7 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
         Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
+        Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
 
     });  
     Route::controller(CustomerController::class)->group(function(){
