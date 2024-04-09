@@ -17,6 +17,10 @@ class PrintController extends Controller
         ->where("projects.code", $id)
         ->get();
 
+        if (count($journal) == 0){
+            abort(404);
+        };
+
         $totalDebit = 0;
         $totalKredit = 0;
 
