@@ -56,6 +56,10 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
         Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
         Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
+        
+        // Print
+        Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
+        
 
     });  
     Route::controller(CustomerController::class)->group(function(){

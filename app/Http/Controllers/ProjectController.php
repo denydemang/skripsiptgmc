@@ -221,6 +221,7 @@ class ProjectController extends AdminController
                             $html = '
                             <div class="d-flex justify-content-center">
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
+                            <a href="'.route('admin.printjournal',['code' => $row->code]).'"><button class="btn btn-sm btn-warning printjournalbtn" title="Print Journal"><i class="fa fa-print"></i></button></a>
                             </div>';
     
                             # code...
@@ -274,7 +275,7 @@ class ProjectController extends AdminController
 
 
     }
-    
+
     public function editProject($id, Request $request){
         if($request->ajax()){
             try {
@@ -576,6 +577,10 @@ class ProjectController extends AdminController
         }
 
 
+    }
+    public function printjournal($id){
+        $printcontroller = new PrintController();
+        return $printcontroller->printJournalProject($id);
     }
 
 
