@@ -213,22 +213,25 @@ class ProjectController extends AdminController
                             <button class="btn btn-sm btn-danger deletebtn" data-code="'.$row->code.'" title="Delete"><i class="fa fa-trash"></i></button>
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-sm btn-warning startbtn" data-code="'.$row->code.'" title="Start Project"><i class="ni ni-button-play"></i></button>
+                            <a href="'.route('admin.printproject',['code' => $row->code]).'" target="_blank"><button class="btn btn-sm btn-info printproject mr-2" data-code="'.$row->code.'" title="Print Project"><i class="fa fa-print"></i></button></a>
                             </div>';
-    
+                            
                             # code...
                             break;
-                        case 1: //Started
+                            case 1: //Started
                             $html = '
                             <div class="d-flex justify-content-center">
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
-                            <a href="'.route('admin.printjournal',['code' => $row->code]).'"><button class="btn btn-sm btn-warning printjournalbtn" title="Print Journal"><i class="fa fa-print"></i></button></a>
+                            <a href="'.route('admin.printproject',['code' => $row->code]).'" target="_blank"><button class="btn btn-sm btn-info printproject mr-2" data-code="'.$row->code.'" title="Print Project"><i class="fa fa-print"></i></button></a>
+                            <a href="'.route('admin.printjournal',['code' => $row->code]).'" target="_blank"><button class="btn btn-sm btn-warning printjournalbtn" title="Print Journal"><i class="fa fa-print"></i></button></a>
                             </div>';
-    
+                            
                             # code...
                             break;
-                        case 2: //Done
-                            $html = '
+                            case 2: //Done
+                                $html = '
                             <div class="d-flex justify-content-center">
+                            <a href="'.route('admin.printproject',['code' => $row->code]).'" target="_blank"><button class="btn btn-sm btn-info printproject mr-2" data-code="'.$row->code.'" title="Print Project"><i class="fa fa-print"></i></button></a>
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->code.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             </div>';
     
@@ -581,6 +584,11 @@ class ProjectController extends AdminController
     public function printjournal($id){
         $printcontroller = new PrintController();
         return $printcontroller->printJournalProject($id);
+    }
+
+    public function printproject($id){
+        $printcontroller = new PrintController();
+        return $printcontroller->printProject($id);
     }
 
 
