@@ -59,6 +59,7 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         
         // Print
         Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
+        Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
         
 
     });  
