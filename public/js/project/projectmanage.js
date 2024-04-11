@@ -597,9 +597,10 @@ $(document).ready(function () {
       const urlRedirect = route('admin.project');
       if (response) {
         window.location.href = urlRedirect;
+      } else {
+        $(this).find('span').html('Save');
+        $(this).prop('disabled', false);
       }
-      $(this).find('span').html('Save');
-      $(this).prop('disabled', false);
     }
   });
 

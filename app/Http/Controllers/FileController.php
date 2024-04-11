@@ -19,7 +19,7 @@ class FileController extends Controller
         try {
             
             $path =  public_path('uploads/'. $fileName);
-            return response()->download($path)->deleteFileAfterSend(true);
+            return response()->download($path)->deleteFileAfterSend(false);
         } catch (\Throwable $th) {
             abort(404);
         }
