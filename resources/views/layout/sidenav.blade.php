@@ -30,7 +30,13 @@
 					</li>
 					<li class="nav-item">
 						@php
-							$projectRoute = ['admin.projecttype', 'admin.project', 'admin.addProjectView', 'admin.editProjectView'];
+							$projectRoute = [
+							    'admin.projecttype',
+							    'admin.project',
+							    'admin.addProjectView',
+							    'admin.editProjectView',
+							    'admin.projectrecapview',
+							];
 						@endphp
 						<a class="nav-link {{ in_array($sessionRoute, $projectRoute) ? 'active' : '' }}" href="#navbar-projects"
 							data-toggle="collapse" role="button" aria-expanded="{{ in_array($sessionRoute, $projectRoute) ? 'true' : '' }}"
@@ -46,6 +52,9 @@
 								<li
 									class="nav-item {{ $sessionRoute == 'admin.project' || $sessionRoute == 'admin.addProjectView' || $sessionRoute == 'admin.editProjectView' ? 'active' : '' }}">
 									<a href="{{ route('admin.project') }}" class="nav-link">Project</a>
+								</li>
+								<li class="nav-item {{ $sessionRoute == 'admin.projectrecapview' ? 'active' : '' }}">
+									<a href="{{ route('admin.projectrecapview') }}" class="nav-link">Project Recap</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/examples/login.html" class="nav-link">Project Realisation</a>

@@ -81,6 +81,16 @@ class ProjectController extends AdminController
         return response()->view("admin.project.projectmanage",$supplyData);
     }
 
+    public function projectrecapview(Request $request){
+        $supplyData = [
+            'title' =>"Project Recapitulation",
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName()
+            ];
+
+        return response()->view("admin.project.projectrecap",$supplyData);
+    }
+
 
     public function getDataTypeProject(Request $request, DataTables $dataTables){
         if ($request->ajax()){
@@ -591,6 +601,18 @@ class ProjectController extends AdminController
         return $printcontroller->printProject($id);
     }
 
+    public function printprojectrecap(Request $request){
+
+        $statusCode = $request->get("statusCode");
+        $firstDate = $request->get("firstDate");
+        $lastDate = $request->get("lastDate");
+        $customercode = $request->get("customercode");
+
+
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printprojectrecap($statusCode, $firstDate, $lastDate,$customercode);
+    }
 
 
 

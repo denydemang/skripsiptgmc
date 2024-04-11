@@ -79,4 +79,37 @@ class PrintController extends Controller
         $pdf->loadview("admin.project.print.printproject", $data);
         return $pdf->stream("ProjectReport-$id.pdf", array("Attachment" => false));
     }
+
+    public function printprojectrecap($statuscode = null,$startdate,$lastdate, $customercode = null){
+
+        
+        $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
+        ->join('customers','projects.customer_code', '=', 'customers.code' )
+        ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 
+        'customers.name as customer_name', 'customers.address as customer_address')
+        ->whereBetween('transaction_date' , [$startdate,$lastdate])
+        ->when($statuscode !== null , function($query) use($statuscode){
+            $query->where("projects.project_status", $statuscode);
+        })
+        ->when($customercode !== null, function($query) use($customercode){
+            $query->where("projects.customer_code", $customercode);
+        })
+        ->get();
+
+        $data = [
+            "projects" => $project,
+            "customer_code" => $customercode,
+            "statuscode"=> $statuscode,
+            "startDate" => $startdate,
+            "endDate" => $lastdate,
+        ];
+
+
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->loadview("admin.project.print.printprojectrecap", $data);
+        return $pdf->stream("ProjectRecapitulation($startdate-$lastdate).pdf", array("Attachment" => false));
+
+    }
 }

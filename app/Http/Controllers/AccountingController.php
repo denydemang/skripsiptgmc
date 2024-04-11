@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 
 class AccountingController extends AdminController
 {
-    public function journalstartproject($ref_no, $type_journal, $project){
+    public function r($ref_no, $type_journal, $project){
 
         $supplyModel = Journal::where("voucher_no", 'like', "%".$type_journal."%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
         $AutomaticCode = $this->automaticCode($type_journal, $supplyModel,true,"voucher_no");

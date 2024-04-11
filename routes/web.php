@@ -42,6 +42,7 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::get('/admin/project', 'getViewProject')->name('admin.project');  
         Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');  
         Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
+        Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
 
         // CRUD
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
@@ -60,6 +61,7 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         // Print
         Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
         Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
+        Route::get('/admin/project/printprojectrecap', 'printprojectrecap')->name('admin.printprojectrecap');
         
 
     });  
