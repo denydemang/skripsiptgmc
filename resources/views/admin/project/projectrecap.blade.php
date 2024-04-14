@@ -42,7 +42,7 @@
 												</select>
 											</div>
 										</div>
-										<div class="col-lg-5 ml-2">
+										<div class="col-lg-5 ml-5">
 											<div class="mr-1 mt-5">
 												<h4>Transaction Date</h4>
 												<div class="d-flex">
