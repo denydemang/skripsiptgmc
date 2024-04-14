@@ -43,11 +43,15 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');  
         Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
         Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
+        Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
+        Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
 
         // CRUD
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
         Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
         Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
+        Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
+        Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');

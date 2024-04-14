@@ -230,7 +230,8 @@
 		</div>
 	</section>
 	<section>
-		<h3 style="text-decoration: underline">Detail Material</h3>
+		<h3 style="text-decoration: underline">Detail Material
+			{{ count($dataBahanBakuRealisation) > 0 ? '(Estimation)' : '' }}</h3>
 		<table border="1" cellpadding="10" style="border-collapse:collapse;max-width:100%">
 			@foreach ($dataBahanBaku as $item)
 				<tr>
@@ -241,7 +242,49 @@
 			@endforeach
 		</table>
 
-		<h3 style="text-decoration: underline">Detail Upah</h3>
+		@if (count($dataBahanBakuRealisation) > 0)
+			<h3 style="text-decoration: underline">Detail Material (Realisation)</h3>
+			<table border="1" cellpadding="10" style="border-collapse:collapse;max-width:100%">
+				@foreach ($dataBahanBakuRealisation as $item)
+					<tr>
+						<td>{{ $loop->iteration }}</td>
+						<td>{{ $item->item_name }} ({{ $item->item_code }})</td>
+						<td>{{ floatval($item->qty_used) }} {{ $item->unit_code }}</td>
+					</tr>
+				@endforeach
+			</table>
+		@endif
+
+		@if (count($dataBahanBakuRealisation) > 0)
+			@if (count($dataBahanBakuRealisationdiff) > 0)
+				<h3 style="text-decoration: underline">Material Differrence (Comparation)</h3>
+				<table border="1" cellpadding="10" style="border-collapse:collapse;max-width:100%">
+					<tr>
+						<th>No</th>
+						<th>ItemCode</th>
+						<th>Unit</th>
+						<th>Qty Estimated</th>
+						<th>Qty Realisation</th>
+					</tr>
+					@foreach ($dataBahanBakuRealisationdiff as $item)
+						<tr>
+							<td>{{ $loop->iteration }}</td>
+							<td>{{ $item->item_name }} ({{ $item->item_code }})</td>
+							<td>{{ $item->unit_code }}</td>
+							<td>{{ floatval($item->qty_estimated) }}</td>
+							<td>{{ floatval($item->qty_used) }}</td>
+						</tr>
+					@endforeach
+				</table>
+				<br><br>
+			@else
+				<h3 style="text-decoration: underline">Material Differrence (Comparation)</h3>
+				<span class="mb-5"> - </span>
+			@endif
+		@endif
+		<h3 style="text-decoration: underline">Detail Upah
+			{{ count($dataUpahRealisation) > 0 ? '(Estimation)' : '' }}
+		</h3>
 		<table border="1" cellpadding="10" style="width:100%;border-collapse:collapse">
 			@foreach ($dataUpah as $upah)
 				<tr>
@@ -257,6 +300,69 @@
 				<td><strong>Rp. {{ number_format($totalUpah, 2, ',', '.') }}</strong></td>
 			</tr>
 		</table>
+
+		@if (count($dataUpahRealisation) > 0)
+			<h3 style="text-decoration: underline">Detail Upah (Realisation)</h3>
+			<table border="1" cellpadding="10" style="width:100%;border-collapse:collapse">
+				@foreach ($dataUpahRealisation as $upah)
+					<tr>
+						<td>{{ $loop->iteration }}</td>
+						<td>{{ $upah->job }} </td>
+						<td style="white-space:nowrap">{{ floatval($upah->qty_used) }}-{{ $upah->unit . 's' }}
+							{{ '@' . number_format($upah->price, 2, ',', '.') }}/{{ $upah->unit }}</td>
+						<td style="white-space:nowrap">Rp. {{ number_format($upah->total, 2, ',', '.') }}</td>
+					</tr>
+				@endforeach
+				<tr>
+					<td colspan="3" align="right"><strong>TOTAL</strong></td>
+					<td><strong>Rp. {{ number_format($totalUpahrealisation, 2, ',', '.') }}</strong></td>
+				</tr>
+			</table>
+		@endif
+		@if (count($dataUpahRealisation) > 0)
+			@if (count($dataUpahRealisationdiff) > 0)
+				<h3 style="text-decoration: underline">Upah Differrence (Comparation)</h3>
+				<table border="1" cellpadding="10" style="width:100%;border-collapse:collapse">
+					@php
+						$sumTotalEstimated = 0;
+						$sumTotalRealisation = 0;
+					@endphp
+					<tr>
+						<th>No</th>
+						<th>Job</th>
+						<th>Total Estimated</th>
+						<th>Total Realisation</th>
+					</tr>
+					@foreach ($dataUpahRealisationdiff as $upah)
+						@php
+							$sumTotalEstimated += floatval($upah->total_estimated);
+							$sumTotalRealisation += floatval($upah->total);
+						@endphp
+						<tr>
+							<td>{{ $loop->iteration }}</td>
+							<td>{{ $upah->job }} </td>
+							<td style="white-space:nowrap">Rp. {{ number_format($upah->total_estimated, 2, ',', '.') }}</td>
+							<td style="white-space:nowrap">Rp. {{ number_format($upah->total, 2, ',', '.') }}</td>
+						</tr>
+					@endforeach
+					<tr>
+						<td colspan="2" align="right"><strong>Total</strong></td>
+						<td><strong>Rp. {{ number_format($sumTotalEstimated, 2, ',', '.') }}</strong></td>
+						<td><strong>Rp. {{ number_format($sumTotalRealisation, 2, ',', '.') }}</strong></td>
+					</tr>
+					<tr>
+						<td colspan="2" align="right"><strong>Selisih</strong></td>
+						<td colspan="2" align="center"><strong>Rp.
+								{{ number_format(floatval($sumTotalEstimated - $sumTotalRealisation) > 0 ? floatval($sumTotalEstimated - $sumTotalRealisation) : -1 * floatval($sumTotalEstimated - $sumTotalRealisation), 2, ',', '.') }}
+								{{ floatval($sumTotalEstimated - $sumTotalRealisation) < 0 ? '(Minus)' : '' }}</strong></td>
+					</tr>
+				</table>
+			@else
+				<h3 style="text-decoration: underline">Upah Differrence (Comparation)</h3>
+				<span class="mb-5"> - </span>
+			@endif
+		@endif
+
 	</section>
 	<section style="margin-top: 150px;position:relative">
 		<div>

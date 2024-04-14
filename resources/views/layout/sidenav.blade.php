@@ -36,6 +36,8 @@
 							    'admin.addProjectView',
 							    'admin.editProjectView',
 							    'admin.projectrecapview',
+							    'admin.projectrealisationview',
+							    'admin.projectrealisationfinishview',
 							];
 						@endphp
 						<a class="nav-link {{ in_array($sessionRoute, $projectRoute) ? 'active' : '' }}" href="#navbar-projects"
@@ -56,8 +58,9 @@
 								<li class="nav-item {{ $sessionRoute == 'admin.projectrecapview' ? 'active' : '' }}">
 									<a href="{{ route('admin.projectrecapview') }}" class="nav-link">Project Recap</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/examples/login.html" class="nav-link">Project Realisation</a>
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.projectrealisationview' || $sessionRoute == 'admin.projectrealisationfinishview' ? 'active' : '' }}">
+									<a href="{{ route('admin.projectrealisationview') }}" class="nav-link">Project Realisation</a>
 								</li>
 							</ul>
 						</div>

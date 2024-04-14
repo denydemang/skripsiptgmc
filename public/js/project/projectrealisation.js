@@ -10,7 +10,7 @@ import managedate from '../managedate.js';
 
 $(document).ready(function () {
   // Inputan element dan inisiasi property
-  // ------------------------------------
+  // =============================================
   const Date = new managedate();
   const listUpah = $('.listupah tbody');
   const dtpstarttrans = $('#dtpstarttrans');
@@ -37,7 +37,7 @@ $(document).ready(function () {
   const startMONTH = Date.getFirstMonth();
   const lastMONTH = Date.getLastMonth();
   let supplyData = {
-    status: '',
+    status: 3,
     startDate: startMONTH,
     endDate: lastMONTH,
     startProject: '',
@@ -45,12 +45,13 @@ $(document).ready(function () {
     EndProject: '',
     EndProject2: ''
   };
-  // ----------------------------------------------------
+
+  // ==============================================
 
   // INISIASI DATATABLE
-  // ----------------------------------------------------------------
-  var getDataProject = route('admin.getDataProject');
-  const tableName = '.projecttable';
+  // ========================================================================
+  var getDataProject = route('admin.getDataProjectRealisation');
+  const tableName = '.projectrealisationtable';
   const method = 'post';
   const columns = [
     { data: 'action', name: 'actions', title: 'Action', searchable: false, orderable: false, width: '10%' },
@@ -86,10 +87,10 @@ $(document).ready(function () {
     ShowTable(method, tableName, columns, url, data);
   }
   reloadTable(method, tableName, columns, getDataProject, supplyData);
-  // --------------------------------------------------------------------
+  // =====================================================================
 
   // INISIASI DATEPICKER
-  // ---------------------------------------------
+  // ===================================================================
 
   initiatedtp(dtpstarttrans);
   initiatedtp(dtplasttrans);
@@ -101,10 +102,10 @@ $(document).ready(function () {
   inputstartdatetrans.val(supplyData.startDate);
   inputlastdatetrans.val(supplyData.endDate);
 
-  // --------------------------------------------
+  // ==============================================================
 
   // Function
-  // ------------------------------------------------------------
+  // ==================================================================
   async function getData(code = '') {
     const urlRequest = route('admin.getDataDetailProjectRaw', code);
     const method = 'POST';
@@ -161,9 +162,34 @@ $(document).ready(function () {
     }
   }
 
-  function deleteData(code, name) {
-    const urlRequest = route('admin.deleteDataProject', code);
-    window.location.href = urlRequest;
+  function updateDTPTransDateValue() {
+    let startTrans = inputstartdatetrans.val();
+    let lastTrans = inputlastdatetrans.val();
+
+    supplyData.startDate = startTrans;
+    supplyData.endDate = lastTrans;
+
+    reloadTable(method, tableName, columns, getDataProject, supplyData);
+  }
+
+  function updateDTPStartDateValue() {
+    let startDate1 = inputstartdateproject1.val();
+    let startDate2 = inputstartdateproject2.val();
+
+    supplyData.startProject = startDate1;
+    supplyData.startProject2 = startDate2;
+
+    reloadTable(method, tableName, columns, getDataProject, supplyData);
+  }
+
+  function updateDTPFinishDateValue() {
+    let finishDate1 = inputenddateproject1.val();
+    let finishDate2 = inputenddateproject2.val();
+
+    supplyData.EndProject = finishDate1;
+    supplyData.EndProject2 = finishDate2;
+
+    reloadTable(method, tableName, columns, getDataProject, supplyData);
   }
 
   function populateData(Material = [], upah = []) {
@@ -229,61 +255,10 @@ $(document).ready(function () {
     listUpah.html(htmlUpah);
   }
 
-  function updateDTPTransDateValue() {
-    let startTrans = inputstartdatetrans.val();
-    let lastTrans = inputlastdatetrans.val();
+  // ====================================================================
 
-    supplyData.startDate = startTrans;
-    supplyData.endDate = lastTrans;
-
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  function updateDTPStartDateValue() {
-    let startDate1 = inputstartdateproject1.val();
-    let startDate2 = inputstartdateproject2.val();
-
-    supplyData.startProject = startDate1;
-    supplyData.startProject2 = startDate2;
-
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  function updateDTPFinishDateValue() {
-    let finishDate1 = inputenddateproject1.val();
-    let finishDate2 = inputenddateproject2.val();
-
-    supplyData.EndProject = finishDate1;
-    supplyData.EndProject2 = finishDate2;
-
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  async function startProject(code) {
-    const urlRequest = route('admin.startProject', code);
-
-    const method = 'POST';
-
-    try {
-      const ajx = new AjaxRequest(urlRequest, method);
-      return await ajx.getData();
-    } catch (error) {
-      showerror(error);
-      return null;
-    }
-  }
-
-  async function redirectSuccess(code) {
-    const urlRedirect = route('admin.project');
-    const response = await startProject(code);
-    if (response) {
-      window.location.href = urlRedirect;
-    }
-  }
-  // -------------------------------------------------------------------
-
-  // CRUD AND EVENT
-  // ----------------------------------------------------------------
+  // CRUD and Event
+  // ====================================================================
 
   // View Button
   $(document).on('click', '.viewbtn', async function () {
@@ -298,26 +273,12 @@ $(document).ready(function () {
     populateData(dataMaterial, dataupah);
   });
 
-  // Click Delete Button
-  $(document).on('click', '.deletebtn', function () {
-    let Code = $(this).data('code');
-    showconfirmdelete(Code, Code, deleteData, 'Project :');
-  });
-
   // Click Select Button
   $(document).on('change', '#statusSelect', function () {
     let val = $(this).val();
     supplyData.status = val;
 
     reloadTable(method, tableName, columns, getDataProject, supplyData);
-  });
-
-  // Click Edit Button
-  $(document).on('click', '.editbtn', function () {
-    let code = $(this).data('code');
-    let url = route('admin.editProjectView', code);
-
-    window.location.href = url;
   });
 
   // checked startdate project
@@ -338,7 +299,6 @@ $(document).ready(function () {
   $(document).on('change', '.inputstartdateproject1', function () {
     updateDTPStartDateValue();
   });
-
   // check perubahan value datepicker StartDate
   $(document).on('change', '.inputstartdateproject2', function () {
     updateDTPStartDateValue();
@@ -352,15 +312,11 @@ $(document).ready(function () {
   $(document).on('change', '.inputenddateproject2', function () {
     updateDTPFinishDateValue();
   });
-  // Click Start Project
-  $(document).on('click', '.startbtn', async function () {
-    let code = $(this).data('code');
-    showconfirmstart(code, code, redirectSuccess, 'Project ');
-  });
 
-  // ----------------------------------------------------------
+  // ====================================================================
 
   // Trigger Toast
-  // ------------------------------------------
+  // ==================================================================
   checkNotifMessage();
+  // ==================================================================
 });

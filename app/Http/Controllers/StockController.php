@@ -107,5 +107,25 @@ class StockController extends Controller
         }
     }
 
+    public function stockin($refno, $item_code, $unit_code, $item_date, $qty, $cogs){
+        try {
+            $stock = new Stock();
+
+            $stock->ref_no = $refno;
+            $stock->item_code = $item_code;
+            $stock->unit_code = $unit_code;
+            $stock->item_date = $item_date;
+            $stock->actual_stock = $qty;
+            $stock->used_stock = 0;
+            $stock->cogs = $cogs;
+            $stock->created_by= Auth::user()->username;
+            $stock->save();
+
+            
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        }
+    }
+
 
 }

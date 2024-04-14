@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Journal;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -15,6 +16,14 @@ class PrintController extends Controller
         ->join("coa", "journal_details.coa_code", "=", "coa.code")
         ->select("projects.name as project_name", "coa.name as coa_name", "journals.*", "journal_details.*")
         ->where("projects.code", $id)
+        ->where("journals.journal_type_code", "!=", "jp")
+        ->get();
+
+        $journalPenyesuaian = Journal::join("journal_details", "journals.voucher_no", "=", "journal_details.voucher_no")
+        ->join("coa", "journal_details.coa_code", "=", "coa.code")
+        ->select("coa.name as coa_name", "journals.*", "journal_details.*")
+        ->where("journals.ref_no", $id)
+        ->where("journals.journal_type_code", "jp")
         ->get();
 
         if (count($journal) == 0){
@@ -29,10 +38,20 @@ class PrintController extends Controller
             $totalKredit += floatval($j->kredit);
         }
 
+        $totalDebitPenyesuaian = 0;
+        $totalKreditPenyesuian = 0;
+        foreach($journalPenyesuaian as $j){
+            $totalDebitPenyesuaian +=  floatval($j->debit);
+            $totalKreditPenyesuian += floatval($j->kredit);
+        }
+
         $data =[
             "dataprojectdanjurnal" => $journal,
+            "jurnalpenyesuaian" => $journalPenyesuaian,
             "totalDebit" => $totalDebit,
-            "totalKredit" => $totalKredit
+            "totalKredit" => $totalKredit,
+            "totalDebitPenyesuaian" => $totalDebitPenyesuaian,
+            "totalKreditPenyesuian" => $totalKreditPenyesuian,
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'landscape'); 
@@ -58,10 +77,32 @@ class PrintController extends Controller
         $project_detail_b = $project_detail_b->getDetailB($id);
         $dataUpah = $project_detail_b->get();
 
+        // Realisation
+
+        $project_detail_realisation = new ProjectDetailRealisationController();
+        $project_detail_realisation = $project_detail_realisation->getDetail($id);
+        $dataBahanBakuRealisation = $project_detail_realisation->get();
+
+        $project_detail_realisationdiff = new ProjectDetailRealisationController();
+        $project_detail_realisationdiff = $project_detail_realisationdiff->getDetailDifference($id);
+        $dataBahanBakuRealisationdiff = $project_detail_realisationdiff->get();
+
+        $project_detail_realisation_b = new ProjectDetailRealisationBController();
+        $project_detail_realisation_b = $project_detail_realisation_b->getDetailB($id);
+        $dataUpahRealisation = $project_detail_realisation_b->get();
+
+        $project_detail_realisation_bdiff = new ProjectDetailRealisationBController();
+        $project_detail_realisation_bdiff = $project_detail_realisation_bdiff->getDetailDifference($id);
+        $dataUpahRealisationdiff = $project_detail_realisation_bdiff->get();
+
         $totalUpah = 0;
+        $totalUpahrealisation = 0;
 
         foreach ($dataUpah as $upah) {
             $totalUpah+= floatval($upah->total);
+        }
+        foreach ($dataUpahRealisation as $upah) {
+            $totalUpahrealisation+= floatval($upah->total);
         }
         if ($project === null){
             abort(404);
@@ -71,8 +112,13 @@ class PrintController extends Controller
         $data =[
             "project" => $project,
             "dataBahanBaku" =>  $dataBahanBaku,
+            "dataBahanBakuRealisation" => $dataBahanBakuRealisation,
+            "dataBahanBakuRealisationdiff" => $dataBahanBakuRealisationdiff,
             "dataUpah" => $dataUpah,
-            "totalUpah" => $totalUpah
+            "dataUpahRealisation" => $dataUpahRealisation,
+            "dataUpahRealisationdiff" => $dataUpahRealisationdiff,
+            "totalUpah" => $totalUpah,
+            "totalUpahrealisation" => $totalUpahrealisation
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'potrait'); 
