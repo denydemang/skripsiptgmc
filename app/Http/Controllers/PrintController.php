@@ -17,6 +17,15 @@ class PrintController extends Controller
         ->select("projects.name as project_name", "coa.name as coa_name", "journals.*", "journal_details.*")
         ->where("projects.code", $id)
         ->where("journals.journal_type_code", "!=", "jp")
+        ->where("journal_details.description", "not like", "%Realisasi%")
+        ->get();
+
+        $journalFinish = Journal::join("journal_details", "journals.voucher_no", "=", "journal_details.voucher_no")
+        ->join("coa", "journal_details.coa_code", "=", "coa.code")
+        ->select("coa.name as coa_name", "journals.*", "journal_details.*")
+        ->where("journals.ref_no", $id)
+        ->where("journals.journal_type_code", "!=", "jp")
+        ->where("journal_details.description", "like", "%Realisasi%")
         ->get();
 
         $journalPenyesuaian = Journal::join("journal_details", "journals.voucher_no", "=", "journal_details.voucher_no")
@@ -38,6 +47,14 @@ class PrintController extends Controller
             $totalKredit += floatval($j->kredit);
         }
 
+        $totalDebitRealisasi = 0;
+        $totalKreditRealisasi = 0;
+
+        foreach($journalFinish as $j){
+            $totalDebitRealisasi +=  floatval($j->debit);
+            $totalKreditRealisasi  += floatval($j->kredit);
+        }
+
         $totalDebitPenyesuaian = 0;
         $totalKreditPenyesuian = 0;
         foreach($journalPenyesuaian as $j){
@@ -48,10 +65,13 @@ class PrintController extends Controller
         $data =[
             "dataprojectdanjurnal" => $journal,
             "jurnalpenyesuaian" => $journalPenyesuaian,
+            "jurnalRealisasi" =>  $journalFinish,
             "totalDebit" => $totalDebit,
             "totalKredit" => $totalKredit,
             "totalDebitPenyesuaian" => $totalDebitPenyesuaian,
             "totalKreditPenyesuian" => $totalKreditPenyesuian,
+            "totalDebitRealisasi" => $totalDebitRealisasi ,
+            "totalKreditRealisasi" => $totalKreditRealisasi ,
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'landscape'); 

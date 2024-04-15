@@ -890,14 +890,18 @@ class ProjectController extends AdminController
 
             DB::commit();
 
+            DB::beginTransaction();
+            $journal = new AccountingController();
+            // INSERT JOURNAL Realisasi
+            $journal->journalFinishProyek($code, "JU",$project, $finishDate);
+
+
             // INSERT JOURNAL PENYESUAIAN
             if ( $JumlahItemCodeSisa > 0 ||  $JumlahItemCodeKurang > 0 || $selisihQtyUpah > 0){
-                DB::beginTransaction();
-                $journal = new AccountingController();
                 $journal->journalPenyesuaianRealisationProyek($code, $finishDate);
         
-                DB::commit();
             }
+            DB::commit();
 
             Session::flash('success',  "Project : $code Succesfully Finished");
             return json_encode(true);

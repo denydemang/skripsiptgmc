@@ -164,6 +164,72 @@
 		</table>
 	</section>
 
+	{{-- Journal Realisasi --}}
+	@if (count($jurnalRealisasi) > 0)
+		<section class="transaction" style="margin-top: 120px">
+			<div class="transaction-info">
+				<h3>Jurnal Realisasi Proyek</h3>
+			</div>
+			<div class="transaction-info">
+				<table border="0" cellpadding="4" style="padding: 10px">
+					<tr>
+						<td><strong>Finish Date</strong></td>
+						<td>:</td>
+						<td>{{ \Carbon\Carbon::parse($jurnalRealisasi[0]['transaction_date'])->format('d/m/Y') }}</td>
+					</tr>
+				</table>
+			</div>
+			<div class="transaction-info-2 mb-3 mt-5">
+				<table id="x" border="0" cellpadding="4" style="padding: 10px">
+					<tr>
+						<td><strong>Voucher No</strong></td>
+						<td>:</td>
+						<td>{{ $jurnalRealisasi[0]['voucher_no'] }}</td>
+					</tr>
+					<tr>
+						<td><strong>Voucher Type</strong></td>
+						<td>:</td>
+						<td>{{ $jurnalRealisasi[0]['journal_type_code'] }}</td>
+					</tr>
+				</table>
+			</div>
+			<table id="detail" style="margin-top: 80px">
+				<thead>
+					<tr>
+						<th>No</th>
+						<th>COA Code</th>
+						<th>Name</th>
+						<th>Description</th>
+						<th>Debit</th>
+						<th>Credit</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($jurnalRealisasi as $coa)
+						<tr>
+							<td class="no-wrap">{{ $loop->iteration }}</td>
+							<td class="no-wrap">{{ $coa->coa_code }}</td>
+							<td>{{ $coa->coa_name }}</td>
+							<td>{{ $coa->description }}</td>
+							<td class="no-wrap">Rp. {{ number_format($coa->debit, 2, ',', '.') }}</td>
+							<td class="no-wrap">Rp. {{ number_format($coa->kredit, 2, ',', '.') }}</td>
+						</tr>
+					@endforeach
+					<tr>
+						<td colspan="4" style="text-align: right"></td>
+						<td class="no-wrap" style="text-align: right;"><strong>Rp.
+								{{ number_format($totalDebitRealisasi, 2, ',', '.') }}</strong>
+						</td>
+						<td class="no-wrap" style="text-align: right"><strong>Rp.
+								{{ number_format($totalKreditRealisasi, 2, ',', '.') }}</strong>
+						</td>
+					</tr>
+					<!-- More rows can be added here -->
+				</tbody>
+			</table>
+		</section>
+	@endif
+
 	{{-- Journal Penyesuaian --}}
 	@if (count($jurnalpenyesuaian) > 0)
 		<section class="transaction" style="margin-top: 120px">
