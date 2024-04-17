@@ -64,7 +64,7 @@ class CategoryController extends AdminController
         try {
 
             $supplyModel = Category::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("CATE_" ,$supplyModel, false,"code");
+            $code = $this->automaticCode("CTG" ,$supplyModel, false,"code");
             $name = $request->post("name");
             $coa_code = $request->post("coa_code");
 

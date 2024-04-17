@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UsersTableSeeder::class,
             COASeeder::class,
+            JournalTypeSeeder::class,
+            UpahSeeder::class,
             CategorySeeder::class,
             UnitSeeder::class,
             ItemSeeder::class,

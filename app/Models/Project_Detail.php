@@ -24,4 +24,6 @@ class Project_Detail extends Model
         'updated_at',
         'updated_by'
     ];
+
+
 }

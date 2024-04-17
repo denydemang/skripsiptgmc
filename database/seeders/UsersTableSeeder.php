@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
@@ -14,14 +15,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            "username" => "admin",
-            "name" => "Super Admin",
-            "password" => Hash::make("admin123"),
-            "id_role" => 1,
-            "active_status" => 1,
-            "created_by" => "admin",
-
-        ]);
+        $path = public_path("dump_sql/users.sql");
+        DB::unprepared(file_get_contents($path));
     }
 }

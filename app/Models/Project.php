@@ -25,9 +25,13 @@ class Project extends Model
         'project_status',
         'project_document',
         'description',
+        'coa_expense',
+        'coa_payable',
         'created_at',
         'created_by',
         'updated_at',
-        'updated_by'
+        'updated_by',
+        'pic',
+        'duration_days'
     ];
 }

@@ -64,7 +64,7 @@ class SupplierController extends AdminController
         try {
 
             $supplyModel = Supplier::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("SUPP_" ,$supplyModel, false,"code");
+            $code = $this->automaticCode("SUPP" ,$supplyModel, false,"code");
             $name = $request->post("name");
             $address = $request->post("address");
             $zip_code = $request->post("zip_code");
@@ -161,7 +161,7 @@ class SupplierController extends AdminController
             return response()->redirectToRoute("r_supplier.index")->with("success", "Data Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_supplier.index")->with("error", $th->getMessage());
+            return $this->errorException($th, "r_supplier.index");
         }
     }
 }

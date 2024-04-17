@@ -23,9 +23,26 @@
 		type="text/css" />
 	<link rel="stylesheet"
 		href="{{ asset('/') }}assets/Datatables/FixedColumns-5.0.0/css/fixedColumns.foundation.min.css" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/fontawesome/css/fontawesome.min.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/izitoast/css/iziToast.min.css" type="text/css" />
-	<link rel="stylesheet" href="{{ asset('/') }}assets/jquery-confirm-v3.3.4/css/jquery-confirm.css" type="text/css" />
+	<link rel="stylesheet" href="{{ asset('/') }}assets/jquery-confirm-v3.3.4/css/jquery-confirm.css"
+		type="text/css" />
+	<link rel="stylesheet" href="{{ asset('/') }}assets/bootstrap-datepicker/bootstrap-datepicker.min.css"
+		type="text/css" />
+
+	<!-- Core -->
+	<script src="{{ asset('/') }}assets/vendor/jquery/dist/jquery.min.js"></script>
+	<script src="{{ asset('/') }}assets/Datatables/datatables.min.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
+	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/fixedColumns.dataTables.min.js"></script>
+	<script src="{{ asset('/') }}assets/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/js-cookie/js.cookie.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/lavalamp/js/jquery.lavalamp.min.js"></script>
+	<!-- Optional JS -->
 	{{-- <script src="{{ mix('js/ziggy.js') }}"></script> --}}
 	@routes
 </head>
@@ -42,23 +59,15 @@
 </body>
 
 <!-- Argon Scripts -->
-<!-- Core -->
-<script src="{{ asset('/') }}assets/vendor/jquery/dist/jquery.min.js"></script>
-<script src="{{ asset('/') }}assets/Datatables/datatables.min.js"></script>
-<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
-<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/fixedColumns.dataTables.min.js"></script>
-<script src="{{ asset('/') }}assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="{{ asset('/') }}assets/vendor/js-cookie/js.cookie.js"></script>
-<script src="{{ asset('/') }}assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
-<script src="{{ asset('/') }}assets/vendor/jquery-scroll-lock/dist/jquery-scrollLock.min.js"></script>
-<script src="{{ asset('/') }}assets/vendor/lavalamp/js/jquery.lavalamp.min.js"></script>
-<!-- Optional JS -->
+
 <script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.min.js"></script>
 <script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
 <script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
 <script src="{{ asset('/') }}assets/fontawesome/js/fontawesome.min.js"></script>
 <script src="{{ asset('/') }}assets/izitoast/js/iziToast.min.js"></script>
 <script src="{{ asset('/') }}assets/jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
+<script src="{{ asset('/') }}assets/daterangepicker-master/moment.min.js"></script>
+<script src="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.js"></script>
 
 <!-- Argon JS -->
 <script src="{{ asset('/') }}assets/js/argon.js?v=1.0.0"></script>

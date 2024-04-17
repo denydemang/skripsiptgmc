@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CustomerSeeder extends Seeder
 {
@@ -14,21 +13,7 @@ class CustomerSeeder extends Seeder
      */
     public function run(): void
     {
-        $limit = 10;
-
-        for ($i=1; $i <=$limit; $i++) {
-            Customer::updateOrCreate([
-                "code" => "CUSTOMER_00".$i,
-                "name" => "Customer".$i,
-                "address" => "pandean",
-                "zip_code" => "",
-                "npwp" => "",
-                "email" => "customer".$i."@lara.com",
-                "phone" => "0878767676".$i,
-                "coa_code" => "COA_3000",
-                "created_by" => User::find('admin')->name,
-                "updated_by" => User::find('admin')->name,
-            ]);
-        }
+        $path = public_path('dump_sql/customers.sql');
+        DB::unprepared(file_get_contents($path));
     }
 }

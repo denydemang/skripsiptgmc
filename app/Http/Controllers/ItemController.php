@@ -4,14 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class ItemController extends AdminController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $supplyData = [
@@ -64,7 +62,7 @@ class ItemController extends AdminController
         try {
 
             $supplyModel = Item::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("I_" ,$supplyModel, false,"code");
+            $code = $this->automaticCode("ITEM" ,$supplyModel, false,"code");
             $name = $request->post("name");
             $unit_code = $request->post("unit_code");
             $min_stock = $request->post("min_stock");
@@ -154,5 +152,42 @@ class ItemController extends AdminController
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());
         }
+    }
+
+    public function getTableItemSearch(Request $request, DataTables $dataTables){
+
+        if ($request->Ajax()){
+
+            $items = Item::leftjoin('stocks',"items.code", "=", "stocks.item_code" )
+            ->leftjoin('categories', 'items.category_code', '=', 'categories.code' )
+                ->select('items.code', 'items.name', 'items.unit_code', 'categories.code as category_code',
+                'categories.name as category_name', 'items.min_stock', 'items.max_stock', DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks'))
+                ->groupBy('items.code', 'items.name', 'items.unit_code', 'categories.code', 'categories.name', 'items.min_stock', 'items.max_stock');
+
+                return $dataTables->of($items)
+                ->addColumn('action', function ($row) {
+
+                    $data = '<div class="d-flex justify-content-center">
+                    <button class="btn btn-sm btn-success selectitembtn" data-stocks="'.$row->stocks.'" data-min_stock="'.$row->min_stock.'" data-max_stock="'.$row->max_stock.'" data-unit="'.$row->unit_code.'" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select Item"><i class="fa fa-check"></i> Select</button>
+                    </div>';
+
+                    return $data;
+                })
+                ->editColumn('stocks', function($row) {
+                    return (float)$row->stocks;
+                })
+                ->editColumn('min_stock', function($row) {
+                    return (float)$row->min_stock;
+                })
+                ->editColumn('max_stock', function($row) {
+                    return (float)$row->max_stock;
+                })
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+
+
+        }
+
     }
 }

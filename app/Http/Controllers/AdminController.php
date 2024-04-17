@@ -10,12 +10,21 @@ class AdminController extends Controller
     public function dashboard(Request $request){
         return response()
         ->view(
-            "admin.dashboard", 
+            "admin.dashboard",
         [
             'title' => 'Welcome To Dashboard',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName()
-        
+
         ]);
+    }
+
+    public function errorException($ex, $routeRedirectName ){
+        if (!strpos($ex->getMessage(), "cannot delete or update a parent row")){
+            return response()->redirectToRoute($routeRedirectName)->with("error","Unable To Delete Already Used By Another Transaction");
+        } else {
+            // Session::flash('error', $th->getMessage());
+            return response()->redirectToRoute($routeRedirectName)->with("error", $ex->getMessage());
+         }
     }
 }

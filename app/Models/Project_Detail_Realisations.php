@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Project_Detail_Realisation extends Model
+class Project_Detail_Realisations extends Model
 {
     use HasFactory;
     protected $table = "project_detail_realisations";
@@ -13,7 +13,6 @@ class Project_Detail_Realisation extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $fillable = [
-        'code',
         'project_code',
         'item_code', 
         'unit_code',

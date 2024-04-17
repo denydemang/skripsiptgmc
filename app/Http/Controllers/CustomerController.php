@@ -9,9 +9,6 @@ use Yajra\DataTables\DataTables;
 
 class CustomerController extends AdminController
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $supplyData = [
@@ -64,7 +61,7 @@ class CustomerController extends AdminController
         try {
 
             $supplyModel = Customer::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("CUSTOM_" ,$supplyModel, false,"code");
+            $code = $this->automaticCode("CUST" ,$supplyModel, false,"code");
             $name = $request->post("name");
             $address = $request->post("address");
             $zip_code = $request->post("zip_code");
@@ -158,10 +155,34 @@ class CustomerController extends AdminController
         try {
             Customer::where("code",$id )->delete();
 
-            return response()->redirectToRoute("r_customer.index")->with("success", "Data Successfully Deleted");
+            return response()->redirectToRoute("r_customer.index")->with("success", "Data $id Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+        }
+    }
+
+    public function getDataCustomerForModal(Request $request, DataTables $dataTables){
+
+
+        if ($request->ajax()){
+
+
+            $customers = Customer::query();
+
+
+            return $dataTables->of($customers)
+            ->addColumn('action', function ($row) {
+
+                return '
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-sm btn-success selectcustomerbtn" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select"><i class="fa fa-check"></i> Select</button>
+                </div>';
+            })
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+
         }
     }
 }

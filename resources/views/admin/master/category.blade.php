@@ -11,7 +11,7 @@
                 <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
               </li>
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Categorys</li>
+              <li class="breadcrumb-item active" aria-current="page">Category</li>
             </ol>
           </nav>
         </div>
@@ -28,7 +28,7 @@
           <div class="card" style="min-height: 800px">
             <!-- Card header -->
             <div class="card-header border-0">
-              <h3 class="mb-0">Categorys</h3>
+              <h3 class="mb-0">Categories Item</h3>
             </div>
             <div class="card-body">
               <div class="btn btn-outline-primary btn-sm addbtn mb-2"><i class="fas fa-plus"></i> ADD NEW</div>

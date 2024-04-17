@@ -14,7 +14,6 @@ class Journal_Detail extends Model
     public $timestamps = true;
     protected $fillable = [
         'voucher_no',
-        'ref_no',
         'description',
         'coa_code',
         'debit',

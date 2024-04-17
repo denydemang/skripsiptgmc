@@ -2,14 +2,18 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\UpahController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\GuestMiddleware;
@@ -34,50 +38,79 @@ use Yajra\DataTables\Facades\DataTables;
 |
 */
 
-Route::get('/admin/master/unit', function() {
-    if (request()->ajax()) {
-        $users = User::query();
 
-        return DataTables::of($users)
-            ->make();
-    }
-
-    return view('admin.master.unit',  [
-        'title' => 'Welcome To Dashboard',
-        'users' => Auth::user(),
-        'sessionRoute' =>  'unit'
-    ]);
-});
-
-Route::controller(CredentialController::class)->group(function(){
+Route::controller(CredentialController::class)->group(function () {
     Route::get('/', 'getLoginView')->name('getloginpage')->middleware(GuestMiddleware::class);
     Route::post('/login', 'login')->name('login');
     Route::get('/logout', 'logout')->name('logout');
-
 });
 
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
+Route::middleware(AuthMiddleware::class)->group(function () {
+    Route::controller(AdminController::class)->group(function () {
         Route::get('/admin', 'dashboard')->name('dashboard');
     });
-    Route::controller(ProjectController::class)->group(function(){
+    Route::controller(ProjectController::class)->group(function () {
         Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
         Route::get('/admin/project', 'getViewProject')->name('admin.project');
+        // View
+        Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
+        Route::get('/admin/project', 'getViewProject')->name('admin.project');
+        Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');
+        Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
+        Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
+        Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
+        Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
+
+        // CRUD
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
+        Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
         Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
+        Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
+        Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
+        Route::get('/admin/project/delete/{id}', 'deleteProject')->name('admin.deleteDataProject');
+        Route::post('/admin/project/add', 'addProject')->name('admin.addprojects');
+        Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
         Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
-    });
-});
+        Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
+        Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
 
-// -----------------    user
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
+        // Print
+        Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
+        Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
+        Route::get('/admin/project/printprojectrecap', 'printprojectrecap')->name('admin.printprojectrecap');
     });
-    Route::controller(UserController::class)->group(function(){
+    // Route::controller(CustomerController::class)->group(function () {
+
+    //     Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
+    // });
+    Route::controller(COAController::class)->group(function () {
+
+        Route::get("admin/coa/gettablesearch", 'getCOATableSearch')->name('admin.getCOATableSearch');
+    });
+    // Route::controller(ItemController::class)->group(function () {
+
+    //     Route::get('admin/item/gettableitemsearch', 'getTableItemSearch')->name('admin.getTableItemSearch');
+    // });
+
+    Route::controller(UpahController::class)->group(function () {
+
+        Route::get('admin/upah/gettableupahsearch', 'getTableUpahSearch')->name('admin.getTableUpahSearch');
+    });
+    Route::controller(StockController::class)->group(function () {
+
+        Route::get('admin/stocks/stockout/{id}', 'stockout')->name('admin.stockout');
+    });
+
+    Route::controller(FileController::class)->group(function () {
+
+        Route::get('admin/download/{idfile}', 'downloadFile')->name('admin.download');
+    });
+
+    // -----------------    user
+    Route::controller(UserController::class)->group(function () {
         Route::get('/admin/users', 'getViewUsers')->name('admin.users');
         // Route::get('/admin/project', 'getViewProject')->name('admin.project');
         Route::post('/admin/users/getdata', 'getDataUsers')->name('admin.getDataUsers');
@@ -87,14 +120,9 @@ Route::middleware(AuthMiddleware::class)->group(function(){
         Route::get('/admin/users/delete/{username}', 'deleteUser')->name('admin.deleteDataUser');
         Route::get('/admin/users/edit/{username}', 'editDataUsers')->name('admin.editUsers');
     });
-});
 
-// -----------------    unit
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::controller(UnitController::class)->group(function(){
+    // -----------------    unit
+    Route::controller(UnitController::class)->group(function () {
         Route::resource('/admin/unit', UnitController::class)->names([
             'index' => 'r_unit.index',
             'create' => 'r_unit.create',
@@ -105,16 +133,14 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'destroy' => 'r_unit.destroy',
         ]);
         Route::post('/admin/unit/getdata', 'getDataUnits')->name('admin.getUnits');
-
     });
-});
 
-// -----------------    item
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::controller(ItemController::class)->group(function(){
+    // -----------------    item
+    Route::controller(ItemController::class)->group(function () {
+
+        Route::get('admin/item/gettableitemsearch', 'getTableItemSearch')->name('admin.getTableItemSearch');
+
+
         Route::resource('/admin/item', ItemController::class)->names([
             'index' => 'r_item.index',
             'create' => 'r_item.create',
@@ -125,16 +151,10 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'destroy' => 'r_item.destroy',
         ]);
         Route::post('/admin/item/getdata', 'getDataitems')->name('admin.getitems');
-
     });
-});
 
-// -----------------    category
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::controller(CategoryController::class)->group(function(){
+    // -----------------    category
+    Route::controller(CategoryController::class)->group(function () {
         Route::resource('/admin/category', CategoryController::class)->names([
             'index' => 'r_category.index',
             'create' => 'r_category.create',
@@ -145,16 +165,14 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'destroy' => 'r_category.destroy',
         ]);
         Route::post('/admin/category/getdata', 'getDatacategorys')->name('admin.getcategorys');
-
     });
-});
 
-// -----------------    customer
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::controller(CustomerController::class)->group(function(){
+
+    // -----------------    customer
+    Route::controller(CustomerController::class)->group(function () {
+
+        Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
+
         Route::resource('/admin/customer', CustomerController::class)->names([
             'index' => 'r_customer.index',
             'create' => 'r_customer.create',
@@ -165,16 +183,11 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'destroy' => 'r_customer.destroy',
         ]);
         Route::post('/admin/customer/getdata', 'getDatacustomers')->name('admin.getcustomers');
-
     });
-});
 
-// -----------------    supplier
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::controller(SupplierController::class)->group(function(){
+
+    // -----------------    supplier
+    Route::controller(SupplierController::class)->group(function () {
         Route::resource('/admin/supplier', SupplierController::class)->names([
             'index' => 'r_supplier.index',
             'create' => 'r_supplier.create',
@@ -185,16 +198,10 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'destroy' => 'r_supplier.destroy',
         ]);
         Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');
-
     });
-});
 
-// -----------------    role
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::controller(RoleController::class)->group(function(){
+    // -----------------    role
+    Route::controller(RoleController::class)->group(function () {
         Route::resource('/admin/role', RoleController::class)->names([
             'index' => 'r_role.index',
             'create' => 'r_role.create',
@@ -205,45 +212,33 @@ Route::middleware(AuthMiddleware::class)->group(function(){
             'destroy' => 'r_role.destroy',
         ]);
         Route::post('/admin/role/getdata', 'getDataroles')->name('admin.getroles');
-
     });
+
+    // -----------------    Request Ajax
+
+    Route::get('/admin/coa', function () {
+        if (request()->ajax()) {
+            $coaAll = COA::all(['code', 'name', 'type', 'level']);
+            return json_encode($coaAll);
+        }
+    })->name('admin.coa');
+    Route::get('/admin/JSONunit', function () {
+        if (request()->ajax()) {
+            $All = Unit::all(['code', 'name']);
+            return json_encode($All);
+        }
+    })->name('admin.JSONunit');
+    Route::get('/admin/JSONcategory', function () {
+        if (request()->ajax()) {
+            $All = Category::all(['code', 'name', 'coa_code']);
+            return json_encode($All);
+        }
+    })->name('admin.JSONcategory');
+    Route::get('/admin/JSONrole', function () {
+        if (request()->ajax()) {
+            $All = Role::all(['id', 'name']);
+            return json_encode($All);
+        }
+    })->name('admin.JSONrole');
 });
-
-// -----------------    Request Ajax
-Route::middleware(AuthMiddleware::class)->group(function(){
-    Route::controller(AdminController::class)->group(function(){
-        Route::get('/admin', 'dashboard')->name('dashboard');
-    });
-    Route::get('/admin/coa', function() {
-    if (request()->ajax()) {
-        $coaAll = COA::all(['code','name','type','level']);
-        return json_encode($coaAll);
-    }
-
-    } )->name('admin.coa');
-    Route::get('/admin/JSONunit', function() {
-    if (request()->ajax()) {
-        $All = Unit::all(['code','name']);
-        return json_encode($All);
-    }
-
-    } )->name('admin.JSONunit');
-    Route::get('/admin/JSONcategory', function() {
-    if (request()->ajax()) {
-        $All = Category::all(['code','name', 'coa_code']);
-        return json_encode($All);
-    }
-
-    } )->name('admin.JSONcategory');
-    Route::get('/admin/JSONrole', function() {
-    if (request()->ajax()) {
-        $All = Role::all(['id','name']);
-        return json_encode($All);
-    }
-
-    } )->name('admin.JSONrole');
-
-});
-
-
 
