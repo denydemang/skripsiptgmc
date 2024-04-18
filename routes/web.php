@@ -88,7 +88,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // });
     Route::controller(COAController::class)->group(function () {
 
+        Route::get("admin/coalist", 'getCOAView')->name('admin.coalist');
         Route::get("admin/coa/gettablesearch", 'getCOATableSearch')->name('admin.getCOATableSearch');
+
     });
     // Route::controller(ItemController::class)->group(function () {
 

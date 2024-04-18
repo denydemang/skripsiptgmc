@@ -13,12 +13,13 @@ class COAController extends Controller
     public function getCOAView(Request $request){
 
         $supplyData = [
-            'title' => 'Categorys',
+            'title' => 'Master COA',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
 
         ];
 
+        return response()->view("admin.master.coa", $supplyData);
         
     }
     public function getCOATableSearch(Request $request, DataTables $dataTables){
