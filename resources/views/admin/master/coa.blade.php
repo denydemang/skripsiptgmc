@@ -11,7 +11,7 @@
 									<a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
 								</li>
 								<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Units</li>
+								<li class="breadcrumb-item active" aria-current="page">COA</li>
 							</ol>
 						</nav>
 					</div>
@@ -28,7 +28,7 @@
 						<div class="card" style="min-height: 800px">
 							<!-- Card header -->
 							<div class="card-header border-0">
-								<h3 class="mb-0">Units</h3>
+								<h3 class="mb-0">Categories Item</h3>
 							</div>
 							<div class="card-body">
 								<div class="btn btn-outline-primary btn-sm addbtn mb-2"><i class="fas fa-plus"></i> ADD NEW</div>
@@ -45,7 +45,32 @@
 			</div>
 		</div>
 		<!-- Footer -->
-		@include('layout.footer')
+		<footer class="footer pt-0">
+			<div class="row align-items-center justify-content-lg-between">
+				<div class="col-lg-6">
+					<div class="copyright text-lg-left text-muted text-center">
+						&copy; 2018
+						<a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">PT GENTA MULTI JAYYA</a>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<ul class="nav nav-footer justify-content-center justify-content-lg-end">
+						<li class="nav-item">
+							<a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
+						</li>
+						<li class="nav-item">
+							<a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
+						</li>
+						<li class="nav-item">
+							<a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+						</li>
+						<li class="nav-item">
+							<a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</footer>
 	</div>
 
 
@@ -75,6 +100,15 @@
 										<b>Name Cannot Be Blank </b>
 									</div>
 								</div>
+								<div class="form-group">
+									<label for="role">COA</label>
+									{{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
+									<select class="form-control coa_code" name="coa_code" id="coa_code">
+									</select>
+									<div class="invalid-feedback">
+										<b>Coa Code Cannot Be Blank </b>
+									</div>
+								</div>
 						</div>
 					</div>
 				</div>
@@ -88,5 +122,5 @@
 	</div>
 	{{-- Notif Flash Message --}}
 	@include('flashmessage')
-	<script src="{{ asset('/') }}js/units/units.js" type="module"></script>
+	<script src="{{ asset('/') }}js/categorys/categorys.js" type="module"></script>
 @endsection
