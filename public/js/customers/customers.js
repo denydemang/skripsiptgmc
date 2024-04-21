@@ -1,4 +1,4 @@
-import tableInitiator from "../tableinitiator.js";
+import tableInitiator from '../tableinitiator.js';
 import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
@@ -16,30 +16,27 @@ $(document).ready(async function () {
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
 
-  const pilih = $('<option value="" id="pilih" selected="">-- Pilih COA --</option>')
-
+  const pilih = $('<option value="" id="pilih" selected="">-- Pilih COA --</option>');
 
   try {
     // Panggil fungsi getDataRelasi dengan await untuk menunggu hasilnya
     const result = await getDataRelasi();
 
     // Lakukan sesuatu dengan hasilnya
-    console.log(result);
     if (result.length != 0) {
-        const selectElement = $('#coa_code');
-        selectElement.append(pilih);
-        result.forEach(item => {
-            const option = $('<option></option>');
-            option.attr('value', item.code); // Atur nilai option sesuai dengan data
-            option.text(`( ${item.code} ) - ${item.name}`); // Atur teks option sesuai dengan data
-            selectElement.append(option); // Masukkan option ke dalam elemen select
-        });
-
+      const selectElement = $('#coa_code');
+      selectElement.append(pilih);
+      result.forEach((item) => {
+        const option = $('<option></option>');
+        option.attr('value', item.code); // Atur nilai option sesuai dengan data
+        option.text(`( ${item.code} ) - ${item.name}`); // Atur teks option sesuai dengan data
+        selectElement.append(option); // Masukkan option ke dalam elemen select
+      });
     }
-} catch (error) {
+  } catch (error) {
     // Tangani kesalahan jika terjadi
     console.error('Error:', error);
-}
+  }
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
@@ -100,14 +97,12 @@ $(document).ready(async function () {
     }
   }
 
-
-
   async function formdeleteData(tondo = '') {
     // let token = $('meta[name="csrf-token"]').attr('content');
     const urlRequest = route('r_customer.destroy', tondo);
     const method = 'DELETE';
     const data = {
-      id: tondo,
+      id: tondo
     };
 
     try {
@@ -119,7 +114,6 @@ $(document).ready(async function () {
       return null;
     }
   }
-
 
   // FN VALIDATE
   function validate() {
@@ -177,7 +171,6 @@ $(document).ready(async function () {
     updateMode = false;
   });
 
-
   // Submit Form
   $(document).on('submit', '#formProjectType', function (e) {
     e.preventDefault();
@@ -190,9 +183,9 @@ $(document).ready(async function () {
       } else {
         var tondo = $('.code').val();
         var inputMethod = $('<input>').attr({
-            type: 'hidden',
-            name: '_method',
-            value: 'PUT'
+          type: 'hidden',
+          name: '_method',
+          value: 'PUT'
         });
 
         var form = $(this);
@@ -216,7 +209,6 @@ $(document).ready(async function () {
     EmailInput.val(text);
     PhoneInput.val(text);
     CoaCodeInput.val(text);
-
   }
 
   // Define populate
@@ -253,8 +245,8 @@ $(document).ready(async function () {
     window.location.href = route('r_customer.index');
   }
 
-   // Click Delete Button
-   $(document).on('click', '.deletebtn', function () {
+  // Click Delete Button
+  $(document).on('click', '.deletebtn', function () {
     let code = $(this).data('code');
     showconfirmdelete(code, code, deleteData, 'Code :');
   });
@@ -270,5 +262,4 @@ $(document).ready(async function () {
 
   // Trigger Toast
   checkNotifMessage();
-
 });

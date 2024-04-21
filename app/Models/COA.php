@@ -19,6 +19,7 @@ class COA extends Model
         'name',
         'type',
         'level',
+        'default_dk',
         'description',
         "beginning_balance",
         'created_at',

@@ -31,19 +31,24 @@
 								<h3 class="mb-0">COA LIST</h3>
 							</div>
 							<div class="card-body">
+								<button class="btn btn-outline-primary btnaddnew mb-3"><i class="fas fa-plus"></i> Add New COA</button>
+								<div class="col-lg-12 border p-0">
+									<div id="coalist"></div>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- Footer -->
-		@include('layout.footer')
+	</div>
+	<!-- Footer -->
+	@include('layout.footer')
 	</div>
 
 
 	{{-- MODAL FORM --}}
-	<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal fade" id="modalcoa" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
 		<div class="modal-dialog modal-primary" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -55,40 +60,87 @@
 				<div class="modal-body">
 					<div class="row">
 						<div class="col-12">
-							<form id="formProjectType" action="asdasda" method="post">
-								@csrf
-								<div class="form-group">
-									<label for="code">Code</label>
-									<input class="form-control code" type="text" name="code" style="font-weight: bolder">
-								</div>
-								<div class="form-group">
-									<label for="name">Name</label>
-									<input class="form-control name" type="text" name="name" style="font-weight: bolder">
-									<div class="invalid-feedback">
-										<b>Name Cannot Be Blank </b>
+							<div class="row">
+								<div class="col-lg-12">
+									<div class="form-group">
+										<label for="code">Code</label> <span style="color: red">*</span>
+										<input class="form-control inputcode" type="text" name="code" style="font-weight: bolder">
 									</div>
 								</div>
-								<div class="form-group">
-									<label for="role">COA</label>
-									{{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
-									<select class="form-control coa_code" name="coa_code" id="coa_code">
-									</select>
-									<div class="invalid-feedback">
-										<b>Coa Code Cannot Be Blank </b>
+								<div class="col-lg-12">
+									<div class="form-group">
+										<label for="code">Name</label> <span style="color: red">*</span>
+										<input class="form-control inputname" type="text" name="name" style="font-weight: bolder">
 									</div>
 								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="code">Type</label> <span style="color: red">*</span>
+										<select class="form-control inputtype" name="type" style="font-weight: bolder">
+											<option value="Aktiva">Aktiva</option>
+											<option value="Passiva">Passiva</option>
+											<option value="Modal">Modal</option>
+											<option value="Rugi Laba">Rugi Laba</option>
+											<option value="Pendapatan">Pendapatan</option>
+											<option value="HPP">HPP</option>
+											<option value="HPP">Beban</option>
+											<option value="Pendapatan Non Operasional">Pendapatan Non Operasional</option>
+											<option value="Beban Non Operasional">Beban Non Operasional</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="code">Level</label> <span style="color: red">*</span>
+										<select class="form-control inputlevel" name="type" style="font-weight: bolder">
+											<option value="1">Level 1</option>
+											<option value="2">Level 2</option>
+											<option value="3">Level 3</option>
+											<option value="4">Level 4</option>
+											<option value="5">Level 5</option>
+											<option value="6">Level 6</option>
+											<option value="7">Level 7</option>
+										</select>
+										{{-- <input class="form-control inputlevel" type="number" name="level" style="font-weight: bolder"> --}}
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="code">D/K</label> <span style="color: red">*</span>
+										<select class="form-control inputdk" name="dk" style="font-weight: bolder">
+											<option value="D">D</option>
+											<option value="K">K</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-6">
+									<div class="form-group">
+										<label for="code">Description</label> <span style="color: red">*</span>
+										<select class="form-control inputdescription" name="dk" style="font-weight: bolder">
+											<option value="Header">Header</option>
+											<option value="Detail">Detail</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-12">
+									<div class="form-group">
+										<label for="code">Beginning Balance</label> <span style="color: red">*</span>
+										<input class="form-control inputbeginning" type="text" name="beginningbalance"
+											style="font-weight: bolder">
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-success btnsave">Save changes</button>
-					</form>
+					<button type="submit" class="btn btn-success btnsave"><span>Save changes</span></button>
 				</div>
 			</div>
 		</div>
 	</div>
 	{{-- Notif Flash Message --}}
 	@include('flashmessage')
-	{{-- <script src="{{ asset('/') }}js/categorys/categorys.js" type="module"></script> --}}
+	<script src="{{ asset('/') }}js/coa/coa.js" type="module"></script>
 @endsection

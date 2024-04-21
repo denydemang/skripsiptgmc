@@ -16,6 +16,26 @@ export const showconfirmdelete = (id, name, funcdelete = null, menuname) => {
     type: 'orange'
   });
 };
+
+export const showconfirmdeletecustommsg = (id, name, funcdelete = null, menuname, custommessage) => {
+  $.confirm({
+    buttons: {
+      DELETE: async function () {
+        funcdelete(id, name);
+      },
+      CANCEL: {
+        action: function () {}
+      }
+    },
+    title: `Confirm Delete ?`,
+    content: `${menuname} "${name}" ${custommessage}`,
+    icon: 'fa fa-question-circle-o',
+    theme: 'supervan',
+    animation: 'scale',
+    type: 'orange'
+  });
+};
+
 export const showconfirmapprove = (id, name, funcapprove = null, menuname) => {
   $.confirm({
     buttons: {

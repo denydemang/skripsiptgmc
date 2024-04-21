@@ -30,9 +30,12 @@
 		type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/bootstrap-datepicker/bootstrap-datepicker.min.css"
 		type="text/css" />
+	<link rel="stylesheet" href="{{ asset('/') }}assets/jstree/dist/themes/default/style.min.css" />
 
 	<!-- Core -->
 	<script src="{{ asset('/') }}assets/vendor/jquery/dist/jquery.min.js"></script>
+	<script src="{{ asset('/') }}assets/jstree/dist/jstree.min.js"></script>
+	<script src="{{ asset('/') }}assets/jstree/dist/jstreegrid.js"></script>
 	<script src="{{ asset('/') }}assets/Datatables/datatables.min.js"></script>
 	<script src="{{ asset('/') }}assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
@@ -44,6 +47,11 @@
 	<script src="{{ asset('/') }}assets/vendor/lavalamp/js/jquery.lavalamp.min.js"></script>
 	<!-- Optional JS -->
 	{{-- <script src="{{ mix('js/ziggy.js') }}"></script> --}}
+	<style>
+		.vakata-context {
+			z-index: 999 !important;
+		}
+	</style>
 	@routes
 </head>
 
