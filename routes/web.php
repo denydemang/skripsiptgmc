@@ -94,7 +94,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post("admin/coa/add", 'addCoa')->name('admin.addCoa');
         Route::post("admin/coa/edit/{id}", 'editcoa')->name('admin.editcoa');
         Route::post("admin/coa/delete/{id}", 'deletecoa')->name('admin.deletecoa');
-        Route::post("admin/coa/delete/{id}", 'deletecoasub')->name('admin.deletecoasub');
+        Route::post("admin/coa/delete/sub/{id}", 'deletecoasub')->name('admin.deletecoasub');
 
     });
     // Route::controller(ItemController::class)->group(function () {
