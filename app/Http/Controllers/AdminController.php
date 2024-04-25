@@ -19,9 +19,9 @@ class AdminController extends Controller
         ]);
     }
 
-    public function errorException($ex, $routeRedirectName ){
+    public function errorException($ex, $routeRedirectName , $code =""){
         if (!strpos($ex->getMessage(), "cannot delete or update a parent row")){
-            return response()->redirectToRoute($routeRedirectName)->with("error","Unable To Delete Already Used By Another Transaction");
+            return response()->redirectToRoute($routeRedirectName)->with("error","Unable To Delete $code Already Used By Another Transaction");
         } else {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute($routeRedirectName)->with("error", $ex->getMessage());

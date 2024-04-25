@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
@@ -247,5 +248,21 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             return json_encode($All);
         }
     })->name('admin.JSONrole');
+
+    // -----------------------------------------
+
+
+    // Purchase Request
+    // -----------------------------------------
+    Route::controller(PurchaseRequestController::class)->group(function(){
+        Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
+        Route::post('/admin/purchaserequest/gettable', 'getTablePR')->name('admin.getprtable');
+        Route::get('/admin/purchaserequest/delete/{id}', 'deletePR')->name('admin.deletePR');
+        Route::get('/admin/purchaserequest/approve/{id}', 'approvePR')->name('admin.approvePR');
+        Route::post('/admin/purchaserequest/detail/{id}', 'detailPR')->name('admin.detailPR');
+        Route::get('/admin/purchaserequest/print/{id}', 'printPR')->name('admin.printPR');
+    });
+    // ------------------------------------------
+
 });
 

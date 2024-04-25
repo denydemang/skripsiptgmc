@@ -178,13 +178,16 @@
 							</ul>
 						</div>
 					</li>
+					@php
+						$allinventory = ['admin.pr'];
+					@endphp
 					<li class="nav-item">
-						<a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button" aria-expanded="false"
-							aria-controls="navbar-tables">
+						<a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button"
+							aria-expanded="{{ in_array($sessionRoute, $allinventory) ? 'true' : 'false' }}" aria-controls="navbar-tables">
 							<i class="ni ni-box-2 text-default"></i>
 							<span class="nav-link-text">Inventory</span>
 						</a>
-						<div class="collapse" id="navbar-tables">
+						<div class="{{ in_array($sessionRoute, $allinventory) ? 'show' : '' }} collapse" id="navbar-tables">
 							<ul class="nav nav-sm flex-column">
 								<li class="nav-item">
 									<a href="./pages/tables/tables.html" class="nav-link">Inventory In</a>
@@ -198,8 +201,8 @@
 								<li class="nav-item">
 									<a href="./pages/tables/datatables.html" class="nav-link">Stock Reminder</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/tables/datatables.html" class="nav-link">Purchase Request</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.pr' ? 'active' : '' }}">
+									<a href="{{ route('admin.pr') }}" class="nav-link">Purchase Request</a>
 								</li>
 							</ul>
 						</div>

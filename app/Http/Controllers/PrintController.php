@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Journal;
 use App\Models\Project;
+use App\Models\Purchase_Request;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 
@@ -148,7 +149,8 @@ class PrintController extends Controller
 
     public function printprojectrecap($statuscode = null,$startdate,$lastdate, $customercode = null){
 
-        
+        try {
+             
         $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
         ->join('customers','projects.customer_code', '=', 'customers.code' )
         ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 
@@ -162,6 +164,9 @@ class PrintController extends Controller
         })
         ->get();
 
+        if ($project === null){
+            abort(404);
+        };
         $data = [
             "projects" => $project,
             "customer_code" => $customercode,
@@ -176,6 +181,29 @@ class PrintController extends Controller
         $pdf->setPaper('A4', 'landscape'); 
         $pdf->loadview("admin.project.print.printprojectrecap", $data);
         return $pdf->stream("ProjectRecapitulation($startdate-$lastdate).pdf", array("Attachment" => false));
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+      
 
+    }
+
+    public function printpurchaserequest($id){
+        
+
+        $PurchaseRequest = Purchase_Request::join("purchase_request_details", "purchase_requests.pr_no" , "=", "purchase_request_details.pr_no")
+                        ->leftJoin("items", 'items.code', "=", "purchase_request_details.item_code")
+        ->where("purchase_requests.pr_no", $id)->get();
+
+        if (count($PurchaseRequest) == 0){
+            abort(404);
+        };
+        $data = [
+            "dataPR" =>  $PurchaseRequest
+        ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->loadview("admin.inventory.print.printpurchaserequest" ,$data);
+        return $pdf->stream("PurchaseRequest-($id).pdf", array("Attachment" => false));
     }
 }

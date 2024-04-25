@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PurchaseRequest extends Model
+class Purchase_Request extends Model
 {
     use HasFactory;
 
@@ -23,6 +23,7 @@ class PurchaseRequest extends Model
         'description',
         'is_approve',
         'is_purchased',
+        'approved_by',
         'date_need',
         'created_at',
         'created_by',
@@ -30,3 +31,4 @@ class PurchaseRequest extends Model
         'updated_by'
     ];
 }
+

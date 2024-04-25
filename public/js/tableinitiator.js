@@ -1,10 +1,11 @@
 export default class tableInitiator {
-  constructor(method = 'get', tableName = '', columns = [], url, data = function () {}) {
+  constructor(method = 'get', tableName = '', columns = [], url, data = function () {}, funcCell = function () {}) {
     this.method = method;
     this.tableName = tableName;
     this.columns = columns;
     this.url = url;
     this.data = data;
+    this.funcCell = funcCell;
     this.table = $(this.tableName).DataTable({
       retrieve: true,
       processing: true,
@@ -24,7 +25,8 @@ export default class tableInitiator {
         },
         data: this.data
       },
-      columns: this.columns
+      columns: this.columns,
+      createdRow: this.funcCell
     });
   }
 

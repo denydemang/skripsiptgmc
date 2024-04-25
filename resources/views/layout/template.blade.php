@@ -51,6 +51,51 @@
 		.vakata-context {
 			z-index: 999 !important;
 		}
+
+		.blink-bg {
+			color: #fff;
+			padding: 10px;
+			/* background-color: #df3f49; */
+			/* Warna dasar merah */
+			display: inline-block;
+			border-radius: 5px;
+			animation: blinkingBackground 1.2s infinite ease-in;
+		}
+
+		@keyframes blinkingBackground {
+			0% {
+				opacity: 0.1;
+				color: red
+					/* Mulai dari transparan */
+			}
+
+			25% {
+				opacity: 0.7;
+				color: purple
+					/* Mencapai kejelasan maksimum di tengah */
+			}
+
+			50% {
+				opacity: 1;
+				color: brown
+					/* Mencapai kejelasan maksimum di tengah */
+			}
+
+			60% {
+				opacity: 1;
+				/* Mencapai kejelasan maksimum di tengah */
+			}
+
+			75% {
+				opacity: 0.7;
+				/* Mencapai kejelasan maksimum di tengah */
+			}
+
+			100% {
+				opacity: 0.1;
+				/* Kembali menjadi transparan */
+			}
+		}
 	</style>
 	@routes
 </head>
