@@ -108,7 +108,7 @@
 										</div>
 									</div>
 								</div>
-								<a href="{{ route('admin.addProjectView') }}">
+								<a href="{{ route('admin.addprview') }}">
 									<button class="btn btn-outline-primary btn-sm addbtn mb-2">
 										<i class="fas fa-plus"></i> ADD NEW
 									</button></a>

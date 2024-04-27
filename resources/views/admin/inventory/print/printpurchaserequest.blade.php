@@ -102,7 +102,7 @@
 						<p style="text-align: left; font-size:16px;font-weight:bolder">:</p>
 					</td>
 					<td>
-						<p style="text-align: left; font-size:16px;font-weight:bolder; padding-left:20px">{{ $dataPR[0]['pr_no'] }}</p>
+						<p style="text-align: left; font-size:16px;font-weight:bolder; padding-left:12px">{{ $dataPR[0]['pr_no'] }}</p>
 					</td>
 				</tr>
 				<tr>
@@ -113,7 +113,7 @@
 						<p style="text-align: left; font-size:16px;font-weight:bolder">:</p>
 					</td>
 					<td>
-						<p style="text-align: left; font-size:16px;font-weight:bolder;padding-left:20px">{{ $dataPR[0]['division'] }}</p>
+						<p style="text-align: left; font-size:16px;font-weight:bolder;padding-left:12px">{{ $dataPR[0]['division'] }}</p>
 					</td>
 				</tr>
 				<tr>
@@ -124,7 +124,7 @@
 						<p style="text-align: left; font-size:16px;font-weight:bolder">:</p>
 					</td>
 					<td>
-						<p style="text-align: left; font-size:16px;font-weight:bolder;padding-left:20px">{{ $dataPR[0]['pic_name'] }}</p>
+						<p style="text-align: left; font-size:16px;font-weight:bolder;padding-left:12px">{{ $dataPR[0]['pic_name'] }}</p>
 					</td>
 				</tr>
 			</table>

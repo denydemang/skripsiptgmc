@@ -61,6 +61,9 @@ class ProjectController extends AdminController
             'customers.name as customer_name', 'customers.address as customer_address')
             ->where('projects.code', $code)->first();
 
+            if (!$project){
+                abort(404);
+            }
             $project_detail = new ProjectDetailController();
             $project_detail = $project_detail->getDetail($code);
             $dataBahanBaku = $project_detail->get();            

@@ -179,7 +179,7 @@
 						</div>
 					</li>
 					@php
-						$allinventory = ['admin.pr'];
+						$allinventory = ['admin.pr', 'admin.addprview', 'admin.editprview'];
 					@endphp
 					<li class="nav-item">
 						<a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button"
@@ -201,7 +201,8 @@
 								<li class="nav-item">
 									<a href="./pages/tables/datatables.html" class="nav-link">Stock Reminder</a>
 								</li>
-								<li class="nav-item {{ $sessionRoute == 'admin.pr' ? 'active' : '' }}">
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.pr' || $sessionRoute == 'admin.addprview' || $sessionRoute == 'admin.editprview' ? 'active' : '' }}">
 									<a href="{{ route('admin.pr') }}" class="nav-link">Purchase Request</a>
 								</li>
 							</ul>

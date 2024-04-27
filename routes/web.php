@@ -255,11 +255,22 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // Purchase Request
     // -----------------------------------------
     Route::controller(PurchaseRequestController::class)->group(function(){
+
+        // GET VIEW
         Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
+        Route::get('/admin/purchaserequest/add' ,'getViewPRManage')->name('admin.addprview');
+        Route::get('/admin/purchaserequest/edit/{code}' ,'getViewPRManage')->name('admin.editprview');
+        
+        
+        // CRUD
+        Route::post('/admin/purchaserequest/add' ,'addPR')->name('admin.addpr');
+        Route::post('/admin/purchaserequest/edit/{id}' ,'editPR')->name('admin.editpr');
         Route::post('/admin/purchaserequest/gettable', 'getTablePR')->name('admin.getprtable');
         Route::get('/admin/purchaserequest/delete/{id}', 'deletePR')->name('admin.deletePR');
         Route::get('/admin/purchaserequest/approve/{id}', 'approvePR')->name('admin.approvePR');
         Route::post('/admin/purchaserequest/detail/{id}', 'detailPR')->name('admin.detailPR');
+
+        // PRINT
         Route::get('/admin/purchaserequest/print/{id}', 'printPR')->name('admin.printPR');
     });
     // ------------------------------------------

@@ -265,6 +265,14 @@ $(document).ready(function () {
     populateData(dataDetail);
   });
 
+  // Click Edit Button
+  $(document).on('click', '.editbtn', function () {
+    let code = $(this).data('code');
+    let url = route('admin.editprview', code);
+
+    window.location.href = url;
+  });
+
   // =============================================================
 
   // Trigger Toast

@@ -8,6 +8,8 @@ use App\Models\PurchaseRequest_Detail;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class PurchaseRequestController extends AdminController
@@ -22,6 +24,45 @@ class PurchaseRequestController extends AdminController
 
         return response()->view("admin.inventory.purchaserequest",$supplyData);
 
+    }
+
+    public function getViewPRManage(Request $request, $code=null){
+        $data = [];
+        if ($code){ //If In Update Mode
+        
+            $pr = Purchase_Request::where("pr_no", $code)->first();
+            
+            if (!$pr){
+                abort(404);
+            }
+
+            $pr_detail = PurchaseRequest_Detail::leftJoin("items",'purchase_request_details.item_code', '=', 'items.code')
+            ->leftJoin("units" ,'purchase_request_details.unit_code', '=', 'units.code' )
+            ->leftjoin("stocks", 'purchase_request_details.item_code', '=' , 'stocks.item_code')
+            ->select("purchase_request_details.pr_no",
+            "items.code as item_code", "items.name as item_name",
+            "units.code as unit_code", DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks'),"purchase_request_details.qty" , "purchase_request_details.created_by",
+            "purchase_request_details.updated_by" , "purchase_request_details.created_at", "purchase_request_details.updated_at"  )
+            ->groupBy('purchase_request_details.pr_no', 'items.code', 'items.name', 'units.code', 'purchase_request_details.qty', "purchase_request_details.created_by",  "purchase_request_details.updated_by", "purchase_request_details.created_at" , "purchase_request_details.updated_at")
+            ->where("purchase_request_details.pr_no", $code)
+            ->get();
+
+            $data = [
+                "dataPR" => $pr,
+                "dataDetail" => json_encode($pr_detail)
+            ];
+
+
+        }
+
+        $supplyData = [
+            'title' =>$request->route()->getName() == 'admin.addprview' ?  'Add New Purchase Request' : 'Edit Purchase Request',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+            'data' => $data
+        ];
+    
+        return response()->view("admin.inventory.purchaserequestmanage",$supplyData);
     }
 
     public function getTablePR(Request $request, DataTables $dataTables){
@@ -104,7 +145,7 @@ class PurchaseRequestController extends AdminController
                         case 0: //Not Started
                             $html = '
                             <div class="d-flex justify-content-center">
-                            <button class="btn btn-sm btn-primary editbtn" data-code="" title="Edit"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-sm btn-primary editbtn" data-code="'.$row->pr_no.'" title="Edit"><i class="fa fa-edit"></i></button>
                             <button class="btn btn-sm btn-danger deletebtn" data-code="'.$row->pr_no.'" title="Delete"><i class="fa fa-trash"></i></button>
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->pr_no.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-sm btn-warning approvebtn" data-code="'.$row->pr_no.'" title="Approve"><i class="fa fa-check"></i></button>
@@ -138,6 +179,111 @@ class PurchaseRequestController extends AdminController
             abort(404);
         }
         
+    }
+
+    public function addPR(Request $request){
+    
+        if($request->ajax()){
+
+            try {
+            
+                $data = $request->all();
+
+                DB::beginTransaction();
+                $pr = Purchase_Request::orderBy("pr_no", "desc")->lockforUpdate()->first();
+                $pr_no = $this->automaticCode('PR' ,$pr, true,  'pr_no');
+            
+
+                $pr_details = json_decode($data['pr_details']);
+
+                $pr = new Purchase_Request();
+                $pr->pr_no = $pr_no;
+                $pr->transaction_date =  Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+                $pr->pic_name = htmlspecialchars($data['pic_name']);
+                $pr->division = htmlspecialchars($data['division']);
+                $pr->ref_no = htmlspecialchars($data['ref_no']) ;
+                $pr->description = htmlspecialchars($data['description']) ;
+                $pr->is_approve = 0;
+                $pr->is_purchased = 0;
+                $pr->approved_by = null;
+                $pr->date_need = Carbon::createFromFormat('d/m/Y',$data['date_need'])->format('Y-m-d');
+                $pr->created_by = Auth::user()->name;
+                $pr->save();
+
+                foreach($pr_details as $i){
+                    $pr_details= new PurchaseRequest_Detail();
+                    $pr_details->pr_no = $pr->pr_no;
+                    $pr_details->item_code = $i->item_code;
+                    $pr_details->unit_code = $i->unit_code;
+                    $pr_details->qty = $i->qty;
+                    $pr_details->created_by = Auth::user()->name;
+                    $pr_details->save();
+                }
+                DB::commit();
+                Session::flash('success',  "New Purchase Request : $pr->pr_no Succesfully Created");
+                return json_encode(true);
+                
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+
+
+        } else {
+            abort(404);
+        }
+
+    }
+
+    public function editPR(Request $request, $code){
+        if ($request->ajax()){
+            try {
+            
+                $data = $request->all();
+
+                
+                DB::beginTransaction();
+            
+                $pr_details = json_decode($data['pr_details']);
+        
+
+                $pr = Purchase_Request::where("pr_no", $code)->first();
+                $pr->transaction_date =  Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+                $pr->pic_name = htmlspecialchars($data['pic_name']);
+                $pr->division = htmlspecialchars($data['division']);
+                $pr->ref_no = htmlspecialchars($data['ref_no']) ;
+                $pr->description = htmlspecialchars($data['description']) ;
+                $pr->is_approve = 0;
+                $pr->is_purchased = 0;
+                $pr->approved_by = null;
+                $pr->date_need = Carbon::createFromFormat('d/m/Y',$data['date_need'])->format('Y-m-d');
+                $pr->updated_by = Auth::user()->name;
+                $pr->update();
+
+                PurchaseRequest_Detail::where("pr_no", $code)->delete();
+                foreach($pr_details as $i){
+                    $pr_details= new PurchaseRequest_Detail();
+                    $pr_details->pr_no = $pr->pr_no;
+                    $pr_details->item_code = $i->item_code;
+                    $pr_details->unit_code = $i->unit_code;
+                    $pr_details->qty = $i->qty;
+                    $pr_details->created_by = Auth::user()->name;
+                    $pr_details->updated_by = Auth::user()->name;
+                    $pr_details->save();
+                }
+                DB::commit();
+                Session::flash('success',  "Purchase Request : $pr->pr_no Succesfully Updated");
+                return json_encode(true);
+                
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+        } else {
+            abort(404);
+        }
     }
     public function deletePR($code){
         try {
