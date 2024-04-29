@@ -275,5 +275,18 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     });
     // ------------------------------------------
 
+        // Invenroey In
+    // -----------------------------------------
+    Route::controller(StockController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/inventoryin', 'getViewInventoryIN')->name('admin.iin');
+        Route::get('/admin/inventoryin/addbeginningbalance', 'getViewInventoryInManage')->name('admin.addbeginningview');
+
+        // CRUD
+        Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
+    });
+    // ------------------------------------------
+
 });
 

@@ -207,7 +207,6 @@ $(document).ready(function () {
 
   // check perubahan value datepicker TRANS DATE
   $(document).on('change', '.datetimepicker-input', function () {
-    alert('berubah');
     updateDTPTransDateValue();
   });
 

@@ -201,15 +201,10 @@
 
 
 	{{-- MODAL FORM --}}
-	@include('searchModal.customerSearch')
-
-	@include('searchModal.projectTypeSearchModal')
 
 	@include('searchModal.coasearch')
 
 	@include('searchModal.itemssearch')
-
-	@include('searchModal.upahsearch')
 
 	{{-- @include('searchModal.coaSearch') --}}
 

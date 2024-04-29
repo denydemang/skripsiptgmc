@@ -37,6 +37,7 @@
 	<script src="{{ asset('/') }}assets/jstree/dist/jstree.min.js"></script>
 	<script src="{{ asset('/') }}assets/jstree/dist/jstreegrid.js"></script>
 	<script src="{{ asset('/') }}assets/Datatables/datatables.min.js"></script>
+
 	<script src="{{ asset('/') }}assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
 	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/fixedColumns.dataTables.min.js"></script>
