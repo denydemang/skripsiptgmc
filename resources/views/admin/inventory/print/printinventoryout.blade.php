@@ -112,7 +112,7 @@
 			<tbody>
 				@foreach ($stocckData as $tanggal => $items)
 					<tr>
-						<td colspan="6" class="headerdate"><b>Date In : {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</b></td>
+						<td colspan="6" class="headerdate"><b>Date OUT : {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</b></td>
 					</tr>
 					@foreach ($items as $item)
 						<tr>
