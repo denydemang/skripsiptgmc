@@ -6,6 +6,7 @@ use App\Models\Journal;
 use App\Models\Project;
 use App\Models\Purchase_Request;
 use App\Models\Stock;
+use App\Models\Stocks_Out;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -233,5 +234,30 @@ class PrintController extends Controller
         $pdf->setPaper('A4', 'landscape'); 
         $pdf->loadview("admin.inventory.print.printinventoryin", $data);
         return $pdf->stream("IIN-($firstDate to $lastDate).pdf", array("Attachment" => false));
+    }
+
+    public function printIOUT($firstDate, $lastDate){
+
+
+
+        $stock = Stocks_Out::join("items", "stocks_out.item_code", "=", "items.code")
+        ->join('categories', "categories.code", "=", "items.category_code")
+        ->select('stocks_out.id', DB::raw('DATE(stocks_out.item_date) as item_date'), 'stocks_out.ref_no', 
+        'stocks_out.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+        'stocks_out.unit_code', 'stocks_out.qty', 'stocks_out.cogs', 'categories.coa_code')
+        ->whereBetween('stocks_out.item_date', [$firstDate,$lastDate])->get();
+
+        $groupedData = collect($stock)->groupBy('item_date');
+
+        $data = [
+            'stocckData' => $groupedData,
+            'firstDate' => Carbon::parse($firstDate)->format("d/m/Y"),
+            'lastDate' => Carbon::parse($lastDate)->format("d/m/Y")
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->loadview("admin.inventory.print.printinventoryout", $data);
+        return $pdf->stream("IOUT-($firstDate to $lastDate).pdf", array("Attachment" => false));
     }
 }

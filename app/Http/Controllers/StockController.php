@@ -29,6 +29,18 @@ class StockController extends Controller
         
     }
 
+    public function getViewInventoryOUT(Request $request){
+        $supplyData = [
+            'title' => 'Inventory OUT',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+    
+            ];
+
+        return response()->view("admin.inventory.inventoryout",$supplyData);
+        
+    }
+
     public function getViewInventoryInManage(Request $request){
         $supplyData = [
             'title' => 'Add Item Beginning Balance',
@@ -52,6 +64,9 @@ class StockController extends Controller
             if( !Carbon::createFromFormat('Y-m-d', $firstDate) ){
                 abort(404);
             }
+            if( !Carbon::createFromFormat('Y-m-d', $lastDate) ){
+                abort(404);
+            }
             if (empty($firstDate)){
                 abort(404);
             }
@@ -61,6 +76,33 @@ class StockController extends Controller
 
         $printcontroller = new PrintController();
         return $printcontroller->printIIN($firstDate, $lastDate);
+    }
+
+    public function printIOUT(Request $request){
+
+        $firstDate = $request->get('firstDate');
+        $lastDate = $request->get('lastDate');
+
+        try {
+            //code...
+            if( !Carbon::createFromFormat('Y-m-d', $firstDate) ){
+                abort(404);
+            }
+            if( !Carbon::createFromFormat('Y-m-d', $lastDate) ){
+                abort(404);
+            }
+            if (empty($firstDate)){
+                abort(404);
+            }
+            if (empty($lastDate)){
+                abort(404);
+            }
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printIOUT($firstDate, $lastDate);
     }
 
     public function getTableInventoryIn(Request $request, DataTables $dataTables){
@@ -110,6 +152,47 @@ class StockController extends Controller
                     return $html;
                 })
                 ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+                
+                
+        } else {
+            abort(404);
+        }
+    }
+
+    public function getTableInventoryOut(Request $request, DataTables $dataTables){
+
+        if ($request->ajax()){
+
+
+            $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
+            $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
+        
+            
+            $stock = Stocks_Out::join("items", "stocks_out.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->select('stocks_out.id', 'stocks_out.item_date', 'stocks_out.ref_no', 
+            'stocks_out.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+            'stocks_out.unit_code', 'stocks_out.qty', 'stocks_out.cogs', 'categories.coa_code')
+            ->whereBetween('stocks_out.item_date', [$startDate,$endDate]);
+  
+            return $dataTables->of($stock)
+                ->editColumn('item_date', function($row) {
+                    return Carbon::parse($row->item_date)->format('d/m/Y');
+                })
+                ->editColumn('qty', function($row) {
+                    return floatval($row->qty);
+                })
+                ->editColumn('cogs', function($row) {
+                    return "Rp " .number_format($row->cogs,2, '.');
+                })
+                ->filterColumn('item_name', function($query, $keyword) {
+                    $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_category', function($query, $keyword) {
+                    $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);
+                })
                 ->addIndexColumn()
                 ->make(true);
                 

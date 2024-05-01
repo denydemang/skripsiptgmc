@@ -32,17 +32,17 @@ $(document).ready(function () {
 
   // INISIASI DATATABLE
   // ======================================================
-  var getIINTable = route('admin.tableiin');
-  const tableName = '.iintable';
+  var getIOUTTable = route('admin.tableout');
+  const tableName = '.iouttable';
   const method = 'post';
   const columns = [
-    { data: 'item_date', name: 'item_date', title: 'Date Item In', searchable: true, orderable: true },
+    { data: 'item_date', name: 'item_date', title: 'Date Item OUT', searchable: true, orderable: true },
     { data: 'ref_no', name: 'ref_no', title: 'Reference', searchable: true, orderable: false },
     { data: 'item_code', name: 'item_code', title: 'Item Code', searchable: true, orderable: true },
     { data: 'item_name', name: 'item_name', title: 'Item Name', searchable: true, orderable: true },
     { data: 'item_category', name: 'item_category', title: 'Category', searchable: true, orderable: false },
     { data: 'unit_code', name: 'unit_code', title: 'Unit Code', searchable: true, orderable: false },
-    { data: 'actual_stock', name: 'actual_stock', title: 'Quantity IN', searchable: false, orderable: false },
+    { data: 'qty', name: 'qty', title: 'Quantity OUT', searchable: false, orderable: false },
     { data: 'cogs', name: 'cogs', title: 'COGS', searchable: false, orderable: false },
     { data: 'coa_code', name: 'coa_code', title: 'COA code', searchable: false, orderable: false }
   ];
@@ -60,7 +60,7 @@ $(document).ready(function () {
     DestroyTable(method, tableName, columns, url, data);
     ShowTable(method, tableName, columns, url, data);
   }
-  reloadTable(method, tableName, columns, getIINTable, supplyData);
+  reloadTable(method, tableName, columns, getIOUTTable, supplyData);
   // =================================================================
 
   // INISIASI DATEPICKER
@@ -84,7 +84,7 @@ $(document).ready(function () {
     supplyData.startDate = startTrans;
     supplyData.endDate = lastTrans;
 
-    reloadTable(method, tableName, columns, getIINTable, supplyData);
+    reloadTable(method, tableName, columns, getIOUTTable, supplyData);
   }
   // =============================================================
 
@@ -96,17 +96,9 @@ $(document).ready(function () {
     updateDTPTransDateValue();
   });
 
-  // Click Edit Button
-  $(document).on('click', '.editbtn', function () {
-    let code = $(this).data('code');
-    let url = route('admin.editprview', code);
-
-    window.location.href = url;
-  });
-
   // Click Print Button
   $(document).on('click', '.btnprint', function () {
-    let url = route('admin.printIIN');
+    let url = route('admin.printIOUT');
 
     window.open(
       url +
