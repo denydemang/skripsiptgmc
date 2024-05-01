@@ -96,18 +96,24 @@ $(document).ready(function () {
     updateDTPTransDateValue();
   });
 
-  // Click Delete Button
-  $(document).on('click', '.deletebtn', function () {
-    let Code = $(this).data('code');
-    showconfirmdelete(Code, Code, deleteData, 'Purchase Request :');
-  });
-
   // Click Edit Button
   $(document).on('click', '.editbtn', function () {
     let code = $(this).data('code');
     let url = route('admin.editprview', code);
 
     window.location.href = url;
+  });
+
+  // Click Print Button
+  $(document).on('click', '.btnprint', function () {
+    let url = route('admin.printIIN');
+
+    window.location.href =
+      url +
+      `?firstDate=${moment(supplyData.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}&lastDate=${moment(
+        supplyData.endDate,
+        'DD/MM/YYYY'
+      ).format('YYYY-MM-DD')}`;
   });
 
   // =============================================================

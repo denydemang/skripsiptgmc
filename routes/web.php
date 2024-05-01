@@ -285,6 +285,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // CRUD
         Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
+        
+        // Print
+        Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
+
     });
     // ------------------------------------------
 

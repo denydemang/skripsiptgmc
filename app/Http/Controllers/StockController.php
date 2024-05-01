@@ -42,6 +42,27 @@ class StockController extends Controller
         
     }
 
+    public function printIIN(Request $request){
+
+        $firstDate = $request->get('firstDate');
+        $lastDate = $request->get('lastDate');
+
+        try {
+            //code...
+            if( !Carbon::createFromFormat('Y-m-d', $firstDate) ){
+                abort(404);
+            }
+            if (empty($firstDate)){
+                abort(404);
+            }
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printIIN($firstDate, $lastDate);
+    }
+
     public function getTableInventoryIn(Request $request, DataTables $dataTables){
 
         if ($request->ajax()){

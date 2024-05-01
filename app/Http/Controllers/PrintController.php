@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Journal;
 use App\Models\Project;
 use App\Models\Purchase_Request;
+use App\Models\Stock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 
 class PrintController extends Controller
 {
@@ -205,5 +208,30 @@ class PrintController extends Controller
         $pdf->setPaper('A4', 'potrait'); 
         $pdf->loadview("admin.inventory.print.printpurchaserequest" ,$data);
         return $pdf->stream("PurchaseRequest-($id).pdf", array("Attachment" => false));
+    }
+
+    public function printIIN($firstDate, $lastDate){
+
+
+
+        $stock = Stock::join("items", "stocks.item_code", "=", "items.code")
+        ->join('categories', "categories.code", "=", "items.category_code")
+        ->select('stocks.id', DB::raw('DATE(stocks.item_date) as item_date'), 'stocks.ref_no', 
+        'stocks.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+        'stocks.unit_code', 'stocks.actual_stock', 'stocks.cogs', 'categories.coa_code')
+        ->whereBetween('stocks.item_date', [$firstDate,$lastDate])->get();
+
+        $groupedData = collect($stock)->groupBy('item_date');
+
+        $data = [
+            'stocckData' => $groupedData,
+            'firstDate' => Carbon::parse($firstDate)->format("d/m/Y"),
+            'lastDate' => Carbon::parse($lastDate)->format("d/m/Y")
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->loadview("admin.inventory.print.printinventoryin", $data);
+        return $pdf->stream("IIN-($firstDate to $lastDate).pdf", array("Attachment" => false));
     }
 }

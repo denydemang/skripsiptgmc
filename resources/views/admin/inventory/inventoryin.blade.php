@@ -53,6 +53,7 @@
 															<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
 														</div>
 													</div>
+													<button class="btn btn-sm btn-outline-primary btnprint ml-3"><i class="fas fa-print"></i> Print</button>
 												</div>
 											</div>
 										</div>
