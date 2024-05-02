@@ -11,7 +11,7 @@
 									<a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
 								</li>
 								<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Stocks</li>
+								<li class="breadcrumb-item active" aria-current="page">Stock Reminder</li>
 							</ol>
 						</nav>
 					</div>
@@ -28,28 +28,17 @@
 						<div class="card" style="min-height: 800px">
 							<!-- Card header -->
 							<div class="card-header">
-								<h3 class="mb-0">Item Stocks</h3>
+								<h3 class="mb-0">Stock Reminder</h3>
 							</div>
 							<div class="card-body">
-								<button class="btn btn-outline-primary btn-sm btnprint mb-3"><i class="fas fa-print"></i> Print</button>
+								<button class="btn btn-outline-primary btnprint btn-sm mb-3"><i class="fas fa-print"></i> Print</button>
+								<div class="col-lg-12 d-lg-flex">
+									<div class="row">
+										<table class="align-items-center table-flush stockremindtable w-100 table">
 
-								<table class="align-items-center stockstable table-striped table" class="display nowrap" style="width:100%">
-									<thead class="thead-light">
-										<tr>
-											<th scope="col">Item Code</th>
-											<th scope="col">Item Name</th>
-											<th scope="col">Category</th>
-											<th scope="col">Unit Code</th>
-											<th scope="col">Stock IN</th>
-											<th scope="col">Stock Out</th>
-											<th scope="col">Available Stock</th>
-										</tr>
-									</thead>
-									<tbody class="list">
-									</tbody>
-								</table>
-								{{-- <div class="d-lg-flex">
-								</div> --}}
+										</table>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -62,5 +51,5 @@
 
 	{{-- Notif Flash Message --}}
 	@include('flashmessage')
-	<script src="{{ asset('/') }}js/inventory/stocks.js" type="module"></script>
+	<script src="{{ asset('/') }}js/inventory/stockreminder.js" type="module"></script>
 @endsection

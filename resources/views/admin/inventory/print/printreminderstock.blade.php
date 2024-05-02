@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Recap Stock</title>
+	<title>Stock Reminder</title>
 	<style>
 		body {
 			font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -93,10 +93,13 @@
 
 	<header style="margin-bottom: 50px">
 		<h3>PT GENTA MULTI JAYYA</h3>
-		<h3 style="margin-top:-10px ">Recap Stock</h3>
+		<h3 style="margin-top:-10px">Stock Reminder</h3>
 		<h3 style="margin-top:-10px">Up To {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h3>
 	</header>
 
+	@if (count($stocckData) > 0)
+		<h5>The Following Item Is About To Reach/ Already Reached A Minimum Stock :</h5>
+	@endif
 	<section class="transaction">
 		<table id="detail">
 			<thead>
@@ -104,10 +107,9 @@
 					<th>Item Code</th>
 					<th>Item Name</th>
 					<th>Item Category</th>
+					<th>Min Stock</th>
+					<th>Current Stock</th>
 					<th>Unit Code</th>
-					<th>Qty IN</th>
-					<th>Qty OUT</th>
-					<th>Available Stock</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -116,10 +118,9 @@
 						<td class="no-wrap">{{ $item->item_code }}</td>
 						<td>{{ $item->item_name }}</td>
 						<td>{{ $item->item_category }}</td>
+						<td class="no-wrap">{{ floatval($item->min_stock) }}</td>
+						<td class="no-wrap">{{ floatval($item->current_stock) }}</td>
 						<td>{{ $item->unit_code }}</td>
-						<td class="no-wrap">{{ floatval($item->actual_stock) }}</td>
-						<td class="no-wrap">{{ floatval($item->used_stock) }}</td>
-						<td class="no-wrap" style="text-align: right">{{ floatval($item->available_stock) }}</td>
 					</tr>
 				@endforeach
 			</tbody>

@@ -263,9 +263,6 @@ class PrintController extends Controller
 
     public function printStock(){
 
-
-
-            
         $stock = Stock::Rightjoin("items", "stocks.item_code", "=", "items.code")
         ->join('categories', "categories.code", "=", "items.category_code")
         ->join('units', "units.code", "=", "items.unit_code")
@@ -282,5 +279,26 @@ class PrintController extends Controller
         $pdf->setPaper('A4', 'landscape'); 
         $pdf->loadview("admin.inventory.print.printrecapstock", $data);
         return $pdf->stream("RecapStock.pdf", array("Attachment" => false));
+    }
+
+    public function printStockReminder(){
+
+        $stock = Stock::Rightjoin("items", "stocks.item_code", "=", "items.code")
+        ->join('categories', "categories.code", "=", "items.category_code")
+        ->join('units', "units.code", "=", "items.unit_code")
+        ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 'items.min_stock',
+        'units.code as unit_code', DB::raw('ifnull(sum(stocks.actual_stock) - sum(stocks.used_stock) ,0) as current_stock'))
+        ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code', 'items.min_stock')
+        ->havingRaw('IFNULL(sum(stocks.actual_stock) - sum(stocks.used_stock), 0) <= (items.min_stock + 1)')->get();
+
+
+        $data = [
+            'stocckData' => $stock,
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->loadview("admin.inventory.print.printreminderstock", $data);
+        return $pdf->stream("ReminderStock.pdf", array("Attachment" => false));
     }
 }
