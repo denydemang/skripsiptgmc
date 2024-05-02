@@ -40,6 +40,17 @@ class StockController extends Controller
         return response()->view("admin.inventory.inventoryout",$supplyData);
         
     }
+    public function getViewStocks(Request $request){
+        $supplyData = [
+            'title' => 'Stocks',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+    
+            ];
+
+        return response()->view("admin.inventory.stocks",$supplyData);
+        
+    }
 
     public function getViewInventoryInManage(Request $request){
         $supplyData = [
@@ -103,6 +114,12 @@ class StockController extends Controller
 
         $printcontroller = new PrintController();
         return $printcontroller->printIOUT($firstDate, $lastDate);
+    }
+
+    public function printstock(){
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printStock();
     }
 
     public function getTableInventoryIn(Request $request, DataTables $dataTables){
@@ -189,6 +206,51 @@ class StockController extends Controller
                 })
                 ->filterColumn('item_name', function($query, $keyword) {
                     $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_category', function($query, $keyword) {
+                    $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->addIndexColumn()
+                ->make(true);
+                
+                
+        } else {
+            abort(404);
+        }
+    }
+
+    public function getTableStocks(Request $request, DataTables $dataTables){
+
+        if ($request->ajax()){
+
+            
+            $stock = Stock::Rightjoin("items", "stocks.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->join('units', "units.code", "=", "items.unit_code")
+            ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 
+            'units.code as unit_code', DB::raw('sum(stocks.actual_stock) as actual_stock'), DB::raw('sum(stocks.used_stock) as used_stock'), 
+            DB::raw('sum(stocks.actual_stock) - sum(stocks.used_stock) as available_stock'))
+            ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code');
+    
+            
+            return $dataTables->of($stock)
+                ->editColumn('actual_stock', function($row) {
+                    return floatval($row->actual_stock);
+                })
+                ->editColumn('used_stock', function($row) {
+                    return floatval($row->used_stock);
+                })
+                ->editColumn('available_stock', function($row) {
+                    return floatval($row->available_stock);
+                })
+                ->filterColumn('item_name', function($query, $keyword) {
+                    $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_code', function($query, $keyword) {
+                    $query->whereRaw("items.code LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('unit_code', function($query, $keyword) {
+                    $query->whereRaw("units.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('item_category', function($query, $keyword) {
                     $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);

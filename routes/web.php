@@ -282,15 +282,17 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // GET VIEW
         Route::get('/admin/inventoryin', 'getViewInventoryIN')->name('admin.iin');
         Route::get('/admin/inventoryout', 'getViewInventoryOUT')->name('admin.iout');
-        Route::get('/admin/inventoryin/addbeginningbalance', 'getViewInventoryInManage')->name('admin.addbeginningview');
+        Route::get('/admin/stocks', 'getViewStocks')->name('admin.stocks');
 
         // CRUD
         Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
         Route::post('/admin/inventoryout/gettable', 'getTableInventoryOut')->name('admin.tableout');
+        Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
         
         // Print
         Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
         Route::get('/admin/inventoryin/printiout', 'printIOUT')->name('admin.printIOUT');
+        Route::get('/admin/inventoryin/printstocks', 'printstock')->name('admin.printstock');
 
     });
     // ------------------------------------------

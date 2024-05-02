@@ -7,6 +7,7 @@ export default class tableInitiator {
     this.data = data;
     this.funcCell = funcCell;
     this.table = $(this.tableName).DataTable({
+      fixedHeader: true,
       retrieve: true,
       processing: true,
       serverSide: true,
