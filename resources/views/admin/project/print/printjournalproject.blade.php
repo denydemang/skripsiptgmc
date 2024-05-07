@@ -17,7 +17,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -86,14 +86,24 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 360px
+		}
 	</style>
 </head>
 
 <body>
 
-	<header>
-		<h2>Journal Project</h2>
-	</header>
+	<div class="header-container" style="position: relative;padding-top:120px;border-bottom:2px solid #333">
+		<div class="logo" style="position: absolute;top:0;right:-60">
+			@include('layout.logoimage')
+		</div>
+		<header style="position:absolute;top:0;left:0;padding-top:40px">
+			<h3 style="margin-top:-10px ;text-align:left">PT GENTA MULTI JAYYA</h3>
+			<h3 style="margin-top:-10px;text-align:left">JOURNAL PROJECT</h3>
+		</header>
+	</div>
 	<section class="transaction">
 		<div class="transaction-info">
 			<table border="0" cellpadding="4" style="padding: 10px">

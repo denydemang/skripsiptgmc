@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Document</title>
+	<title>Stock Card</title>
 	<style>
 		body {
 			font-family: Verdana, Geneva, Tahoma, sans-serif;
@@ -18,7 +18,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -86,6 +86,10 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 400px
+		}
 	</style>
 </head>
 
@@ -93,15 +97,21 @@
 	@php
 		Illuminate\Support\Facades\App::setLocale('id');
 	@endphp
-	<header style="margin-bottom: 50px">
-		<h3>PT GENTA MULTI JAYYA</h3>
-		<h3 style="margin-top:-10px ">STOCK CARD</h3>
-		<h3 style="margin-top:-10px">{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
-			{{ \Carbon\Carbon::parse($lastDate)->format('d/m/Y') }}</h3>
-	</header>
+	<div class="header-container" style="position: relative;padding-top:140px;border-bottom:2px solid #333">
+		<div class="logo" style="position: absolute;top:0;right:-60">
+			@include('layout.logoimage')
+		</div>
+		<header style="position:absolute;top:0;left:0;padding-top:40px">
+			<h2 style="margin-top:-10px ;text-align:left">PT GENTA MULTI JAYYA</h2>
+			<h2 style="margin-top:-10px;text-align:left">STOCK CARD</h2>
+		</header>
+	</div>
 
 	<div class="transaction">
 		<div class="transaction-info">
+			<h3 style="margin-top:10px; text-align:right;float:right">Periode :
+				{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
+				{{ \Carbon\Carbon::parse($lastDate)->format('d/m/Y') }}</h3>
 			<table border="0" cellpadding="4" style="padding: 10px">
 				<tr>
 					<td><strong>ITEM CODE</strong></td>

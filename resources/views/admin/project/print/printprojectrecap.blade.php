@@ -17,7 +17,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -86,21 +86,36 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 350px
+		}
 	</style>
 </head>
 
 <body>
 
-	<header>
+	<div class="header-container" style="position: relative;padding-top:100px;border-bottom:2px solid #333">
+		<div class="logo" style="position: absolute;top:0;right:-60">
+			@include('layout.logoimage')
+		</div>
+		<header style="position:absolute;top:0;left:0;padding-top:40px">
+			<h4 style="margin-top:-10px ;text-align:left">PT GENTA MULTI JAYYA</h4>
+			<h4 style="margin-top:-10px;text-align:left">PROJECT RECAPITULATION</h4>
+		</header>
+	</div>
+	{{-- <header>
 		<h3 style="margin-bottom: -15px">PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-bottom: -15px">PROJECT RECAPITULATION</h3>
 		<h3>{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
 			{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</h3>
 
-	</header>
+	</header> --}}
 	<section class="transaction">
 		<div class="transaction-info">
-			<table border="0" cellpadding="4" style="padding: 10px;margin-left:-10px">
+			<h4 style="float: right;margin-bottom:60px">Periode : {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
+				{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</h4>
+			<table border="0" cellpadding="4" style="margin-top:40px;padding: 10px;margin-left:-10px">
 				@if ($customer_code !== null && count($projects) > 0)
 					<tr>
 						<td><strong>Customer Name</strong></td>

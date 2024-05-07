@@ -18,7 +18,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -86,12 +86,20 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 350px
+		}
 	</style>
 </head>
 
 <body>
 
-	<header style="margin-bottom: 50px">
+	<div class="logo" style="margin-left:-60px">
+		@include('layout.logoimage')
+	</div>
+
+	<header style="margin-bottom: 50px;border-top: 2px solid #333">
 		<h3>PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-top:-10px">Stock Reminder</h3>
 		<h3 style="margin-top:-10px">Up To {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h3>

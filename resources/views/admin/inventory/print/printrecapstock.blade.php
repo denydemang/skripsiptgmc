@@ -18,7 +18,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -91,14 +91,19 @@
 
 <body>
 
-	<header style="margin-bottom: 50px">
-		<h3>PT GENTA MULTI JAYYA</h3>
-		<h3 style="margin-top:-10px ">Recap Stock</h3>
-		<h3 style="margin-top:-10px">Up To {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h3>
-	</header>
+	<div class="header-container" style="position: relative;padding-top:120px;border-bottom:2px solid #333">
+		<div class="logo" style="position: absolute;top:0;right:-60">
+			@include('layout.logoimage')
+		</div>
+		<header style="position:absolute;top:0;left:0;padding-top:40px">
+			<h3 style="margin-top:-10px ;text-align:left">PT GENTA MULTI JAYYA</h3>
+			<h3 style="margin-top:-10px;text-align:left">RECAP STOCK</h3>
+		</header>
+	</div>
 
 	<section class="transaction">
-		<table id="detail">
+		<h3 style="float: right">Up To {{ \Carbon\Carbon::now()->format('d/m/Y') }}</h3>
+		<table id="detail" style="margin-top: 80px">
 			<thead>
 				<tr>
 					<th>Item Code</th>

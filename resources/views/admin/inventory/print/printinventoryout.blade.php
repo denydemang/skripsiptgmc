@@ -18,7 +18,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -86,12 +86,20 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 350px
+		}
 	</style>
 </head>
 
 <body>
 
-	<header style="margin-bottom: 50px">
+	<div class="logo" style="margin-left:-60px">
+		@include('layout.logoimage')
+	</div>
+
+	<header style="margin-bottom: 50px;padding-top:0;border-top: 2px solid #333">
 		<h3>PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-top:-10px ">INVENTORY OUT</h3>
 		<h3 style="margin-top:-10px ">{{ $firstDate }} - {{ $lastDate }}</h3>
@@ -112,7 +120,8 @@
 			<tbody>
 				@foreach ($stocckData as $tanggal => $items)
 					<tr>
-						<td colspan="6" class="headerdate"><b>Date OUT : {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</b></td>
+						<td colspan="6" class="headerdate"><b>Date OUT : {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</b>
+						</td>
 					</tr>
 					@foreach ($items as $item)
 						<tr>

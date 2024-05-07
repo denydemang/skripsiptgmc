@@ -18,7 +18,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -82,6 +82,10 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 280px
+		}
 	</style>
 </head>
 
@@ -89,6 +93,9 @@
 	@php
 		Illuminate\Support\Facades\App::setLocale('id');
 	@endphp
+	<div class="logo" style="margin-left:-60px">
+		@include('layout.logoimage')
+	</div>
 	<header style="margin-bottom: 50px">
 		<h3>PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-top:-10px ">Purchase Request</h3>

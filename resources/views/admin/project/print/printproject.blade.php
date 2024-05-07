@@ -17,7 +17,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -82,20 +82,27 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 300px
+		}
 	</style>
 </head>
 
 <body>
 
-	<header>
-		<h2>PROJECT REPORT</h2>
+	<div class="logo" style="margin-left:-60px">
+		@include('layout.logoimage')
+	</div>
+	<header style="margin-bottom: 6	0px;margin-top: 40px">
+		<h3 style="margin-top:-10px">PROJECT REPORT</h3>
 	</header>
 	<section class="transaction">
 		<div class="transaction-info" style="margin-bottom:50px">
 			<table border="0" cellpadding="0">
 				<tr>
 					<td style="padding-bottom: 10px">
-						<span style="text-align: left; font-size:18px;font-weight:bold">PT GENTA MULTI JAYYA</span>
+						<span style="text-align: left; font-size:16px;font-weight:bold">PT GENTA MULTI JAYYA</span>
 					</td>
 				</tr>
 				<tr>
@@ -116,7 +123,7 @@
 			<table border="0" cellpadding="4" style="padding: 10px; position: absolute;top:0;right:0;">
 				<tr>
 					<td>
-						<p style="text-align: right; font-size:18px;font-weight:bolder">Transaction Date</p>
+						<p style="text-align: right; font-size:16px;font-weight:bolder">Transaction Date</p>
 					</td>
 					<td>
 						<p style="text-align: right; font-size:18px;font-weight:bolder">:</p>

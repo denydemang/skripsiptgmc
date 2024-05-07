@@ -1,7 +1,6 @@
 import tableInitiator from '../tableinitiator.js';
 $(document).ready(function () {
   const modalItemSearch = $('#modalItemSearch');
-  let currentButton = '';
 
   // INISIASI DATATABLE Items Modal Search
   // ----------------------------------------------------------------

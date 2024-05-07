@@ -18,7 +18,7 @@
 		}
 
 		header {
-			background-color: #f2f2f2;
+			/* background-color: #f2f2f2; */
 			padding: 10px;
 			text-align: center;
 		}
@@ -90,8 +90,11 @@
 </head>
 
 <body>
+	<div class="logo" style="margin-left:-60px">
+		@include('layout.logoimage')
+	</div>
 
-	<header style="margin-bottom: 50px">
+	<header style="margin-bottom: 50px;border-top: 2px solid #333">
 		<h3>PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-top:-10px ">INVENTORY IN</h3>
 		<h3 style="margin-top:-10px ">{{ $firstDate }} - {{ $lastDate }}</h3>
