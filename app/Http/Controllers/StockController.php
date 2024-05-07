@@ -64,6 +64,18 @@ class StockController extends Controller
         
     }
 
+    public function getViewStockCard(Request $request){
+        $supplyData = [
+            'title' => 'Stock Card',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+    
+            ];
+
+        return response()->view("admin.inventory.stockcard",$supplyData);
+        
+    }
+
 
     public function printIIN(Request $request){
 
@@ -126,6 +138,34 @@ class StockController extends Controller
 
         $printcontroller = new PrintController();
         return $printcontroller->printStockReminder();
+    }
+    
+    public function printstockcard(Request $request){
+
+        $startDate = $request->get('startdate');
+        $endDate = $request->get('enddate');
+        $itemcode= $request->get('itemcode');
+
+
+        try {
+            //code...
+            if( !Carbon::createFromFormat('Y-m-d', $startDate) ){
+                abort(404);
+            }
+            if( !Carbon::createFromFormat('Y-m-d', $endDate) ){
+                abort(404);
+            }
+            if (!$startDate || !$endDate || !$itemcode){
+                abort(404);
+            }
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printstockcard($startDate, $endDate, $itemcode);
     }
 
     public function getTableInventoryIn(Request $request, DataTables $dataTables){
@@ -311,6 +351,8 @@ class StockController extends Controller
             abort(404);
         }
     }
+
+
 
     public function stockout($itemcode = "",$qty = 0, $transdate='', $transcode){
 

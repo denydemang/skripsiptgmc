@@ -187,6 +187,7 @@
 						    'admin.iout',
 						    'admin.stocks',
 						    'admin.stockreminder',
+						    'admin.stockcard',
 						];
 					@endphp
 					<li class="nav-item">
@@ -208,6 +209,9 @@
 								</li>
 								<li class="nav-item {{ $sessionRoute == 'admin.stockreminder' ? 'active' : '' }}">
 									<a href="{{ route('admin.stockreminder') }}" class="nav-link">Stock Reminder</a>
+								</li>
+								<li class="nav-item {{ $sessionRoute == 'admin.stockcard' ? 'active' : '' }}">
+									<a href="{{ route('admin.stockcard') }}" class="nav-link">Stock Card</a>
 								</li>
 								<li
 									class="nav-item {{ $sessionRoute == 'admin.pr' || $sessionRoute == 'admin.addprview' || $sessionRoute == 'admin.editprview' ? 'active' : '' }}">

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\Journal;
 use App\Models\Project;
 use App\Models\Purchase_Request;
@@ -300,5 +301,79 @@ class PrintController extends Controller
         $pdf->setPaper('A4', 'landscape'); 
         $pdf->loadview("admin.inventory.print.printreminderstock", $data);
         return $pdf->stream("ReminderStock.pdf", array("Attachment" => false));
+    }
+
+    public function printstockcard( $startDate , $lastDate , $itemCode){
+
+        $item = Item::where("code" , $itemCode)->first();
+
+        if(!$item){
+            abort(404);
+        }
+
+        $BeginningBalance = DB::select('
+        Select 
+
+        qry.item_code,
+        qry.item_name,
+        qry.ref_no,
+        qry.unit_code,
+        Round(qry.actual_stock - qry.pengurang, 2) as beginning_balance,
+        qry.cogs,
+        qry.cogs * (Round(qry.actual_stock - qry.pengurang, 2)) as total_cogs
+        
+        from 
+        
+        (Select
+            a.item_code,
+            i.name as item_name,
+            a.ref_no , 
+            a.unit_code, 
+            a.actual_stock,
+            (Select ifnull(sum(qty),0) from stocks_out where stocks_out.stock_id = a.id AND item_date < ?) as pengurang,
+            a.cogs
+        
+        from stocks a 
+        join items i
+        on i.code = a.item_code
+        where a.item_code = ? AND
+        a.item_date < ?  ) as qry
+        
+        where 
+        Round(qry.actual_stock - qry.pengurang, 2) > 0
+        ', [$startDate, $itemCode, $startDate]);    
+
+
+
+        $ITEMIN = Stock::join("items", "items.code", "=", "stocks.item_code")
+        ->select('stocks.item_date', 'stocks.ref_no' , DB::raw("'Pembelian' As keterangan"),
+        'stocks.item_code' , "items.name as item_name", 'stocks.unit_code' , 'stocks.actual_stock as qty' , 'stocks.cogs',DB::raw('stocks.actual_stock * stocks.cogs as total_cogs'))
+        ->where("stocks.item_code", $itemCode)
+        ->whereBetween('stocks.item_date', [$startDate, $lastDate]);
+        
+
+        $ITEMOUT = Stocks_Out::join("items", "items.code", "=", "stocks_out.item_code")
+        ->select('stocks_out.item_date','stocks_out.ref_no' , DB::raw("'Pemakaian Proyek' As keterangan"),
+        'stocks_out.item_code' , "items.name as item_name", 'stocks_out.unit_code', 'stocks_out.qty', 'stocks_out.cogs' , DB::raw('stocks_out.qty * stocks_out.cogs as total_cogs'))
+        ->where("stocks_out.item_code", $itemCode)
+        ->whereBetween("stocks_out.item_date",  [$startDate, $lastDate]);
+
+
+        $UNIONALLRESULT = $ITEMIN->UnionALL($ITEMOUT)
+                        ->orderBy('item_date', 'asc')->get();
+    
+
+        $data = [
+            'itemDesc' =>  $item ,
+            'startDate' => $startDate,
+            'lastDate' => $lastDate,
+            'begginningstock' => $BeginningBalance,
+            'stocks' => $UNIONALLRESULT,
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A3', 'landscape'); 
+        $pdf->loadview("admin.inventory.print.printstockcard" , $data);
+        return $pdf->stream("StockCard.pdf", array("Attachment" => false));
     }
 }

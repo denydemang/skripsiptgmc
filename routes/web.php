@@ -283,18 +283,21 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/inventoryout', 'getViewInventoryOUT')->name('admin.iout');
         Route::get('/admin/stocks', 'getViewStocks')->name('admin.stocks');
         Route::get('/admin/stockreminder', 'getViewStockReminder')->name('admin.stockreminder');
+        Route::get('/admin/stockcard', 'getViewStockCard')->name('admin.stockcard');
 
         // CRUD
         Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
         Route::post('/admin/inventoryout/gettable', 'getTableInventoryOut')->name('admin.tableout');
         Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
         Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
+        Route::post('/admin/stockcard/gettable', 'getTableStockCard')->name('admin.tablestockcard');
         
         // Print
         Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
         Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
         Route::get('/admin/stocks/printstocks', 'printstock')->name('admin.printstock');
         Route::get('/admin/stocks/printstockreminder', 'printstockreminder')->name('admin.printstockreminder');
+        Route::get('/admin/stockscard/print', 'printstockcard')->name('admin.printstockcard');
 
     });
     // ------------------------------------------

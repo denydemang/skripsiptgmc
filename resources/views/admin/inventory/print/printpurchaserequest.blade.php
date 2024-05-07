@@ -86,7 +86,9 @@
 </head>
 
 <body>
-
+	@php
+		Illuminate\Support\Facades\App::setLocale('id');
+	@endphp
 	<header style="margin-bottom: 50px">
 		<h3>PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-top:-10px ">Purchase Request</h3>
