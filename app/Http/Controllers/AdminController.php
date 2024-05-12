@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,5 +27,54 @@ class AdminController extends Controller
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute($routeRedirectName)->with("error", $ex->getMessage());
          }
+    }
+
+    protected function isOutOfTermin(String $term, String $startDate ) :bool{
+
+        switch ($term) {
+            case 'n/30':
+                $dueDate = Carbon::createFromFormat('Y-m-d', $startDate)->addDays(30);
+                $dateNow = Carbon::now();
+
+                $diffinDays = $dueDate->diffInDays($dateNow);
+                if ($diffinDays < 0) {
+                    // Tanggal saat ini melebihi dari tanggal due date
+                    return true;
+                } else {
+                    return false;
+                }
+
+                break;
+            case 'n/60':
+                $dueDate = Carbon::createFromFormat('Y-m-d', $startDate)->addDays(60);
+                $dateNow = Carbon::now();
+
+                $diffinDays = $dueDate->diffInDays($dateNow);
+                if ($diffinDays < 0) {
+                    // Tanggal saat ini melebihi dari tanggal due date
+                    return true;
+                } else {
+                    return false;
+                }
+
+                break;
+            case 'n/90':
+                $dueDate = Carbon::createFromFormat('Y-m-d', $startDate)->addDays(90);
+                $dateNow = Carbon::now();
+
+                $diffinDays = $dueDate->diffInDays($dateNow);
+                if ($diffinDays < 0) {
+                    // Tanggal saat ini melebihi dari tanggal due date
+                    return true;
+                } else {
+                    return false;
+                }
+
+                break;
+            default:
+            return false;
+            break;
+        }
+
     }
 }

@@ -97,7 +97,6 @@
 		@include('layout.logoimage')
 	</div>
 	<header style="margin-bottom: 50px">
-		<h3>PT GENTA MULTI JAYYA</h3>
 		<h3 style="margin-top:-10px ">Purchase Request</h3>
 	</header>
 	<section class="transaction">
@@ -174,7 +173,7 @@
 						<th>Item Code</th>
 						<th>Item Name</th>
 						<th>Unit</th>
-						<th>Qty</th>
+						<th style="text-align: right">Qty</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -184,7 +183,7 @@
 							<td class="no-wrap">{{ $x->item_code }}</td>
 							<td>{{ $x->name }}</td>
 							<td>{{ $x->unit_code }}</td>
-							<td class="no-wrap">{{ $x->qty }}</td>
+							<td class="no-wrap">{{ floatval($x->qty) }}</td>
 						</tr>
 					@endforeach
 				</tbody>
@@ -205,7 +204,7 @@
 		<div>
 			<table style="width: 200px;position: absolute;top:0;left:0;">
 				<tr>
-					<td align="center">Disetujui Oleh</td>
+					<td align="center">Approved By</td>
 				</tr>
 				<tr>
 					<td style="height: 80px;"></td>
@@ -218,7 +217,7 @@
 		<div style="position: absolute;top:0;right:350px;">
 			<table style="width: 220px">
 				<tr>
-					<td align="center">Diketahui Oleh</td>
+					<td align="center">Known by</td>
 				</tr>
 				<tr>
 					<td style="height: 80px;"></td>
@@ -231,7 +230,7 @@
 		<div style="position: absolute;top:0;right:100px;">
 			<table style="width: 220px">
 				<tr>
-					<td align="center">Dibuat Oleh</td>
+					<td align="center">Created By</td>
 				</tr>
 				<tr>
 					<td style="height: 80px;"></td>

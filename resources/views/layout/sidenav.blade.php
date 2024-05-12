@@ -113,15 +113,19 @@
 						</div>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="#navbar-transaction" data-toggle="collapse" role="button" aria-expanded="false"
+						@php
+							$alltransaction = ['admin.purchase'];
+						@endphp
+						<a class="nav-link" href="#navbar-transaction" data-toggle="collapse"
+							role="button"aria-expanded="{{ in_array($sessionRoute, $alltransaction) ? 'true' : 'false' }}"
 							aria-controls="navbar-transaction">
 							<i class="ni ni-ui-04 text-info"></i>
 							<span class="nav-link-text">Transactions</span>
 						</a>
-						<div class="collapse" id="navbar-transaction">
+						<div class="{{ in_array($sessionRoute, $alltransaction) ? 'show' : '' }} collapse" id="navbar-transaction">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item">
-									<a href="./pages/components/buttons.html" class="nav-link">Purchase Transaction</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.purchase' ? 'active' : '' }}">
+									<a href="{{ route('admin.purchase') }}" class="nav-link">Purchase Transaction</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/components/cards.html" class="nav-link">Invoice</a>

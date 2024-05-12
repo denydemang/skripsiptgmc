@@ -9,6 +9,8 @@ use App\Models\Project_Detail;
 use App\Models\Project_Detail_B_Realisation;
 use App\Models\Project_Detail_Realisations;
 use App\Models\ProjectDetailB;
+use App\Models\Purchase;
+use App\Models\Purchase_Detail;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
 use Carbon\Carbon;
@@ -349,6 +351,79 @@ class AccountingController extends AdminController
         // ==============================================================
 
 
+
+
+    }
+
+    public function journalPembelian($ref_no){
+
+        $purchase = Purchase::join("suppliers", "purchases.supplier_code" , "=", "suppliers.code")
+        ->select('purchases.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
+        ->where("purchase_no", $ref_no)->first();
+
+        $Variation_COA_Item = Purchase_Detail::join("items",'purchase_details.item_code', '=', 'items.code')
+        ->join("categories", "items.category_code", "=", 'categories.code')
+        ->join("stocks" , function ($join){
+            $join->on("stocks.item_code", "=", "items.code")
+            ->on("stocks.ref_no", "=", "purchase_details.purchase_no");
+        })
+        ->select("categories.coa_code",DB::raw("SUM(stocks.actual_stock * stocks.cogs) as totalcogs"))
+        ->where("purchase_details.purchase_no", $ref_no)
+        ->groupBy("categories.coa_code")
+        ->get();
+        $supplyModel = Journal::where("voucher_no", 'like', "%JPEM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode("JPEM", $supplyModel,true,"voucher_no");
+        
+        // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date = $purchase->transaction_date;
+        $journal->ref_no = $purchase->purchase_no;
+        $journal->journal_type_code = "JPEM";
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        $totalUtang = 0;
+        // Insert Detail Journal
+        // Insert Persediaan Masuk Jurnal Detail
+        foreach ($Variation_COA_Item as $coa){
+
+            $totalUtang += round(floatval($coa->totalcogs), 2);
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description = "Inventory IN Untuk Trans Pembelian: $purchase->purchase_no"  ;
+            $journalDetail->coa_code = $coa->coa_code;
+            $journalDetail->debit = round(floatval($coa->totalcogs), 2);
+            $journalDetail->kredit = 0;
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+
+        // PPN
+        if (floatval($purchase->percen_ppn) > 0)
+        {
+            $totalUtang += round(floatval($purchase->ppn_amount), 2);
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description = "PPN Masukan Untuk Pembelian: $purchase->purchase_no"  ;
+            $journalDetail->coa_code = '10.01.03.03';
+            $journalDetail->debit = round(floatval($purchase->ppn_amount),2);
+            $journalDetail->kredit = 0;
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+
+         // UTANG  USAHA
+    
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no; 
+        $journalDetail->description = "Utang Usaha Pada Supplier : $purchase->supplier_name($purchase->supplier_code), Pembelian :  $purchase->purchase_no "  ;
+        $journalDetail->coa_code = '20.01.01.01';
+        $journalDetail->debit = 0;
+        $journalDetail->kredit = $totalUtang;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
 
 
     }

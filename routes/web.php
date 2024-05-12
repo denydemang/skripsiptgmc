@@ -8,6 +8,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
@@ -196,6 +197,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     // -----------------    supplier
     Route::controller(SupplierController::class)->group(function () {
+        Route::get("admin/supplier/getForModal", 'getDataSupplierForModal')->name('admin.SupplierGetForModal');
+
         Route::resource('/admin/supplier', SupplierController::class)->names([
             'index' => 'r_supplier.index',
             'create' => 'r_supplier.create',
@@ -298,6 +301,24 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/stocks/printstocks', 'printstock')->name('admin.printstock');
         Route::get('/admin/stocks/printstockreminder', 'printstockreminder')->name('admin.printstockreminder');
         Route::get('/admin/stockscard/print', 'printstockcard')->name('admin.printstockcard');
+
+    });
+
+    Route::controller(PurchaseController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/purchase', 'getViewPurchase')->name('admin.purchase');
+
+         // CRUD
+        Route::post('/admin/purchase/gettable', 'getTablePurchase')->name('admin.tablepurchase');
+        Route::get('/admin/purchase/approve/{id}', 'approvepurchase')->name('admin.approvepurchase');
+        Route::get('/admin/purchase/delete/{id}', 'deletepurchase')->name('admin.deletepurchase');
+        Route::post('/admin/purchase/detail/{id}', 'detailpurchase')->name('admin.detailpurchase');
+
+        // Print
+        Route::get('/admin/purchase/detail/print/{id}', 'printdetailpurchase')->name('admin.printdetailpurchase');
+        Route::get('/admin/purchase/jurnal/print/{id}', 'printjurnalpurchase')->name('admin.printjurnalpurchase');
+        Route::get('/admin/purchase/recap/print', 'printrecappurchase')->name('admin.printrecappurchase');
 
     });
     // ------------------------------------------

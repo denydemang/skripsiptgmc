@@ -24,6 +24,27 @@ class SupplierController extends AdminController
 
         return response()->view("admin.master.supplier", $supplyData);
     }
+    public function getDataSupplierForModal(Request $request, DataTables $dataTables){
+        if ($request->ajax()){
+
+
+            $suppliers = Supplier::query();
+
+
+            return $dataTables->of($suppliers)
+            ->addColumn('action', function ($row) {
+
+                return '
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-sm btn-success selectsupplierbtn" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select"><i class="fa fa-check"></i> Select</button>
+                </div>';
+            })
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+
+        }
+    }
 
     public function getDatasuppliers(Request $request, DataTables $dataTables) {
         if ($request->ajax()) {

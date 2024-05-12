@@ -5,19 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Journal;
 use App\Models\Project;
+use App\Models\Purchase;
 use App\Models\Purchase_Request;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 
-class PrintController extends Controller
+class PrintController extends AdminController
 {
     public function printJournalProject($id){
 
-        $journal = Project::join("journals",  "projects.code", "=", "journals.ref_no")
+        $journal = Project::join("journals",  "purchase.code", "=", "journals.ref_no")
         ->join("journal_details", "journals.voucher_no", "=", "journal_details.voucher_no")
         ->join("coa", "journal_details.coa_code", "=", "coa.code")
         ->select("projects.name as project_name", "coa.name as coa_name", "journals.*", "journal_details.*")
@@ -376,4 +378,142 @@ class PrintController extends Controller
         $pdf->loadview("admin.inventory.print.printstockcard" , $data);
         return $pdf->stream("StockCard.pdf", array("Attachment" => false));
     }
+
+    public function printpurchasedetail($id){
+        $Purchase = Purchase::join("purchase_details", "purchases.purchase_no" , "=", "purchase_details.purchase_no")
+        ->join("suppliers", "purchases.supplier_code" , "=", "suppliers.code")
+        ->leftJoin("items", 'items.code', "=", "purchase_details.item_code")
+        ->select('purchases.*','purchases.created_by as dibuat_oleh','items.name as item_name',  DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'),"purchase_details.*")
+        ->where("purchases.purchase_no", $id)->get();
+
+
+        if (count($Purchase) == 0){
+        abort(404);
+        };
+        $data = [
+        "dataPurchase" => $Purchase
+        ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->loadview("admin.transactions.prints.printPurchase" ,$data);
+        return $pdf->stream("Purchase-($id).pdf", array("Attachment" => false));
+    }
+
+    public function printjurnalpurchase($id){
+
+        try {
+            //code...
+            $journal = Journal::join('journal_details', "journals.voucher_no", "=", "journal_details.voucher_no")
+            ->join("coa", "journal_details.coa_code", "=", "coa.code")
+            ->where("journals.ref_no", $id)
+            ->select("coa.name", "journals.*", "journal_details.*")
+            ->orderBy("journal_details.debit", 'desc')
+            ->get();
+            
+            if (count($journal) == 0){
+                throw new Exception();
+            }
+    
+            $Purchase = Purchase::join("suppliers", "purchases.supplier_code" , "=", "suppliers.code")
+            ->select('purchases.*','purchases.created_by as dibuat_oleh',  DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
+            ->where("purchases.purchase_no", $id)->get();
+    
+            $data = [
+                "purchaseData" => $Purchase,
+                "journal" => $journal,
+            ];
+    
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->loadview("admin.transactions.prints.printJurnalPurchase", $data);
+            return $pdf->stream("JournalPurchase-$id.pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+        
+    }
+
+    public function printrecappurchase($suppliercode ,$startDate, $endDate, $is_approve, $paidStatus){
+
+            //code...
+            $purchase = Purchase::join("suppliers", "purchases.supplier_code" , "=", "suppliers.code")
+            ->select('purchases.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
+            ->whereBetween('transaction_date', [$startDate,$endDate])
+            ->when($is_approve !== null , function($query) use($is_approve){
+                $query->where('is_approve', $is_approve);
+            })
+            ->when($suppliercode !== null , function($query) use($suppliercode){
+                $query->where('supplier_code', $suppliercode);
+            })
+            ->when($paidStatus !== null , function($query) use($paidStatus){
+                    switch (intval($paidStatus)) {
+                        case 0:
+                            # Unpaid
+                            $query->whereRaw("
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0 
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
+                            ELSE 0
+                            END = 1
+                            
+                            ");
+    
+                            break;
+                        case 1:
+                            # Fullpaid
+                            $query->whereRaw("grand_total - paid_amount <= 0");
+    
+                            break;
+                        case 2:
+                            # Outstanding
+                            $query->whereRaw("
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0 
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
+                            ELSE 0
+                            END = 1
+                            
+                            ");
+    
+                            break;
+                        case 3:
+                            # Overdue
+                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            ELSE 0
+                            END = 1 ");
+    
+                            break;
+                        
+                    }
+            })->get();
+    
+            $data = [
+                "purchase" => $purchase,
+                "paidStatus" =>$paidStatus,
+                "is_approve"=> $is_approve,
+                "startDate" => $startDate,
+                "endDate" => $endDate,
+                'suppliercode'=> $suppliercode
+            ];
+
+            // return $data;
+    
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->loadview("admin.transactions.prints.printrecappurchase", $data);
+            return $pdf->stream("PurchaseRecap($startDate-$endDate).pdf", array("Attachment" => false));
+
+        try {
+        } catch (\Throwable $th) {
+
+            // abort(404);
+        }
+
+
+    }
+    
 }

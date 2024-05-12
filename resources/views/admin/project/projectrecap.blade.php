@@ -44,7 +44,7 @@
 										</div>
 										<div class="col-lg-5 offset-lg-1">
 											<div class="mr-1 mt-5">
-												[<h4>Transaction Date</h4>
+												<h4>Transaction Date</h4>
 												<div class="d-flex">
 													<div class="input-group date mr-2" id="dtpstarttrans" data-target-input="nearest">
 														<input type="text" class="form-control form-control-sm datetimepicker-input inputstartdatetrans"
@@ -62,7 +62,7 @@
 															<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
 														</div>
 													</div>
-												</div>]
+												</div>
 											</div>
 										</div>
 									</div>

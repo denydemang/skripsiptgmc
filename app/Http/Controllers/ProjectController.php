@@ -708,8 +708,8 @@ class ProjectController extends AdminController
             
             return response()->redirectToRoute("admin.projecttype")->with("success", "Data $code Successfully Deleted");
         } catch (\Throwable $th) {
+            return $this->errorException($th,"admin.projecttype", $code );
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("admin.projecttype")->with("error", $th->getMessage());
         }
 
 
@@ -730,7 +730,7 @@ class ProjectController extends AdminController
         } catch (\Throwable $th) {
             DB::rollBack();
             // Sess ion::flash('error', $th->getMessage());
-            return response()->redirectToRoute("admin.project")->with("error", $th->getMessage());
+            return $this->errorException($th,"admin.project", $code );
         }
 
 

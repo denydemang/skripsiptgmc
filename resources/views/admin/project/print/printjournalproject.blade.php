@@ -100,7 +100,6 @@
 			@include('layout.logoimage')
 		</div>
 		<header style="position:absolute;top:0;left:0;padding-top:40px">
-			<h3 style="margin-top:-10px ;text-align:left">PT GENTA MULTI JAYYA</h3>
 			<h3 style="margin-top:-10px;text-align:left">JOURNAL PROJECT</h3>
 		</header>
 	</div>

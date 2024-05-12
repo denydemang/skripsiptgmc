@@ -102,7 +102,6 @@
 			@include('layout.logoimage')
 		</div>
 		<header style="position:absolute;top:0;left:0;padding-top:40px">
-			<h2 style="margin-top:-10px ;text-align:left">PT GENTA MULTI JAYYA</h2>
 			<h2 style="margin-top:-10px;text-align:left">STOCK CARD</h2>
 		</header>
 	</div>

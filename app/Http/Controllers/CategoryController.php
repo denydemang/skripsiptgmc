@@ -139,7 +139,7 @@ class CategoryController extends AdminController
             return response()->redirectToRoute("r_category.index")->with("success", "Data Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
+            return $this->errorException($th,"r_category.index", $id );
         }
     }
 }

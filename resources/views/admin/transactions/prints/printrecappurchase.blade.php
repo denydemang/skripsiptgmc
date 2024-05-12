@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Project Recapitulation </title>
+	<title>Purchase Recapitulation </title>
 	<style>
 		body {
 			font-family: Arial, sans-serif;
@@ -100,17 +100,167 @@
 			@include('layout.logoimage')
 		</div>
 		<header style="position:absolute;top:0;left:0;padding-top:40px">
-			<h4 style="margin-top:-10px;text-align:left">PROJECT RECAPITULATION</h4>
+			<h4 style="margin-top:-10px;text-align:left">PURCHASE RECAPITULATION</h4>
 		</header>
 	</div>
-	{{-- <header>
-		<h3 style="margin-bottom: -15px">PT GENTA MULTI JAYYA</h3>
-		<h3 style="margin-bottom: -15px">PROJECT RECAPITULATION</h3>
-		<h3>{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
-			{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</h3>
-
-	</header> --}}
 	<section class="transaction">
+		<div class="transaction-info">
+			<h4 style="float: right;margin-bottom:60px">Periode : {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
+				{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</h4>
+			<table border="0" cellpadding="4" style="margin-top:40px;padding: 10px;margin-left:-10px">
+				@if ($suppliercode !== null && count($purchase) > 0)
+					<tr>
+						<td><strong>Suppplier Name</strong></td>
+						<td>:</td>
+						<td>{{ $purchase[0]['supplier_name'] }}</td>
+					</tr>
+					<tr>
+						<td><strong>Supplier Code</strong></td>
+						<td>:</td>
+						<td>{{ $purchase[0]['supplier_code'] }}</td>
+					</tr>
+				@endif
+				@if ($is_approve !== null && count($purchase) > 0)
+					<tr>
+						<td><strong>Approve Status</strong></td>
+						<td>:</td>
+						@switch($is_approve)
+							@case(0)
+								<td>Not Approve</td>
+							@break
+
+							@case(1)
+								<td>Approved</td>
+							@break
+
+							@default
+								<td>All</td>
+						@endswitch
+					</tr>
+				@endif
+				@if ($paidStatus !== null && count($purchase) > 0)
+					<tr>
+						<td><strong>Paid Status</strong></td>
+						<td>:</td>
+						@switch($paidStatus)
+							@case(0)
+								<td>Unpaid</td>
+							@break
+
+							@case(1)
+								<td>FullPaid</td>
+							@break
+
+							@case(2)
+								<td>Outstanding</td>
+							@break
+
+							@case(3)
+								<td>Overdue</td>
+							@break
+
+							@default
+								<td>All</td>
+						@endswitch
+					</tr>
+				@endif
+			</table>
+		</div>
+		<table id="detail" style="font-size:11px;width:100%">
+			<thead>
+				<tr>
+					<th style="width:2px">No</th>
+					<th>Purchase No</th>
+					<th>Trans Date</th>
+					@if ($suppliercode === null)
+						<th>Supplier Code</th>
+						<th>Supplier Name</th>
+					@endif
+					<th>P. Term</th>
+					<th>Due Date</th>
+					@if ($is_approve === null)
+						<th>Status Approve</th>
+					@endif
+					<th>PPN Amount</th>
+					<th>Grand Total</th>
+					<th>Paid Amount</th>
+					<th>Balance</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (count($purchase) > 0)
+					@php
+						$totalPPN = 0;
+						$totalGT = 0;
+						$totalPA = 0;
+						$totalBalance = 0;
+						$duedate = '';
+					@endphp
+					@foreach ($purchase as $p)
+						@php
+							switch ($p->payment_term_code) {
+							    case 'n/30':
+							        $dueDate = \Carbon\Carbon::parse($p->transaction_date)
+							            ->addDays(30)
+							            ->format('d/m/Y');
+							        break;
+							    case 'n/60':
+							        $dueDate = \Carbon\Carbon::parse($p->transaction_date)
+							            ->addDays(60)
+							            ->format('d/m/Y');
+							        break;
+							    case 'n/90':
+							        $dueDate = \Carbon\Carbon::parse($p->transaction_date)
+							            ->addDays(90)
+							            ->format('d/m/Y');
+							        break;
+							}
+
+							$totalPPN += floatval($p->ppn_amount);
+							$totalGT += floatval($p->grand_total);
+							$totalPA += floatval($p->paid_amount);
+							$totalBalance += floatval($p->grand_total - $p->paid_amount);
+						@endphp
+						<tr>
+
+							<td class="no-wrap" style="width: 2px">{{ $loop->iteration }}</td>
+							<td>{{ $p->purchase_no }}</td>
+							<td class="no-wrap">{{ \Carbon\Carbon::parse($p->transaction_date)->format('d/m/Y') }}</td>
+							@if ($suppliercode === null)
+								<td>{{ $p->supplier_code }}</td>
+								<td>{{ $p->supplier_name }}</td>
+							@endif
+							<td>{{ $p->payment_term_code }}</td>
+							<td>{{ $dueDate }}</td>
+							@if ($is_approve === null)
+								<td>{{ intval($p->is_approve) == 0 ? 'Not Approved' : 'Approved' }}</td>
+							@endif
+							<td class="no-wrap" style="text-align: left">Rp {{ number_format($p->ppn_amount, 2, ',', '.') }}</td>
+							<td class="no-wrap" style="text-align: left">Rp {{ number_format($p->grand_total, 2, ',', '.') }}</td>
+							<td class="no-wrap" style="text-align: left">Rp {{ number_format($p->paid_amount, 2, ',', '.') }}</td>
+							<td class="no-wrap" style="text-align: left">Rp
+								{{ number_format($p->grand_total - $p->paid_amount, 2, ',', '.') }}</td>
+						</tr>
+					@endforeach
+
+					@if ($suppliercode === null && $is_approve === null)
+						<td class="no-wrap" style="text-align: center" colspan="8"> <b>TOTAL</b></td>
+					@elseif($suppliercode !== null && $is_approve === null)
+						<td class="no-wrap" style="text-align: center" colspan="6"> <b>TOTAL</b></td>
+					@elseif($suppliercode === null && $is_approve !== null)
+						<td class="no-wrap" style="text-align: center" colspan="7"> <b>TOTAL</b></td>
+					@else
+						<td class="no-wrap" style="text-align: center" colspan="5"> <b>TOTAL</b></td>
+					@endif
+					<td class="no-wrap" style="text-align: left"><b>Rp {{ number_format($totalPPN, 2, ',', '.') }}</b></td>
+					<td class="no-wrap" style="text-align: left"><b>Rp {{ number_format($totalGT, 2, ',', '.') }}</b> </td>
+					<td class="no-wrap" style="text-align: left"><b>Rp {{ number_format($totalPA, 2, ',', '.') }}</b></td>
+					<td class="no-wrap" style="text-align: left"><b>Rp {{ number_format($totalBalance, 2, ',', '.') }}</b> </td>
+				@endif
+			</tbody>
+		</table>
+	</section>
+	{{-- <section class="transaction">
 		<div class="transaction-info">
 			<h4 style="float: right;margin-bottom:60px">Periode : {{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }} -
 				{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</h4>
@@ -236,7 +386,7 @@
 				@endif
 			</tbody>
 		</table>
-	</section>
+	</section> --}}
 </body>
 
 </html>
