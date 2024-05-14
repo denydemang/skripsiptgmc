@@ -238,7 +238,7 @@ $(document).ready(function () {
   // Click Edit Button
   $(document).on('click', '.editbtn', function () {
     let code = $(this).data('code');
-    let url = route('admin.editprview', code);
+    let url = route('admin.editPurchaseView', code);
 
     window.location.href = url;
   });

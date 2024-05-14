@@ -144,16 +144,6 @@ $(document).ready(function () {
     }
   }
 
-  function updateDTPTransDateValue() {
-    let startTrans = inputstartdatetrans.val();
-    let lastTrans = inputlastdatetrans.val();
-
-    supplyData.startDate = startTrans;
-    supplyData.endDate = lastTrans;
-
-    reloadTable(method, tableName, columns, getPRTable, supplyData, setcellDateNeed);
-  }
-
   function updateDTPSDateNeedValue() {
     let dateNeedStart = inputstartdateneed.val();
     let dateNeedEnd = inputenddateneed.val();

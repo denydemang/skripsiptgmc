@@ -261,8 +261,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // -----------------------------------------
     Route::controller(PurchaseRequestController::class)->group(function(){
 
+        
         // GET VIEW
         Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
+        Route::get("admin/purchaserequest/getForModal", 'getDataPRForModal')->name('admin.PRGetForModal');
         Route::get('/admin/purchaserequest/add' ,'getViewPRManage')->name('admin.addprview');
         Route::get('/admin/purchaserequest/edit/{code}' ,'getViewPRManage')->name('admin.editprview');
         
@@ -308,9 +310,13 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // GET VIEW
         Route::get('/admin/purchase', 'getViewPurchase')->name('admin.purchase');
+        Route::get('/admin/purchase/add', 'getViewPurchaseManage')->name('admin.addPurchaseView');
+        Route::get('/admin/purchase/edit/{code}', 'getViewPurchaseManage')->name('admin.editPurchaseView');
 
          // CRUD
         Route::post('/admin/purchase/gettable', 'getTablePurchase')->name('admin.tablepurchase');
+        Route::post('/admin/purchase/add', 'addPurchase')->name('admin.addpurchase');
+        Route::post('/admin/purchase/edit/{id}', 'editPurchase')->name('admin.editpurchase');
         Route::get('/admin/purchase/approve/{id}', 'approvepurchase')->name('admin.approvepurchase');
         Route::get('/admin/purchase/delete/{id}', 'deletepurchase')->name('admin.deletepurchase');
         Route::post('/admin/purchase/detail/{id}', 'detailpurchase')->name('admin.detailpurchase');

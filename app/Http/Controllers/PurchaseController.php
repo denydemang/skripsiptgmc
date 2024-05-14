@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\PaymentTerm;
 use App\Models\Purchase;
 use App\Models\Purchase_Detail;
 use App\Models\Purchase_Request;
+use App\Models\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class PurchaseController extends AdminController
@@ -23,6 +26,41 @@ class PurchaseController extends AdminController
                 ];
     
             return response()->view("admin.transactions.purchase",$supplyData);
+        }
+
+        public function getViewPurchaseManage(Request $request, $code=null){
+
+            $paymentTerm = PaymentTerm::all();
+            $data = [
+                'paymentTerm' => $paymentTerm
+            ];
+            if ($code){ //If In Update Mode
+    
+                $purchase = Purchase::where("purchase_no", $code)
+                ->where("is_approve" , 0)
+                ->join("suppliers", "purchases.supplier_code", "=", "suppliers.code")
+                ->select('purchases.*', 'suppliers.code as supplier_code', 'suppliers.name as supplier_name')
+                ->first();
+            
+                if (!$purchase){
+                    abort(404);
+                }
+
+                $purchase_detail = Purchase_Detail::where("purchase_no", $code)
+                ->join("items", 'purchase_details.item_code', '=', 'items.code')
+                ->get();
+                $data['purchases'] =  $purchase;
+                $data['purchase_detail'] =  json_encode($purchase_detail);
+                    
+            }
+            $supplyData = [
+                'title' =>$request->route()->getName() == 'admin.addPurchaseView' ?  'Add New Purchase' : 'Edit Purchase',
+                'users' => Auth::user(),
+                'sessionRoute' =>  $request->route()->getName(),
+                'data' => $data
+                ];
+    
+            return response()->view("admin.transactions.purchasemanage",$supplyData);
         }
 
         public function getTablePurchase(Request $request, DataTables $dataTables ){
@@ -221,6 +259,8 @@ class PurchaseController extends AdminController
                 Purchase_Request::where("pr_no", $purchase->pr_no)->update([
                     "is_purchased" => 0
                 ]);
+
+                Stock::where("ref_no", $id)->delete();
                 Purchase::where("purchase_no",$id )->delete();
                 DB::commit();
                 
@@ -293,4 +333,154 @@ class PurchaseController extends AdminController
             $printcontroller = new PrintController();
             return $printcontroller->printrecappurchase($suppliercode,$startDate, $endDate, $is_approve, $paidStatus);
         }
+
+
+        public function addPurchase(Request $request ){
+            if($request->ajax()){
+    
+                try {
+                    //code...
+                    DB::beginTransaction();
+                    $purchase = Purchase::orderBy("purchase_no", "desc")->lockforUpdate()->first();
+                    $data = $request->all();
+                    $purchase_no = $this->automaticCode('PRC' ,$purchase, true,  'purchase_no');
+        
+                    $datapurchasedetails = json_decode($data['purchase_detail']);
+                    $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+        
+                    $data['purchase_no'] =  $purchase_no;
+    
+                    $otherfee = floatval($data['other_fee']) / count($datapurchasedetails);
+                    foreach($datapurchasedetails as $i){
+                        $stock = new StockController();
+                        $cogs = (floatval($i->sub_total) + $otherfee) / floatval($i->qty);
+                        $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), floatval($cogs));
+                    }
+    
+                    $purchase = new purchase();
+                    $purchase->purchase_no = $data['purchase_no'];
+                    $purchase->pr_no = $data['pr_no'];
+                    $purchase->transaction_date = $data['transaction_date'];
+                    $purchase->supplier_code = $data['supplier_code'];
+                    $purchase->total = floatval($data['total']);
+                    $purchase->other_fee = floatval($data['other_fee']);
+                    $purchase->percen_ppn = floatval($data['percen_ppn']);
+                    $purchase->ppn_amount = floatval($data['ppn_amount']);
+                    $purchase->grand_total = floatval($data['grand_total']);
+                    $purchase->payment_term_code = $data['payment_term_code'];
+                    $purchase->is_credit = 1;
+                    $purchase->is_approve = 0;
+                    $purchase->paid_amount = 0;
+                    $purchase->description = $data['description'];
+                    $purchase->created_by = Auth::user()->name;
+                    $purchase->save();
+
+                    Purchase_Request::where("pr_no", $purchase->pr_no)->update([
+                        "is_purchased" => 1
+                    ]);
+    
+                    foreach($datapurchasedetails as $i){
+                        $purchase_details= new purchase_Detail();
+                        $purchase_details->purchase_no = $purchase->purchase_no;
+                        $purchase_details->item_code = $i->item_code;
+                        $purchase_details->unit_code = $i->unit_code;
+                        $purchase_details->qty = $i->qty;
+                        $purchase_details->price = $i->price;
+
+                        $purchase_details->total = $i->total;
+                        $purchase_details->discount = $i->discount;
+                        $purchase_details->sub_total = $i->sub_total;
+                        $purchase_details->created_by = Auth::user()->name;
+                        $purchase_details->save();
+                    }
+
+    
+                    DB::commit();
+                    Session::flash('success',  "New purchase : $purchase->purchase_no Succesfully Created");
+                    return json_encode(true);
+                    
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    throw new \Exception($th->getMessage());
+                }
+    
+    
+    
+            } else {
+                abort(404);
+            }
+
+        }
+
+        public function editPurchase(Request $request , $code ){
+            if($request->ajax()){
+    
+                try {
+                    //code...
+                    DB::beginTransaction();
+                    $data = $request->all();        
+                    $datapurchasedetails = json_decode($data['purchase_detail']);
+                    $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+        
+                    Stock::where('ref_no', $code)->delete();
+                    $otherfee = floatval($data['other_fee']) / count($datapurchasedetails);
+                    foreach($datapurchasedetails as $i){
+                        $stock = new StockController();
+                        $cogs = (floatval($i->sub_total) + $otherfee) / floatval($i->qty);
+                        $stock->stockin($code, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), floatval($cogs));
+                    }
+    
+                    $purchase = Purchase::where("purchase_no", $code)->first();
+                    $purchase->pr_no = $data['pr_no'];
+                    $purchase->transaction_date = $data['transaction_date'];
+                    $purchase->supplier_code = $data['supplier_code'];
+                    $purchase->total = floatval($data['total']);
+                    $purchase->other_fee = floatval($data['other_fee']);
+                    $purchase->percen_ppn = floatval($data['percen_ppn']);
+                    $purchase->ppn_amount = floatval($data['ppn_amount']);
+                    $purchase->grand_total = floatval($data['grand_total']);
+                    $purchase->payment_term_code = $data['payment_term_code'];
+                    $purchase->is_credit = 1;
+                    $purchase->is_approve = 0;
+                    $purchase->paid_amount = 0;
+                    $purchase->description = $data['description'];
+                    $purchase->updated_by = Auth::user()->name;
+                    $purchase->update();
+
+
+                    Purchase_Detail::where('purchase_no', $code)->delete();
+                    foreach($datapurchasedetails as $i){
+                        $purchase_details= new purchase_Detail();
+                        $purchase_details->purchase_no = $purchase->purchase_no;
+                        $purchase_details->item_code = $i->item_code;
+                        $purchase_details->unit_code = $i->unit_code;
+                        $purchase_details->qty = $i->qty;
+                        $purchase_details->price = $i->price;
+
+                        $purchase_details->total = $i->total;
+                        $purchase_details->discount = $i->discount;
+                        $purchase_details->sub_total = $i->sub_total;
+                        $purchase_details->created_by = Auth::user()->name;
+                        $purchase_details->save();
+                    }
+
+    
+                    DB::commit();
+                    Session::flash('success',  "Purchase : $code Succesfully Updated");
+                    return json_encode(true);
+                    
+                } catch (\Throwable $th) {
+                    DB::rollBack();
+                    // throw new \Exception($th->getMessage());
+                    $this->errorException2($th, $code );
+                }
+    
+    
+    
+            } else {
+                abort(404);
+            }
+
+        }
+
 }

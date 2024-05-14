@@ -171,16 +171,18 @@
 						<td class="no-wrap">{{ $coa->coa_code }}</td>
 						<td>{{ $coa->name }}</td>
 						<td>{{ $coa->description }}</td>
-						<td class="no-wrap">Rp. {{ number_format($coa->debit, 2, ',', '.') }}</td>
-						<td class="no-wrap">Rp. {{ number_format($coa->kredit, 2, ',', '.') }}</td>
+						<td class="no-wrap" style="text-align:left">Rp. {{ number_format(round($coa->debit), 2, ',', '.') }}</td>
+						<td class="no-wrap" style="text-align:left">Rp. {{ number_format(round($coa->kredit), 2, ',', '.') }}</td>
 					</tr>
 				@endforeach
 
 				<tr>
 					<td colspan="4" style="text-align: right"></td>
-					<td class="no-wrap" style="text-align: right;"><strong>Rp. {{ number_format($totalDebit, 2, ',', '.') }}</strong>
+					<td class="no-wrap" style="text-align: right;"><strong>Rp.
+							{{ number_format(round($totalDebit), 2, ',', '.') }}</strong>
 					</td>
-					<td class="no-wrap" style="text-align: right"><strong>Rp. {{ number_format($totalKredit, 2, ',', '.') }}</strong>
+					<td class="no-wrap" style="text-align: right"><strong>Rp.
+							{{ number_format(round($totalKredit), 2, ',', '.') }}</strong>
 					</td>
 				</tr>
 				<!-- More rows can be added here -->

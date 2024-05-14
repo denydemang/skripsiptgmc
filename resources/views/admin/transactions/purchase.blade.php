@@ -93,7 +93,7 @@
 											Recap</button> </a>
 								</div>
 								<br>
-								<a href="{{ route('admin.addprview') }}">
+								<a href="{{ route('admin.addPurchaseView') }}">
 									<button class="btn btn-outline-primary btn-sm addbtn mb-2">
 										<i class="fas fa-plus"></i> ADD NEW
 									</button></a>

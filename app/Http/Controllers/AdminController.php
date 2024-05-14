@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,12 +23,21 @@ class AdminController extends Controller
 
     public function errorException($ex, $routeRedirectName , $code =""){
         if (!strpos($ex->getMessage(), "cannot delete or update a parent row")){
-            return response()->redirectToRoute($routeRedirectName)->with("error","Unable To Delete $code Already Used By Another Transaction");
+            return response()->redirectToRoute($routeRedirectName)->with("error","Unable To Delete Or Update $code Already Used By Another Transaction");
         } else {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute($routeRedirectName)->with("error", $ex->getMessage());
          }
     }
+
+     public function errorException2($ex, $code =""){
+        if (strpos($ex->getMessage(), "cannot delete or update a parent row")){
+            throw new Exception("Unable To Delete Or Update $code Already Used By Another Transaction");
+        } else {
+            throw new Exception($ex->getMessage());
+         }
+    }
+
 
     protected function isOutOfTermin(String $term, String $startDate ) :bool{
 

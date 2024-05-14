@@ -26,6 +26,36 @@ class PurchaseRequestController extends AdminController
 
     }
 
+    public function getDataPRForModal(Request $request, DataTables $dataTables){
+        if ($request->ajax()){
+
+
+            $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
+            $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
+            $pr = Purchase_Request::where("is_approve", 1)->where('is_purchased', 0)
+            ->whereBetween('transaction_date', [$startDate,$endDate]);
+
+            return $dataTables->of($pr)
+            ->editColumn('transaction_date', function($row) {
+                return $row->transaction_date ? Carbon::parse($row->transaction_date)->format('d/m/Y') : '';
+            })
+            ->editColumn('date_need', function($row) {
+                return $row->date_need ? Carbon::parse($row->date_need)->format('d/m/Y') : '';
+            })
+            ->addColumn('action', function ($row) {
+
+                return '
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-sm btn-success selectprbutton" data-code="'.$row->pr_no.'" title="Select"><i class="fa fa-check"></i> Select</button>
+                </div>';
+            })
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+
+        }
+    }
+
     public function getViewPRManage(Request $request, $code=null){
         $data = [];
         if ($code){ //If In Update Mode

@@ -114,7 +114,7 @@
 					</li>
 					<li class="nav-item">
 						@php
-							$alltransaction = ['admin.purchase'];
+							$alltransaction = ['admin.purchase', 'admin.addPurchaseView', 'admin.editPurchaseView'];
 						@endphp
 						<a class="nav-link" href="#navbar-transaction" data-toggle="collapse"
 							role="button"aria-expanded="{{ in_array($sessionRoute, $alltransaction) ? 'true' : 'false' }}"
@@ -124,7 +124,8 @@
 						</a>
 						<div class="{{ in_array($sessionRoute, $alltransaction) ? 'show' : '' }} collapse" id="navbar-transaction">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item {{ $sessionRoute == 'admin.purchase' ? 'active' : '' }}">
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.purchase' || $sessionRoute == 'admin.addPurchaseView' || $sessionRoute == 'admin.editPurchaseView' ? 'active' : '' }}">
 									<a href="{{ route('admin.purchase') }}" class="nav-link">Purchase Transaction</a>
 								</li>
 								<li class="nav-item">
