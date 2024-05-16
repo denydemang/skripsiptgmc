@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Journal;
 use App\Models\Journal_Detail;
+use App\Models\Payment;
 use App\Models\Project;
 use App\Models\Project_Detail;
 use App\Models\Project_Detail_B_Realisation;
@@ -425,6 +426,48 @@ class AccountingController extends AdminController
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
 
+
+    }
+
+    public function journalPembayaran($code){
+
+        $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
+        ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
+        ->where('bkk_no', $code)
+        ->first();
+    
+
+
+        $supplyModel = Journal::where("voucher_no", 'like', "%JKK%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode("JKK", $supplyModel,true,"voucher_no");
+        
+        // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date = $payment->transaction_date;
+        $journal->ref_no = $payment->bkk_no;
+        $journal->journal_type_code = "JKK";
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description = "Pembayaran Hutang Usaha Kode Pembayaran : $payment->bkk_no ; Supplier:  $payment->supplier_name ($payment->supplier_code)"  ;
+        $journalDetail->coa_code ="20.01.01.01";
+        $journalDetail->debit = round(floatval($payment->total_amount), 2);
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description = "Kas/Bank Keluar Kode Pembayaran : $payment->bkk_no ; Supplier:  $payment->supplier_name ($payment->supplier_code)";
+        $journalDetail->coa_code = $payment->coa_cash_code;
+        $journalDetail->debit = 0;
+        $journalDetail->kredit = round(floatval($payment->total_amount), 2);
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
 
     }
 }

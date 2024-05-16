@@ -234,7 +234,7 @@
 				@endforeach
 				<tr>
 					<td class="no-wrap" colspan="6" style="text-align: right"><b>Sub Total</b></td>
-					<td>Rp. {{ number_format($dataPurchase[0]['total'], 2, ',', '.') }}</td>
+					<td>Rp. {{ number_format($dataPurchase[0]['total_item_purchase'], 2, ',', '.') }}</td>
 				</tr>
 				<tr>
 					<td class="no-wrap" colspan="6" style="text-align: right"><b>Other Fee</b></td>
@@ -250,6 +250,10 @@
 				<tr>
 					<td class="no-wrap" colspan="6" style="text-align: right"><b>Grand Total</b></td>
 					<td>Rp. {{ number_format($dataPurchase[0]['grand_total'], 2, ',', '.') }}</td>
+				</tr>
+				<tr>
+					<td class="no-wrap" colspan="6" style="text-align: right"><b>Paid Amount</b></td>
+					<td>Rp. {{ number_format($dataPurchase[0]['paid_amount'], 2, ',', '.') }}</td>
 				</tr>
 			</tbody>
 		</table>

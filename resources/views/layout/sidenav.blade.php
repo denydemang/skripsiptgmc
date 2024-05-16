@@ -134,16 +134,19 @@
 							</ul>
 						</div>
 					</li>
+					@php
+						$allfinance = ['admin.payment'];
+					@endphp
 					<li class="nav-item">
-						<a class="nav-link" href="#navbar-finance" data-toggle="collapse" role="button" aria-expanded="false"
-							aria-controls="navbar-finance">
+						<a class="nav-link" href="#navbar-finance" data-toggle="collapse" role="button"
+							aria-expanded="{{ in_array($sessionRoute, $allfinance) ? 'true' : 'false' }}" aria-controls="navbar-finance">
 							<i class="ni ni-money-coins text-info"></i>
 							<span class="nav-link-text">Finance</span>
 						</a>
-						<div class="collapse" id="navbar-finance">
+						<div class="{{ in_array($sessionRoute, $allfinance) ? 'show' : '' }} collapse" id="navbar-finance">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item">
-									<a href="./pages/components/buttons.html" class="nav-link">Payment</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.payment' ? 'active' : '' }}">
+									<a href="{{ route('admin.payment') }}" class="nav-link">Payment</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/components/cards.html" class="nav-link">Receipt</a>

@@ -273,29 +273,29 @@ class PurchaseController extends AdminController
         }
 
         public function approvepurchase($id){
-            try {
+                try {
 
-                DB::beginTransaction();
+                    DB::beginTransaction();
 
-                Purchase::where("purchase_no", $id)->update(
-                    
-                    [
+                    Purchase::where("purchase_no", $id)->update(
                         
-                        'is_approve' => 1,
-                        'approved_by' => Auth::user()->name
-                    ]
-                );
+                        [
+                            
+                            'is_approve' => 1,
+                            'approved_by' => Auth::user()->name
+                        ]
+                    );
 
-                $journal = new AccountingController();
-                $journal->journalPembelian($id);
-            
-                DB::commit();
-                return response()->redirectToRoute("admin.purchase")->with("success", "Data Purchase $id Successfully Approved");
-            } catch (\Throwable $th) {
-                DB::rollBack();
+                    $journal = new AccountingController();
+                    $journal->journalPembelian($id);
+                
+                    DB::commit();
+                    return response()->redirectToRoute("admin.purchase")->with("success", "Data Purchase $id Successfully Approved");
+                } catch (\Throwable $th) {
+                    DB::rollBack();
 
-                return $this->errorException($th,"admin.purchase", $id );
-            }
+                    return $this->errorException($th,"admin.purchase", $id );
+                }
 
         }
 

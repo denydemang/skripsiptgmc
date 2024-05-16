@@ -7,6 +7,7 @@ use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseRequestController;
@@ -325,6 +326,24 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/purchase/detail/print/{id}', 'printdetailpurchase')->name('admin.printdetailpurchase');
         Route::get('/admin/purchase/jurnal/print/{id}', 'printjurnalpurchase')->name('admin.printjurnalpurchase');
         Route::get('/admin/purchase/recap/print', 'printrecappurchase')->name('admin.printrecappurchase');
+
+    });
+
+    Route::controller(PaymentController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/payment', 'getViewPayment')->name('admin.payment');
+        
+        // CRUD
+        Route::post('/admin/payment/gettable', 'getTablePayment')->name('admin.tablepayment');
+        Route::get('/admin/payment/delete/{id}', 'deletepayment')->name('admin.deletepayment');
+        Route::get('/admin/payment/approve/{id}', 'approvepayment')->name('admin.approvepayment');
+
+
+        // Print
+        Route::get('/admin/payment/detail/print/{id}', 'printdetailpayment')->name('admin.printdetailpayment');
+        Route::get('/admin/payment/jurnal/print/{id}', 'printjurnalpayment')->name('admin.printjurnalpayment');
+        Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
 
     });
     // ------------------------------------------
