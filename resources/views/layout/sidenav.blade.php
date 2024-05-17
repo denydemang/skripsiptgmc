@@ -135,7 +135,7 @@
 						</div>
 					</li>
 					@php
-						$allfinance = ['admin.payment'];
+						$allfinance = ['admin.payment', 'admin.addPaymentView'];
 					@endphp
 					<li class="nav-item">
 						<a class="nav-link" href="#navbar-finance" data-toggle="collapse" role="button"
@@ -145,7 +145,8 @@
 						</a>
 						<div class="{{ in_array($sessionRoute, $allfinance) ? 'show' : '' }} collapse" id="navbar-finance">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item {{ $sessionRoute == 'admin.payment' ? 'active' : '' }}">
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.payment' || $sessionRoute == 'admin.addPaymentView' ? 'active' : '' }}">
 									<a href="{{ route('admin.payment') }}" class="nav-link">Payment</a>
 								</li>
 								<li class="nav-item">

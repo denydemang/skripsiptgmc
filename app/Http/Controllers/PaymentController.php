@@ -23,6 +23,38 @@ class PaymentController extends AdminController
 
         return response()->view("admin.finance.payment",$supplyData);
     }
+    public function getViewPaymentManage(Request $request, $code=null){
+
+        $data= [];
+        if ($code){ //If In Update Mode
+
+            $purchase = Purchase::where("purchase_no", $code)
+            ->where("is_approve" , 0)
+            ->join("suppliers", "purchases.supplier_code", "=", "suppliers.code")
+            ->select('purchases.*', 'suppliers.code as supplier_code', 'suppliers.name as supplier_name')
+            ->first();
+        
+            if (!$purchase){
+                abort(404);
+            }
+
+            // $purchase_detail = Purchase_Detail::where("purchase_no", $code)
+            // ->join("items", 'purchase_details.item_code', '=', 'items.code')
+            // ->get();
+            // $data['purchases'] =  $purchase;
+            // $data['purchase_detail'] =  json_encode($purchase_detail);   
+                
+        }
+        $supplyData = [
+            'title' =>$request->route()->getName() == 'admin.addPaymentView' ?  'Add New Payment' : 'Edit Payment',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+            'data' => $data
+            ];
+
+        return response()->view("admin.finance.paymentmanage",$supplyData);
+    }
+
 
     public function getTablePayment(Request $request, DataTables $dataTables ){
         if ($request->ajax()){
@@ -170,5 +202,104 @@ class PaymentController extends AdminController
 
         $printcontroller = new PrintController();
         return $printcontroller->printrecappayment($suppliercode,$startDate, $endDate, $is_approve);
+    }
+
+    public function getpurchaseforpayment($code, Request $request){
+
+        if ($request->ajax()){
+
+    // Create the subquery
+            $subQuery = DB::table('purchases as p')
+            ->select(
+                'p.purchase_no',
+                'p.transaction_date',
+                'p.supplier_code',
+                'p.is_approve',
+                DB::raw("
+                    CASE 
+                        WHEN p.payment_term_code LIKE 'n/30' THEN DATE_ADD(p.transaction_date, INTERVAL 30 DAY)
+                        WHEN p.payment_term_code LIKE 'n/60' THEN DATE_ADD(p.transaction_date, INTERVAL 60 DAY)
+                        WHEN p.payment_term_code LIKE 'n/90' THEN DATE_ADD(p.transaction_date, INTERVAL 90 DAY)
+                    END AS due_date
+                "),
+                DB::raw('(p.grand_total - p.paid_amount) AS balance')
+            );
+
+            // Use the subquery in the main query
+            $results = DB::table(DB::raw("({$subQuery->toSql()}) as qry"))
+            ->mergeBindings($subQuery)
+            ->select('qry.purchase_no','qry.supplier_code', 'qry.transaction_date','qry.is_approve', 'qry.due_date', 'qry.balance')
+            ->where("qry.supplier_code", "=", $code)
+            ->where('qry.balance' , ">", 0)
+            ->where("qry.due_date", ">=" , DB::raw("CURDATE()"))
+            ->where("qry.is_approve", "=" , 1)
+            ->get();
+
+            return response()->json($results);
+
+        } else {
+            abort(404);
+        }     
+    }
+
+
+    public function addPayment(Request $request ){
+        if($request->ajax()){
+
+    
+            try {
+                //code...
+                DB::beginTransaction();
+                $data = $request->all();
+             
+                $details= json_decode($data['detail']);
+                $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+                $listBKKNo = [];
+                foreach ($details as $key => $value) {
+                    
+                    if (floatval($value->paid_amount) > 0 ){
+
+                        $payment = Payment::orderBy("bkk_no", "desc")->lockforUpdate()->first();
+                        $bkkNo = $this->automaticCode('BKK' ,$payment, true,  'bkk_no');
+                        $insertPayment = new Payment();
+                        $insertPayment->transaction_date =  $data['transaction_date'];
+                        $insertPayment->bkk_no = $bkkNo;
+                        $insertPayment->supplier_code = $data['supplier_code'];
+                        $insertPayment->ref_no = $value->ref_no;
+                        $insertPayment->coa_cash_code = $data['coa_cash_code'];
+                        $insertPayment->total_amount = floatval($value->paid_amount);
+                        $insertPayment->payment_method = $data['payment_method'];
+                        $insertPayment->description = $data['description'];
+                        $insertPayment->terbilang = $this->terbilang(floatval($value->paid_amount));
+                        $insertPayment->created_by = Auth::user()->name;
+                        $insertPayment->approved_by = "";
+                        $insertPayment->save();
+
+                        $purchase = Purchase::where("purchase_no" , $value->ref_no)->first();
+
+                        $purchase->paid_amount = $purchase->paid_amount + floatval($value->paid_amount);
+                        $purchase->update();
+
+                        array_push($listBKKNo,$bkkNo);
+
+                    }
+                }
+
+                $commaSeparated = implode(', ', $listBKKNo);
+                DB::commit();
+                Session::flash('success',  "New Payment : $commaSeparated Succesfully Created");
+                return json_encode(true);
+                
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+
+
+        } else {
+            abort(404);
+        }
+
     }
 }

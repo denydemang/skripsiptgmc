@@ -9,6 +9,68 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+
+    public function terbilang($angka) {
+        // Memisahkan bagian bulat dan desimal
+        $parts = explode('.', $angka);
+        $angka_bulat = abs($parts[0]);
+        $angka_desimal = isset($parts[1]) ? $parts[1] : 0;
+    
+        // Konversi bagian bulat
+        $terbilang_bulat = $this->terbilang_int($angka_bulat);
+    
+        // Konversi bagian desimal jika ada
+        $terbilang_desimal = '';
+        if ($angka_desimal > 0) {
+            $terbilang_desimal = ' Koma ' . $this->terbilang_int($angka_desimal);
+        }
+    
+        return $terbilang_bulat . $terbilang_desimal;
+    }
+    
+    public function terbilang_int($angka) {
+        $angka = (string) $angka;
+        $length = strlen($angka);
+        $terbilang = '';
+        $angka_digit = array('', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan');
+    
+        if ($length == 1) {
+            $terbilang = $angka_digit[$angka];
+        } elseif ($length == 2) {
+            if ($angka[0] == '1') {
+                if ($angka[1] == '0') {
+                    $terbilang = 'Sepuluh';
+                } elseif ($angka[1] == '1') {
+                    $terbilang = 'Sebelas';
+                } else {
+                    $terbilang = $angka_digit[$angka[1]] . ' Belas';
+                }
+            } else {
+                $terbilang = $angka_digit[$angka[0]] . ' Puluh ' . $angka_digit[$angka[1]];
+            }
+        } elseif ($length == 3) {
+            if ($angka[0] == '1') {
+                $terbilang = 'Seratus ' . $this->terbilang_int((int) substr($angka, 1));
+            } else {
+                $terbilang = $angka_digit[$angka[0]] . ' Ratus ' . $this->terbilang_int((int) substr($angka, 1));
+            }
+        } elseif ($length <= 6) {
+            $temp = $this->terbilang_int((int) substr($angka, 0, -3));
+            $terbilang = $temp . ' Ribu ' . $this->terbilang_int((int) substr($angka, -3));
+        } elseif ($length <= 9) {
+            $temp = $this->terbilang_int((int) substr($angka, 0, -6));
+            $terbilang = $temp . ' Juta ' . $this->terbilang_int((int) substr($angka, -6));
+        } elseif ($length <= 12) {
+            $temp = $this->terbilang_int((int) substr($angka, 0, -9));
+            $terbilang = $temp . ' Miliar ' . $this->terbilang_int((int) substr($angka, -9));
+        } elseif ($length <= 15) {
+            $temp = $this->terbilang_int((int) substr($angka, 0, -12));
+            $terbilang = $temp . ' Triliun ' . $this->terbilang_int((int) substr($angka, -12));
+        }
+    
+        return $terbilang;
+    }
+    
     public function dashboard(Request $request){
         return response()
         ->view(
