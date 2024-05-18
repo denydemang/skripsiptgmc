@@ -28,22 +28,43 @@ class PaymentController extends AdminController
         $data= [];
         if ($code){ //If In Update Mode
 
-            $purchase = Purchase::where("purchase_no", $code)
+            $payment = Payment::where("bkk_no", $code)
             ->where("is_approve" , 0)
-            ->join("suppliers", "purchases.supplier_code", "=", "suppliers.code")
-            ->select('purchases.*', 'suppliers.code as supplier_code', 'suppliers.name as supplier_name')
+            ->join("suppliers", "payments.supplier_code", "=", "suppliers.code")
+            ->select('payments.*', 'suppliers.code as supplier_code', 'suppliers.name as supplier_name')
             ->first();
         
-            if (!$purchase){
+            if (!$payment){
                 abort(404);
             }
 
-            // $purchase_detail = Purchase_Detail::where("purchase_no", $code)
-            // ->join("items", 'purchase_details.item_code', '=', 'items.code')
-            // ->get();
-            // $data['purchases'] =  $purchase;
-            // $data['purchase_detail'] =  json_encode($purchase_detail);   
-                
+            $subQuery = DB::table('purchases as p')
+            ->select(
+                'p.purchase_no',
+                'p.transaction_date',
+                'p.supplier_code',
+                'p.is_approve',
+                DB::raw("
+                    CASE 
+                        WHEN p.payment_term_code LIKE 'n/30' THEN DATE_ADD(p.transaction_date, INTERVAL 30 DAY)
+                        WHEN p.payment_term_code LIKE 'n/60' THEN DATE_ADD(p.transaction_date, INTERVAL 60 DAY)
+                        WHEN p.payment_term_code LIKE 'n/90' THEN DATE_ADD(p.transaction_date, INTERVAL 90 DAY)
+                    END AS due_date
+                "),
+                DB::raw('(p.grand_total - p.paid_amount) AS balance')
+            );
+
+            // Use the subquery in the main query
+            $results = DB::table(DB::raw("({$subQuery->toSql()}) as qry"))
+            ->mergeBindings($subQuery)
+            ->select('qry.purchase_no','qry.supplier_code', 'qry.transaction_date','qry.is_approve', 'qry.due_date', 'qry.balance')
+            ->where("qry.purchase_no", "=", $payment->ref_no)
+            ->where('qry.balance' , ">", 0)
+            ->where("qry.due_date", ">=" , DB::raw("CURDATE()"))
+            ->first();
+            
+        $data['payment'] = $payment;
+        $data['detail'] = json_encode($results);
         }
         $supplyData = [
             'title' =>$request->route()->getName() == 'admin.addPaymentView' ?  'Add New Payment' : 'Edit Payment',
@@ -288,6 +309,63 @@ class PaymentController extends AdminController
                 $commaSeparated = implode(', ', $listBKKNo);
                 DB::commit();
                 Session::flash('success',  "New Payment : $commaSeparated Succesfully Created");
+                return json_encode(true);
+                
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+
+
+        } else {
+            abort(404);
+        }
+
+    }
+
+    public function editpayment($code ,Request $request ){
+        if($request->ajax()){
+
+    
+            try {
+                //code...
+                DB::beginTransaction();
+                $data = $request->all();
+             
+                $details= json_decode($data['detail']);
+                $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+                $listBKKNo = [];
+                foreach ($details as $key => $value) {
+                    
+                    if (floatval($value->paid_amount) > 0 ){
+
+                        $updatePayment = Payment::where("bkk_no", $code)->first();
+
+                        $purchase = Purchase::where("purchase_no" , $value->ref_no)->first();
+                        $purchase->paid_amount = floatval($purchase->paid_amount) - floatval($updatePayment->total_amount);
+                        $purchase->update();
+                        
+                        $updatePayment->transaction_date =  $data['transaction_date'];
+                        $updatePayment->supplier_code = $data['supplier_code'];
+                        $updatePayment->ref_no = $value->ref_no;
+                        $updatePayment->coa_cash_code = $data['coa_cash_code'];
+                        $updatePayment->total_amount = floatval($value->paid_amount);
+                        $updatePayment->payment_method = $data['payment_method'];
+                        $updatePayment->description = $data['description'];
+                        $updatePayment->terbilang = $this->terbilang(floatval($value->paid_amount)); 
+                        $updatePayment->updated_by = Auth::user()->name;
+                        $updatePayment->approved_by = "";
+                        $updatePayment->update();
+                        
+                        $purchase->paid_amount = $purchase->paid_amount + floatval($updatePayment->total_amount);
+                        $purchase->update();
+
+                    }
+                }
+
+                DB::commit();
+                Session::flash('success',  "Payment : $code Succesfully Updated");
                 return json_encode(true);
                 
             } catch (\Throwable $th) {

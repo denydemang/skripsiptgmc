@@ -109,12 +109,12 @@
 		<div class="content">
 			<table border="1">
 				<tr>
-					<td><b>Telah Dibayarkan Kepada</b></td>
+					<td style="width:150px"><b>Telah Dibayarkan Kepada</b></td>
 					<td>{{ $payment->supplier_name }}</td>
 				</tr>
 				<tr>
 					<td><b>Banyaknya Uang</b></td>
-					<td>{{ $payment->terbilang }}</td>
+					<td>{{ $payment->terbilang }} Rupiah</td>
 				</tr>
 				<tr>
 					<td><b>Untuk Pembelian No</b></td>

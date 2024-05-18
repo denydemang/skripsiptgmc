@@ -73,7 +73,7 @@
 											<div class="form-group">
 												<label class="form-control-label">BKK No <span style="color: red">*</span></label>
 												<input type="text" class="form-control form-control-sm inputbkkno" readonly
-													value="{{ $sessionRoute == 'admin.addPaymentView' ? 'AUTO' : $data['purchases']['purchase_no'] }}"
+													value="{{ $sessionRoute == 'admin.addPaymentView' ? 'AUTO' : $data['payment']['bkk_no'] }}"
 													id="example3cols1Input">
 											</div>
 										</div>
@@ -83,7 +83,7 @@
 												<div class="input-group date mr-2" id="dtptransdate" data-target-input="nearest">
 													<input type="text" style="cursor: pointer" class="form-control form-control-sm inputtransdate"
 														data-target="#dtptransdate" readonly
-														data-transdate="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['purchases']['transaction_date'] }}" />
+														data-transdate="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['transaction_date'] }}" />
 													<div class="input-group-append" data-target="#dtptransdate" data-toggle="dtptransdate">
 														<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
 													</div>
@@ -99,8 +99,8 @@
 													<option value="M-Banking">M-Banking</option>
 													<option value="COD">COD</option>
 												</select>
-												<div class="datapaymentterm"
-													data-paymentterm="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['purchases']['payment_term_code'] }}">
+												<div class="datapaymentmethod"
+													data-paymentmethod="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['payment_method'] }}">
 												</div>
 											</div>
 										</div>
@@ -118,13 +118,13 @@
 									<div class="col-lg-4">
 										@include('component.supplierCode')
 										<div class="datasuppliercode"
-											data-suppliercode="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['purchases']['supplier_code'] }}">
+											data-suppliercode="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['supplier_code'] }}">
 										</div>
 									</div>
 									<div class="col-lg-4">
 										@include('component.supplierName')
 										<div class="datasuppliername"
-											data-suppliername="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['purchases']['supplier_name'] }}">
+											data-suppliername="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['supplier_name'] }}">
 										</div>
 									</div>
 									<div class="col-lg-4">
@@ -133,13 +133,19 @@
 										<div class="d-flex">
 											<input type="text" readonly class="form-control form-control-sm inputcoaforcashbank"
 												id="example3cols1Input"
-												value="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['dataProject']['coa_expense'] }}">
+												value="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['coa_cash_code'] }}">
 											@include('component.btnsearchcoa')
 										</div>
 									</div>
 								</div>
 								<div class="row mt-2">
 									<div class="col-lg-12 table-responsive table-itemm" style="max-height: 400px">
+										<div class="datapayment"
+											data-payment="{{ $sessionRoute == 'admin.addPaymentView' ? '' : json_encode($data['detail']) }}">
+										</div>
+										<div class="dataamount"
+											data-amount="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['total_amount'] }}">
+										</div>
 										<table border="1"
 											style="width: 100%;  border: 1px solid #000;border-radius: 8px; background-color: #f9f9f9"
 											class="table-sm tablelistpurchase">
@@ -170,7 +176,7 @@
 									<div class="col-lg-6">
 										<div class="form-group">
 											<label class="form-control-label">Description <span style="color: red">*</span></label>
-											<textarea class="form-control inputdescription" name="" id="" cols="30" rows="5">{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['purchases']['description'] }}</textarea>
+											<textarea class="form-control inputdescription" name="" id="" cols="30" rows="5">{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['description'] }}</textarea>
 										</div>
 									</div>
 								</div>

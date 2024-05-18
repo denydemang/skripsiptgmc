@@ -229,7 +229,7 @@ $(document).ready(function () {
   // Click Edit Button
   $(document).on('click', '.editbtn', function () {
     let code = $(this).data('code');
-    let url = route('admin.editPurchaseView', code);
+    let url = route('admin.editPaymentView', code);
 
     window.location.href = url;
   });

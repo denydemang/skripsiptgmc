@@ -334,10 +334,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // GET VIEW
         Route::get('/admin/payment', 'getViewPayment')->name('admin.payment');
         Route::get('/admin/payment/add', 'getViewPaymentManage')->name('admin.addPaymentView');
+        Route::get('/admin/payment/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
         
         // CRUD
         Route::post('/admin/payment/gettable', 'getTablePayment')->name('admin.tablepayment');
         Route::post('/admin/payment/add', 'addPayment')->name('admin.addpayment');
+        Route::post('/admin/payment/edit/{id}', 'editPayment')->name('admin.editpayment');
         Route::get('/admin/payment/delete/{id}', 'deletepayment')->name('admin.deletepayment');
         Route::get('/admin/payment/approve/{id}', 'approvepayment')->name('admin.approvepayment');
         Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');

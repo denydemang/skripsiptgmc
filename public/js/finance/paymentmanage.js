@@ -25,22 +25,20 @@ $(document).ready(function () {
   const inputdaterequired = $('.inputdaterequired');
   // End Html Input
 
-  // Property when in update mode
-  const purchasesdetail = $('.purchasesdetail');
-  const datasuppliercode = $('.datasuppliercode');
-  const datasuppliername = $('.datasuppliername');
-  const dataprcode = $('.dataprcode');
-  const datapercentppn = $('.datapercentppn');
-  const dataamountppn = $('.dataamountppn');
-  const dataotherfee = $('.dataotherfee');
-  const datapaymentterm = $('.datapaymentterm');
+  // Property Data when in update mode
+  const datatransadate = $('.inputtransdate').data('transdate');
+  const datapaymentmethod = $('.datapaymentmethod').data('paymentmethod');
+  const datasuppliername = $('.datasuppliername').data('suppliername');
+  const datasuppliercode = $('.datasuppliercode').data('suppliercode');
+  const datapayment = $('.datapayment').data('payment');
+  const dataamount = $('.dataamount').data('amount');
   // End Property when in update mode
 
   // Tampungan Parsing hasil data update mode
   let detailpr = [''];
 
   // State
-  const updateMode = route().current() == 'admin.editPurchaseView';
+  const updateMode = route().current() == 'admin.editPaymentView';
 
   //Validation Input
   let dataInput = ['.inputdescription'];
@@ -104,26 +102,20 @@ $(document).ready(function () {
   }
 
   function prepareEdit() {
-    detailpr = JSON.parse(JSON.parse(purchasesdetail.data('purchasedetail')));
-    inputtransdate.val(moment(inputtransdate.data('transdate')).format('DD/MM/YYYY'));
-    let supplier_code = datasuppliercode.data('suppliercode');
-    let supplier_name = datasuppliername.data('suppliername');
-    let pr_no = dataprcode.data('dataprcode');
-    let otherfee = dataotherfee.data('otherfee');
-    let percentppn = datapercentppn.data('percentppn');
-    let amountppn = dataamountppn.data('amountppn');
-    let paymentterm = datapaymentterm.data('paymentterm');
-    supplierCode.val(supplier_code);
-    supplierName.val(supplier_name);
-    inputpaymentterm.val(paymentterm);
-    prCode.val(pr_no);
+    inputtransdate.val(moment(datatransadate).format('DD/MM/YYYY'));
+    supplierCode.val(datasuppliercode);
+    supplierName.val(datasuppliername);
+    inputpaymentmethod.val(datapaymentmethod);
+    let detailPurchase = JSON.parse(JSON.parse(datapayment));
 
-    detailpr.forEach((x) => {
-      detail.balance = x.balance;
-      detail.due_date = moment(x.due_date, 'YYYY-MM-DD').isoFormat('DD/MM/YYYY');
+    detail.unpaid_amount = parseFloat(detailPurchase.balance) + parseFloat(dataamount);
+    detail.due_date = moment(detailPurchase.due_date).format('DD/MM/YYYY');
+    detail.paid_amount = parseFloat(dataamount);
+    detail.ref_no = detailPurchase.purchase_no;
+    detail.transaction_date = moment(detailPurchase.transaction_date).format('DD/MM/YYYY');
+    detail.balance = detail.unpaid_amount - detail.paid_amount;
 
-      tampungDetail.push({ ...purchase_detail_interface });
-    });
+    tampungDetail.push({ ...detail });
 
     createHtmTBodyItem();
   }
@@ -267,7 +259,7 @@ $(document).ready(function () {
 
     if (updateMode) {
       let code = inputbkkno.val();
-      urlRequest = route('admin.editpurchase', code);
+      urlRequest = route('admin.editpayment', code);
     } else {
       urlRequest = route('admin.addpayment');
     }
