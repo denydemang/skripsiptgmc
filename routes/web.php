@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\CashBookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
@@ -20,6 +21,7 @@ use App\Http\Controllers\UpahController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
 use App\Http\Middleware\GuestMiddleware;
+use App\Models\CashBook;
 use App\Models\Category;
 use App\Models\COA;
 use App\Models\Role;
@@ -351,6 +353,34 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
 
     });
+
+    Route::controller(CashBookController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/cashbook', 'getViewCashBook')->name('admin.cashbook');
+        // Route::get('/admin/payment/add', 'getViewPaymentManage')->name('admin.addPaymentView');
+        // Route::get('/admin/payment/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
+        
+        // CRUD
+        Route::post('/admin/cashbook/gettable', 'getTableCashBook')->name('admin.tablecashbook');
+        Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
+        Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
+        // Route::post('/admin/payment/add', 'addPayment')->name('admin.addpayment');
+        // Route::post('/admin/payment/edit/{id}', 'editPayment')->name('admin.editpayment');
+        // Route::get('/admin/payment/delete/{id}', 'deletepayment')->name('admin.deletepayment');
+        // Route::get('/admin/payment/approve/{id}', 'approvepayment')->name('admin.approvepayment');
+        // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+
+
+        // Print
+        Route::get('/admin/cashbook/detail/print/{id}', 'printdetailcashbook')->name('admin.printdetailcashbook');
+        Route::get('/admin/cashbook/jurnal/print/{id}', 'printjurnalcashbook')->name('admin.printjurnalcashbook');
+        // Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
+
+    });
+
+
+
     // ------------------------------------------
 
 });

@@ -135,7 +135,7 @@
 						</div>
 					</li>
 					@php
-						$allfinance = ['admin.payment', 'admin.addPaymentView', 'admin.editPaymentView'];
+						$allfinance = ['admin.payment', 'admin.addPaymentView', 'admin.editPaymentView', 'admin.cashbook'];
 					@endphp
 					<li class="nav-item">
 						<a class="nav-link" href="#navbar-finance" data-toggle="collapse" role="button"
@@ -152,8 +152,9 @@
 								<li class="nav-item">
 									<a href="./pages/components/cards.html" class="nav-link">Receipt</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/components/cards.html" class="nav-link">Cash Book</a>
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.payment' || $sessionRoute == 'admin.cashbook' ? 'active' : '' }}">
+									<a href="{{ route('admin.cashbook') }}" class="nav-link">Cash Book</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/components/cards.html" class="nav-link">Advance Receipt</a>

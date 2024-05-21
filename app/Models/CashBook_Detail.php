@@ -17,7 +17,7 @@ class CashBook_Detail extends Model
         'coa',
         'description',
         'amount',
-        'd_k',
+        'CbpType',
         'created_at',
         'created_by',
         'updated_at',

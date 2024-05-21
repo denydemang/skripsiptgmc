@@ -1,16 +1,18 @@
 export default class tableInitiator {
-  constructor(method = 'get', tableName = '', columns = [], url, data = function () {}, funcCell = function () {}) {
+  constructor(method = 'get', tableName = '', columns = [], url, data = function () {}, funcCell = function () {}, searchable = true) {
     this.method = method;
     this.tableName = tableName;
     this.columns = columns;
     this.url = url;
     this.data = data;
     this.funcCell = funcCell;
+    this.searchable = searchable;
     this.table = $(this.tableName).DataTable({
       fixedHeader: true,
       retrieve: true,
       processing: true,
       serverSide: true,
+      searching: this.searchable,
       fixedColumns: {
         start: 1
       },
