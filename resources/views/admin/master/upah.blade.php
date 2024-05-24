@@ -11,7 +11,7 @@
                 <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
               </li>
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-              <li class="breadcrumb-item active" aria-current="page">Items</li>
+              <li class="breadcrumb-item active" aria-current="page">Upah</li>
             </ol>
           </nav>
         </div>
@@ -28,7 +28,7 @@
           <div class="card" style="min-height: 800px">
             <!-- Card header -->
             <div class="card-header border-0">
-              <h3 class="mb-0">Items</h3>
+              <h3 class="mb-0">Upah</h3>
             </div>
             <div class="card-body">
               <div class="btn btn-outline-primary btn-sm addbtn mb-2"><i class="fas fa-plus"></i> ADD NEW</div>
@@ -75,7 +75,7 @@
 
 
 {{-- MODAL FORM --}}
-<div class="modal fade" id="modal-popup" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog modal-primary" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -91,46 +91,44 @@
               @csrf
               <div class="form-group">
                 <label for="code">Code <span title="Wajib Diisi" style="color: #23f234"><br>
-                    <i id="pesanCode">*): Harap Diisi dengan Code Unik, jika kosong akan Tergenerate Code otomatis </i></span></label>
+                    <i id="pesanCode">*): Harap Diisi dengan Code Unik, jika kosong akan Tergenerate Code otomatis </i></span></label><br>
                 <input class="form-control code" type="text" name="code" style="font-weight: bolder">
               </div>
               <div class="form-group">
-                <label for="name">Name <span title="Wajib Diisi" style="color: red">*</span></label>
-                <input class="form-control name" type="text" name="name" style="font-weight: bolder">
+                <label for="name">Job <span title="Wajib Diisi" style="color: red">*</span></label>
+                <input class="form-control job" type="text" name="job" style="font-weight: bolder">
                 <div class="invalid-feedback">
-                  <b>Name Tidak Boleh Kosong </b>
+                  <b>Job Tidak Boleh Kosong </b>
                 </div>
               </div>
               <div class="form-group">
-                <label for="role">Unit Code <span title="Wajib Diisi" style="color: red">*</span></label>
+                <label for="name">Description <span title="Wajib Diisi" style="color: red">*</span></label>
+                <input class="form-control description" type="text" name="description" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Description Tidak Boleh Kosong </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Unit <span title="Wajib Diisi" style="color: red">*</span></label>
+                <input class="form-control unit" type="text" name="unit" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Unit Tidak Boleh Kosong </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Price <span title="Wajib Diisi" style="color: red">*</span></label>
+                <input class="form-control price" type="number" name="price" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Price Tidak Boleh Kosong </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="role">COA <span title="Wajib Diisi" style="color: red">*</span></label>
                 {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
-                <select class="form-control unit_code" name="unit_code" id="unit_code">
+                <select class="form-control coa_code" name="coa_code" id="coa_code">
                 </select>
                 <div class="invalid-feedback">
-                    <b>Unit Code Tidak Boleh Kosong </b>
-                  </div>
-              </div>
-              <div class="form-group">
-                <label for="name">Min Stock <span title="Wajib Diisi" style="color: red">*</span></label>
-                <input class="form-control min_stock" type="number" name="min_stock" style="font-weight: bolder">
-                <div class="invalid-feedback">
-                  <b>Min Stock Tidak Boleh Kosong </b>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="name">Max Stock <span title="Wajib Diisi" style="color: red">*</span></label>
-                <input class="form-control max_stock" type="number" name="max_stock" style="font-weight: bolder">
-                <div class="invalid-feedback">
-                  <b>Max Stock Tidak Boleh Kosong </b>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="role">Category Code <span title="Wajib Diisi" style="color: red">*</span></label>
-                {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
-                <select class="form-control category_code" name="category_code" id="category_code">
-                </select>
-                <div class="invalid-feedback">
-                  <b>Category Code Tidak Boleh Kosong </b>
+                  <b>Coa Code Tidak Boleh Kosong </b>
                 </div>
               </div>
           </div>
@@ -146,5 +144,5 @@
 </div>
 {{-- Notif Flash Message --}}
 @include('flashmessage')
-<script src="{{ asset('/') }}js/master/items.js" type="module"></script>
+<script src="{{ asset('/') }}js/master/upah.js" type="module"></script>
 @endsection

@@ -75,7 +75,7 @@
 
 
 {{-- MODAL FORM --}}
-<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="modal-popup" role="dialog" aria-labelledby="exampleModalLabel">
   <div class="modal-dialog modal-primary" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -90,23 +90,24 @@
             <form id="formProjectType" action="asdasda" method="post">
               @csrf
               <div class="form-group">
-                <label for="code">Code</label>
+                <label for="code">Code <span title="Wajib Diisi" style="color: #23f234"><br>
+                    <i id="pesanCode">*): Harap Diisi dengan Code Unik, jika kosong akan Tergenerate Code otomatis </i></span></label>
                 <input class="form-control code" type="text" name="code" style="font-weight: bolder">
               </div>
               <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Name <span title="Wajib Diisi" style="color: red">*</span></label>
                 <input class="form-control name" type="text" name="name" style="font-weight: bolder">
                 <div class="invalid-feedback">
-                  <b>Name Cannot Be Blank </b>
+                  <b>Name Tidak Boleh Kosong </b>
                 </div>
               </div>
               <div class="form-group">
-                <label for="role">COA</label>
+                <label for="role">COA <span title="Wajib Diisi" style="color: red">*</span></label>
                 {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
                 <select class="form-control coa_code" name="coa_code" id="coa_code">
                 </select>
                 <div class="invalid-feedback">
-                  <b>Coa Code Cannot Be Blank </b>
+                  <b>Coa Code Tidak Boleh Kosong </b>
                 </div>
               </div>
           </div>
@@ -122,5 +123,5 @@
 </div>
 {{-- Notif Flash Message --}}
 @include('flashmessage')
-<script src="{{ asset('/') }}js/categorys/categorys.js" type="module"></script>
+<script src="{{ asset('/') }}js/master/categorys.js" type="module"></script>
 @endsection

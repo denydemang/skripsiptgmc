@@ -214,24 +214,52 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/admin/role/getdata', 'getDataroles')->name('admin.getroles');
     });
 
-    // -----------------    Request Ajax
+    // -----------------    Upah
+    Route::controller(UpahController::class)->group(function () {
+        Route::resource('/admin/upah', UpahController::class)->names([
+            'index' => 'r_upah.index',
+            'create' => 'r_upah.create',
+            'store' => 'r_upah.store',
+            'show' => 'r_upah.show',
+            'edit' => 'r_upah.edit',
+            'update' => 'r_upah.update',
+            'destroy' => 'r_upah.destroy',
+        ]);
+    });
 
-    Route::get('/admin/coa', function () {
+    // -----------------    Request Ajax
+    Route::get('/admin/JSONcoa', function () {
         if (request()->ajax()) {
-            $coaAll = COA::all(['code', 'name', 'type', 'level']);
-            return json_encode($coaAll);
+            $coaAll = COA::where('description', 'detail')->get(['code', 'name', 'description']);
+            // return json_encode($coaAll);
+            ?>
+            <option></option>
+            <?php
+            foreach ($coaAll as $ca) { ?>
+                <option value="<?php echo $ca->code?>"><?php echo $ca->code.' - '.$ca->name?></option>
+            <?php }
         }
-    })->name('admin.coa');
+    })->name('admin.JSONcoa');
     Route::get('/admin/JSONunit', function () {
         if (request()->ajax()) {
-            $All = Unit::all(['code', 'name']);
-            return json_encode($All);
+            $unitAll = Unit::all(['code', 'name']);
+            ?>
+            <option></option>
+            <?php
+            foreach ($unitAll as $ua) { ?>
+                <option value="<?php echo $ua->code?>"><?php echo $ua->code.' - '.$ua->name?></option>
+            <?php }
         }
     })->name('admin.JSONunit');
     Route::get('/admin/JSONcategory', function () {
         if (request()->ajax()) {
-            $All = Category::all(['code', 'name', 'coa_code']);
-            return json_encode($All);
+            $categoryAll = Category::all(['code', 'name', 'coa_code']);
+            ?>
+            <option></option>
+            <?php
+            foreach ($categoryAll as $ca) { ?>
+                <option value="<?php echo $ca->code?>"><?php echo $ca->code.' - '.$ca->name?></option>
+            <?php }
         }
     })->name('admin.JSONcategory');
     Route::get('/admin/JSONrole', function () {

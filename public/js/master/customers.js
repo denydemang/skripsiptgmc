@@ -16,35 +16,27 @@ $(document).ready(async function () {
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
 
-  const pilih = $('<option value="" id="pilih" selected="">-- Pilih COA --</option>')
+  $("#coa_code").select2({
+    placeholder: "-- Pilih COA --",
+    // allowClear: true,
+    // theme: "custom-select2", // Menentukan tema kustom
+    dropdownPosition: 'above'
+});
 
-
-  try {
-    // Panggil fungsi getDataRelasi dengan await untuk menunggu hasilnya
-    const result = await getDataRelasi();
-
-    // Lakukan sesuatu dengan hasilnya
-    console.log(result);
-    if (result.length != 0) {
-        const selectElement = $('#coa_code');
-        selectElement.append(pilih);
-        result.forEach(item => {
-            const option = $('<option></option>');
-            option.attr('value', item.code); // Atur nilai option sesuai dengan data
-            option.text(`( ${item.code} ) - ${item.name}`); // Atur teks option sesuai dengan data
-            selectElement.append(option); // Masukkan option ke dalam elemen select
-        });
-
+$.ajax({
+    type: 'GET',
+    url: route('admin.JSONcoa'),
+    // data: "id="+id_kabupaten,
+    success: function (msg) {
+        // console.log(msg);
+        $("#coa_code").append(msg)
     }
-} catch (error) {
-    // Tangani kesalahan jika terjadi
-    console.error('Error:', error);
-}
+});
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
 
-  var getDataProject = route('admin.getsuppliers');
+  var getDataProject = route('admin.getcustomers');
   const columns = [
     { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
     { data: 'code', name: 'code', title: 'Code', searchable: true },
@@ -69,7 +61,7 @@ $(document).ready(async function () {
   // Function Get Edit Data
   // ------------------------------------------------------------
   async function getData(tondo = '') {
-    const urlRequest = route('r_supplier.edit', tondo);
+    const urlRequest = route('r_customer.edit', tondo);
     const method = 'GET';
     const data = {
       id: tondo
@@ -85,7 +77,7 @@ $(document).ready(async function () {
   }
 
   async function getDataRelasi(tondo = '') {
-    const urlRequest = route('admin.coa', tondo);
+    const urlRequest = route('admin.JSONcoa', tondo);
     const method = 'GET';
     const data = {
       id: tondo
@@ -104,7 +96,7 @@ $(document).ready(async function () {
 
   async function formdeleteData(tondo = '') {
     // let token = $('meta[name="csrf-token"]').attr('content');
-    const urlRequest = route('r_supplier.destroy', tondo);
+    const urlRequest = route('r_customer.destroy', tondo);
     const method = 'DELETE';
     const data = {
       id: tondo,
@@ -159,6 +151,7 @@ $(document).ready(async function () {
     EmailInput.removeClass('is-invalid');
     PhoneInput.removeClass('is-invalid');
     CoaCodeInput.removeClass('is-invalid');
+    CodeInput.val('');
     NameInput.val('');
     AddressInput.val('');
     ZipCodeInput.val('');
@@ -171,10 +164,19 @@ $(document).ready(async function () {
   // CLICK ADD Button
   $(document).on('click', '.addbtn', function () {
     modalTypeProject.modal('show');
-    modalTitle.html('Add New Supplier');
-    CodeInput.val('AUTO');
-    CodeInput.prop('readonly', true);
+    modalTitle.html('Add New Customers');
+    // CodeInput.val('AUTO');
+    CodeInput.val('');
+    CodeInput.prop('readonly', false);
+    $('#pesanCode').show()
     updateMode = false;
+    $("#coa_code").select2({
+        placeholder: "-- Pilih COA --",
+        // allowClear: true,
+        // theme: "custom-select2", // Menentukan tema kustom
+        dropdownPosition: 'above'
+    }).val();
+
   });
 
 
@@ -184,7 +186,7 @@ $(document).ready(async function () {
 
     if (validate()) {
       if (!updateMode) {
-        var addProjectTypeURL = route('r_supplier.store');
+        var addProjectTypeURL = route('r_customer.store');
         $(this).attr('action', addProjectTypeURL);
         $(this)[0].submit();
       } else {
@@ -198,7 +200,7 @@ $(document).ready(async function () {
         var form = $(this);
         form.append(inputMethod);
 
-        var editProjectTypeURL = route('r_supplier.update', tondo);
+        var editProjectTypeURL = route('r_customer.update', tondo);
         $(this).attr('action', editProjectTypeURL);
         $(this)[0].submit();
       }
@@ -225,20 +227,22 @@ $(document).ready(async function () {
       CodeInput.val(data.code);
       NameInput.val(data.name);
       AddressInput.val(data.address);
-      ZipCodeInput.val(data.address);
-      NPWPInput.val(data.address);
-      EmailInput.val(data.address);
+      ZipCodeInput.val(data.zip_code);
+      NPWPInput.val(data.npwp);
+      EmailInput.val(data.email);
       PhoneInput.val(data.phone);
       CoaCodeInput.val(data.coa_code);
+      $("#coa_code").select2().val(data.coa_code).trigger("change");
     }
   }
 
   // Btn Edit
   $(document).on('click', '.editbtn', async function () {
     let code = $(this).data('code');
-    modalTitle.html('Edit Supplier');
+    modalTitle.html('Edit Customer');
     updateMode = true;
     modalTypeProject.modal('show');
+    $('#pesanCode').hide()
     CodeInput.prop('readonly', true);
     $('.code').val(code);
     isFetchingData();
@@ -250,7 +254,7 @@ $(document).ready(async function () {
   // Function Delete Data
   function deleteData(tondo, name) {
     formdeleteData(tondo);
-    window.location.href = route('r_supplier.index');
+    window.location.href = route('r_customer.index');
   }
 
    // Click Delete Button
@@ -265,7 +269,8 @@ $(document).ready(async function () {
   });
 
   modalTypeProject.on('shown.bs.modal', function (e) {
-    NameInput.focus();
+    CodeInput.focus();
+    // NameInput.focus();
   });
 
   // Trigger Toast

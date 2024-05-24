@@ -90,14 +90,15 @@
             <form id="formProjectType" action="asdasda" method="post">
               @csrf
               <div class="form-group">
-                <label for="code">Code</label>
+                <label for="code">Code <span title="Wajib Diisi" style="color: #23f234"><br>
+                    <i id="pesanCode">*): Harap Diisi dengan Code Unik, jika kosong akan Tergenerate Code otomatis </i></span></label>
                 <input class="form-control code" type="text" name="code" style="font-weight: bolder">
               </div>
               <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Name <span title="Wajib Diisi" style="color: red">*</span></label>
                 <input class="form-control name" type="text" name="name" style="font-weight: bolder">
                 <div class="invalid-feedback">
-                  <b>Name Cannot Be Blank </b>
+                  <b>Name Tidak Boleh Kosong </b>
                 </div>
               </div>
           </div>
@@ -113,5 +114,5 @@
 </div>
 {{-- Notif Flash Message --}}
 @include('flashmessage')
-<script src="{{ asset('/') }}js/units/units.js" type="module"></script>
+<script src="{{ asset('/') }}js/master/units.js" type="module"></script>
 @endsection

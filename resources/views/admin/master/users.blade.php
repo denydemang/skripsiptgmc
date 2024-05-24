@@ -132,5 +132,5 @@
 </div>
 {{-- Notif Flash Message --}}
 @include('flashmessage')
-<script src="{{ asset('/') }}js/users/users.js" type="module"></script>
+<script src="{{ asset('/') }}js/master/users.js" type="module"></script>
 @endsection
