@@ -175,7 +175,6 @@ class PaymentController extends AdminController
         } catch (\Throwable $th) {
             DB::rollBack();
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("admin.payment")->with("error", $th->getMessage());
             return $this->errorException($th,"admin.payment", $id );
         }
     }

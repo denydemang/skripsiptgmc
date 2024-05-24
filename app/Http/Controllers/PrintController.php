@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashBook;
 use App\Models\Item;
 use App\Models\Journal;
 use App\Models\Payment;
@@ -617,7 +618,37 @@ class PrintController extends AdminController
         // abort(404);
     }
 
-
 }
+
+    public function printcashbookjournal($id){
+        try {
+            //code...
+            $journal = Journal::join('journal_details', "journals.voucher_no", "=", "journal_details.voucher_no")
+            ->join("coa", "journal_details.coa_code", "=", "coa.code")
+            ->where("journals.ref_no", $id)
+            ->select("coa.name", "journals.*", "journal_details.*")
+            ->orderBy("journal_details.debit", 'desc')
+            ->get();
+            
+            if (count($journal) == 0){
+                throw new Exception();
+            }
+    
+            $cashbook = CashBook::where("cash_no", $id)->first();
+    
+            $data = [
+                "cashbook" => $cashbook,
+                "journal" => $journal,
+            ];
+    
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->loadview("admin.finance.prints.printjurnalcashbook", $data);
+            return $pdf->stream("JournalCashBook-$id.pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+    }
     
 }

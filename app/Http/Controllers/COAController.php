@@ -152,7 +152,7 @@ class COAController extends Controller
                 
                 return '
                 <div class="d-flex justify-content-center">
-                <button class="btn btn-sm btn-success btnselectCOA" data-code="'.$row->code.'" title="Select COA"><i class="fa fa-check"></i> Select</button>
+                <button class="btn btn-sm btn-success btnselectCOA" data-name="'.$row->name.'" data-code="'.$row->code.'" title="Select COA"><i class="fa fa-check"></i> Select</button>
                 </div>';
             })
             ->rawColumns(['action'])

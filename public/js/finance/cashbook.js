@@ -53,7 +53,7 @@ $(document).ready(function () {
     { data: 'COA_Cash', name: 'COA_Cash', title: 'COA Cash', searchable: true },
     { data: 'coa_name', name: 'coa_name', title: 'COA Name', searchable: true },
     { data: 'ref', name: 'ref', title: 'Ref No', searchable: true },
-    { data: 'total_transaction', name: 'total_transaction', title: 'Total Transaction', searchable: false },
+    // { data: 'total_transaction', name: 'total_transaction', title: 'Amount', searchable: false },
     { data: 'description', name: 'description', title: 'Description', searchable: true },
     { data: 'CbpType', name: 'CbpType', title: 'Type', searchable: true },
     { data: 'is_approve', name: 'is_approve', title: 'Approve', searchable: false },
@@ -140,12 +140,12 @@ $(document).ready(function () {
   }
 
   function deleteData(code, name) {
-    const urlRequest = route('admin.deletepayment', code);
+    const urlRequest = route('admin.deletecashbook', code);
     window.location.href = urlRequest;
   }
 
   function approveData(code, name) {
-    const urlRequest = route('admin.approvepayment', code);
+    const urlRequest = route('admin.approvecashbook', code);
     window.location.href = urlRequest;
   }
 
@@ -247,13 +247,13 @@ $(document).ready(function () {
   // Click Delete Button
   $(document).on('click', '.deletebtn', function () {
     let Code = $(this).data('code');
-    showconfirmdelete(Code, Code, deleteData, 'Payment :');
+    showconfirmdelete(Code, Code, deleteData, 'CashBook :');
   });
 
   // Click Approve Button
   $(document).on('click', '.approvebtn', function () {
     let Code = $(this).data('code');
-    showconfirmapprove(Code, Code, approveData, 'Payment');
+    showconfirmapprove(Code, Code, approveData, 'CashBook');
   });
 
   // View Button

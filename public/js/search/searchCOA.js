@@ -44,9 +44,12 @@ $(document).ready(function () {
   // Select COA
   $(document).on('click', '.btnselectCOA', function () {
     let COACODE = $(this).data('code');
+    let coaName = $(this).data('name');
 
     let inputElement = currentButton.siblings('.form-control');
+    let inputElementName = currentButton.siblings('.coa-name');
     inputElement.val(COACODE);
+    inputElementName.val(coaName);
     modalCOASearch.modal('hide');
   });
 });

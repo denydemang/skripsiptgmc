@@ -72,7 +72,7 @@
 									</div>
 								</div>
 								<br>
-								<a href="{{ route('admin.addPaymentView') }}">
+								<a href="{{ route('admin.addCashbookView') }}">
 									<button class="btn btn-outline-primary btn-sm addbtn mb-2">
 										<i class="fas fa-plus"></i> ADD NEW
 									</button>
@@ -87,7 +87,6 @@
 													<th scope="col">COA Cash</th>
 													<th scope="col">COA Name</th>
 													<th scope="col">Ref No</th>
-													<th scope="col">Total Transaction</th>
 													<th scope="col">Description</th>
 													<th scope="col">Type</th>
 													<th scope="col">Total Amount</th>

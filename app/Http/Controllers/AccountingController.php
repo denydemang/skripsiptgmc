@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashBook;
+use App\Models\CashBook_Detail;
+use App\Models\CashBook_DetailB;
 use App\Models\Journal;
 use App\Models\Journal_Detail;
 use App\Models\Payment;
@@ -468,6 +471,67 @@ class AccountingController extends AdminController
         $journalDetail->kredit = round(floatval($payment->total_amount), 2);
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
+
+    }
+
+    public function journalCashBook($code){
+
+        $Cashbook = CashBook::where("cash_no", $code)->first();
+        $Cashbook_detail = CashBook_Detail::where("cash_no", $code)->first();
+        $Cashbook_detail_b = CashBook_DetailB::where("cash_no", $code)->first();
+
+        $AutomaticCode= "";
+
+        if($Cashbook->CbpType == "P"){
+            $supplyModel = Journal::where("voucher_no", 'like', "%JKK%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+            $AutomaticCode = $this->automaticCode("JKK", $supplyModel,true,"voucher_no");
+        } else {
+            $supplyModel = Journal::where("voucher_no", 'like', "%JKM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+            $AutomaticCode = $this->automaticCode("JKM", $supplyModel,true,"voucher_no");
+        }
+
+    
+
+        
+        // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date = $Cashbook->transaction_date;
+        $journal->ref_no = $Cashbook->cash_no;
+        $journal->journal_type_code = $Cashbook->CbpType == "P" ? "JKK" : "JKM";
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  $Cashbook->CbpType == "P" ? "$Cashbook_detail->description $Cashbook->cash_no" : "$Cashbook->description $Cashbook->cash_no" ;
+        $journalDetail->coa_code =  $Cashbook->CbpType == "P" ?  $Cashbook_detail->coa :  $Cashbook->COA_Cash;
+        $journalDetail->debit = $Cashbook->CbpType == "P" ? round(floatval($Cashbook_detail->amount), 2) :  round(floatval($Cashbook->total_transaction), 2)  ;
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  $Cashbook->CbpType == "P" ? "$Cashbook->description $Cashbook->cash_no" : "$Cashbook_detail->description $Cashbook->cash_no" ;
+        $journalDetail->coa_code =  $Cashbook->CbpType == "P" ?  $Cashbook->COA_Cash : $Cashbook_detail->coa ;
+        $journalDetail->debit =  0 ;
+        $journalDetail->kredit = $Cashbook->CbpType == "P" ? round(floatval($Cashbook->total_transaction), 2) : round(floatval($Cashbook_detail->total_amount), 2) ;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+        if ($Cashbook_detail_b){
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description = "$Cashbook_detail_b->description $Cashbook->cash_no" ;
+            $journalDetail->coa_code =  $Cashbook_detail_b->COA;
+            $journalDetail->debit =  round(floatval($Cashbook_detail_b->debit), 2);
+            $journalDetail->kredit =  round(floatval($Cashbook_detail_b->credit), 2) ;
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+
 
     }
 }

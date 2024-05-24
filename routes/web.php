@@ -358,22 +358,22 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // GET VIEW
         Route::get('/admin/cashbook', 'getViewCashBook')->name('admin.cashbook');
-        // Route::get('/admin/payment/add', 'getViewPaymentManage')->name('admin.addPaymentView');
+        Route::get('/admin/cashbook/add', 'getViewCashbookManage')->name('admin.addCashbookView');
         // Route::get('/admin/payment/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
         
         // CRUD
         Route::post('/admin/cashbook/gettable', 'getTableCashBook')->name('admin.tablecashbook');
         Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
         Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
-        // Route::post('/admin/payment/add', 'addPayment')->name('admin.addpayment');
+        Route::post('/admin/cashbook/add', 'addCashbook')->name('admin.addcashbook');
         // Route::post('/admin/payment/edit/{id}', 'editPayment')->name('admin.editpayment');
-        // Route::get('/admin/payment/delete/{id}', 'deletepayment')->name('admin.deletepayment');
-        // Route::get('/admin/payment/approve/{id}', 'approvepayment')->name('admin.approvepayment');
+        Route::get('/admin/cashbook/delete/{id}', 'deletecashbook')->name('admin.deletecashbook');
+        Route::get('/admin/cashbook/approve/{id}', 'approvecashbook')->name('admin.approvecashbook');
         // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
 
 
         // Print
-        Route::get('/admin/cashbook/detail/print/{id}', 'printdetailcashbook')->name('admin.printdetailcashbook');
+        // Route::get('/admin/cashbook/detail/print/{id}', 'printdetailcashbook')->name('admin.printdetailcashbook');
         Route::get('/admin/cashbook/jurnal/print/{id}', 'printjurnalcashbook')->name('admin.printjurnalcashbook');
         // Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
 

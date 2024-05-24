@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\CashBook;
 use App\Models\CashBook_Detail;
 use App\Models\CashBook_DetailB;
+use App\Models\Journal;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
 
-class CashBookController extends Controller
+class CashBookController extends AdminController
 {
     public function getViewCashBook(Request $request){
         $supplyData = [
@@ -22,6 +25,34 @@ class CashBookController extends Controller
 
         return response()->view("admin.finance.cashbook",$supplyData);
     }
+
+    public function getViewCashbookManage(Request $request, $code=null){
+
+        $data= [];
+        if ($code){ //If In Update Mode
+
+            $cahsbook = CashBook::where("cash_no", $code)
+            ->where("is_approve" , 0)
+            ->first();
+        
+            if (!$cahsbook){
+                abort(404);
+            }
+
+
+        // $data['payment'] = $payment;
+        // $data['detail'] = json_encode($results);
+        }
+        $supplyData = [
+            'title' =>$request->route()->getName() == 'admin.addCashbookView' ?  'Add New CashBook' : 'Edit CashBook',
+            'users' => Auth::user(),
+            'sessionRoute' =>  $request->route()->getName(),
+            'data' => $data
+            ];
+
+        return response()->view("admin.finance.cashbookmanage",$supplyData);
+    }
+
     public function getTableCashBook(Request $request, DataTables $dataTables ){
         if ($request->ajax()){
         
@@ -84,7 +115,6 @@ class CashBookController extends Controller
                             <button class="btn btn-sm btn-danger deletebtn" data-code="'.$row->cash_no.'" title="Delete"><i class="fa fa-trash"></i></button>
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->cash_no.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-sm btn-warning approvebtn" data-code="'.$row->cash_no.'" title="Approve"><i class="fa fa-check"></i></button>
-                            <a href="'.route('admin.printdetailcashbook',['id' => $row->cash_no]).'" target="_blank"><button class="btn btn-sm btn-info printbtn" data-code="'.$row->cash_no.'" title="Print cashbook"><i class="fa fa-print"></i></button></a>
                             </div>';
                             
                             # code...
@@ -92,8 +122,7 @@ class CashBookController extends Controller
                             case 1: //Approved
                             $html = '
                             <div class="d-flex justify-content-center">
-                            <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->cash_o.'" title="View Detail"><i class="fa fa-eye"></i></button>
-                            <a href="'.route('admin.printdetailcashbook',['id' => $row->cash_no]).'" target="_blank"><button class="btn btn-sm btn-info printbtn mr-2" data-code="'.$row->cash_no.'" title="Print cashbook"><i class="fa fa-print"></i></button></a>
+                            <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->cash_no.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             <a href="'.route('admin.printjurnalcashbook',['id' => $row->cash_no]).'" target="_blank"><button class="btn btn-sm btn-warning printbtn" data-code="'.$row->cash_no.'" title="Print Jurnal"><i class="fa fa-print"></i></button></a>
                             </div>';
                             
@@ -169,13 +198,49 @@ class CashBookController extends Controller
         }
 
     }
+
+    public function deletecashbook($id){
+        try {
+            DB::beginTransaction();
+            CashBook::where("cash_no",$id )->delete();
+            DB::commit();
+            return response()->redirectToRoute("admin.cashbook")->with("success", "Data Cashbook $id Successfully Deleted");
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->errorException($th,"admin.cashbook", $id );
+        }
+    }
     
+    public function approvecashbook($id){
+        try {
+
+            DB::beginTransaction();
+
+            CashBook::where("cash_no", $id)->update(   
+                [
+                    
+                    'is_approve' => 1,
+                    'approved_by' => Auth::user()->name
+                ]
+            );
+
+            $journal = new AccountingController();
+            $journal->journalCashBook($id);
+    
+            DB::commit();
+            return response()->redirectToRoute("admin.cashbook")->with("success", "Data Cashbook $id Successfully Approved");
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            return $this->errorException($th,"admin.cashbook", $id );
+        }
+    }
+
     public function printjurnalcashbook($id){
-            
+        $printcontroller = new PrintController();
+        return $printcontroller->printcashbookjournal($id);
     }
 
         
-    public function printdetailcashbook($id){
-            
-    }
 }
