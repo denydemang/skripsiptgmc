@@ -3,21 +3,41 @@ import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 
-$(document).ready(function () {
+$(document).ready(async function () {
   let modalTitle = $('.modal-title');
   let CodeInput = $('.code');
   let NameInput = $('.name');
+  let CoaCodeInput = $('.coa_code');
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
+
+  $("#coa_code").select2({
+    placeholder: "-- Pilih COA --",
+    // allowClear: true,
+    // theme: "custom-select2", // Menentukan tema kustom
+    dropdownPosition: 'above'
+});
+
+$.ajax({
+    type: 'GET',
+    url: route('admin.JSONcoa'),
+    // data: "id="+id_kabupaten,
+    success: function (msg) {
+        // console.log(msg);
+        $("#coa_code").append(msg)
+    }
+});
+
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
 
-  var getDataProject = route('admin.getUnits');
+  var getDataProject = route('admin.getcategorys');
   const columns = [
     { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
     { data: 'code', name: 'code', title: 'Code', searchable: true },
     { data: 'name', name: 'name', title: 'Name', searchable: true },
+    { data: 'coa_code', name: 'coa_code', title: 'COA Code', searchable: false, orderable: false, width: '10%' },
     { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
     { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
   ];
@@ -32,7 +52,7 @@ $(document).ready(function () {
   // Function Get Edit Data
   // ------------------------------------------------------------
   async function getData(tondo = '') {
-    const urlRequest = route('r_unit.edit', tondo);
+    const urlRequest = route('r_category.edit', tondo);
     const method = 'GET';
     const data = {
       id: tondo
@@ -47,9 +67,27 @@ $(document).ready(function () {
     }
   }
 
+  async function getDataRelasi(tondo = '') {
+    const urlRequest = route('admin.JSONcoa', tondo);
+    const method = 'GET';
+    const data = {
+      id: tondo
+    };
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method, data);
+      return await ajx.getData();
+    } catch (error) {
+      console.error('Error:', error);
+      return null;
+    }
+  }
+
+
+
   async function formdeleteData(tondo = '') {
     // let token = $('meta[name="csrf-token"]').attr('content');
-    const urlRequest = route('r_unit.destroy', tondo);
+    const urlRequest = route('r_category.destroy', tondo);
     const method = 'DELETE';
     const data = {
       id: tondo,
@@ -74,23 +112,41 @@ $(document).ready(function () {
       NameInput.focus();
       return false;
     }
+    CoaCodeInput.removeClass('is-invalid');
+    if (CoaCodeInput.val() == '') {
+      CoaCodeInput.addClass('is-invalid');
+      CoaCodeInput.focus();
+      return false;
+    }
     return true;
+  }
+
+  //   Clear input
+  function clear() {
+    NameInput.removeClass('is-invalid');
+    CoaCodeInput.removeClass('is-invalid');
+    CodeInput.val('');
+    NameInput.val('');
+    CoaCodeInput.val('');
   }
 
   // CLICK ADD Button
   $(document).on('click', '.addbtn', function () {
     modalTypeProject.modal('show');
-    modalTitle.html('Add New Unit');
-    CodeInput.val('AUTO');
-    CodeInput.prop('readonly', true);
+    modalTitle.html('Add New Category');
+    CodeInput.val('');
+    CodeInput.prop('readonly', false);
+    $('#pesanCode').show()
     updateMode = false;
+    $("#coa_code").select2({
+        placeholder: "-- Pilih COA --",
+        // allowClear: true,
+        // theme: "custom-select2", // Menentukan tema kustom
+        dropdownPosition: 'above'
+    }).val();
+
   });
 
-//   Clear input
-  function clear() {
-    NameInput.removeClass('is-invalid');
-    NameInput.val('');
-  }
 
   // Submit Form
   $(document).on('submit', '#formProjectType', function (e) {
@@ -98,7 +154,7 @@ $(document).ready(function () {
 
     if (validate()) {
       if (!updateMode) {
-        var addProjectTypeURL = route('r_unit.store');
+        var addProjectTypeURL = route('r_category.store');
         $(this).attr('action', addProjectTypeURL);
         $(this)[0].submit();
       } else {
@@ -112,7 +168,7 @@ $(document).ready(function () {
         var form = $(this);
         form.append(inputMethod);
 
-        var editProjectTypeURL = route('r_unit.update', tondo);
+        var editProjectTypeURL = route('r_category.update', tondo);
         $(this).attr('action', editProjectTypeURL);
         $(this)[0].submit();
       }
@@ -124,6 +180,7 @@ $(document).ready(function () {
     let text = 'Fetching Data .....';
     CodeInput.val(text);
     NameInput.val(text);
+    CoaCodeInput.val(text);
 
   }
 
@@ -132,15 +189,19 @@ $(document).ready(function () {
     if (data || data != null) {
       CodeInput.val(data.code);
       NameInput.val(data.name);
+      CoaCodeInput.val(data.coa_code);
+      $("#coa_code").select2().val(data.coa_code).trigger("change");
+
     }
   }
 
   // Btn Edit
   $(document).on('click', '.editbtn', async function () {
     let code = $(this).data('code');
-    modalTitle.html('Edit Unit');
+    modalTitle.html('Edit Category');
     updateMode = true;
     modalTypeProject.modal('show');
+    $('#pesanCode').hide()
     CodeInput.prop('readonly', true);
     $('.code').val(code);
     isFetchingData();
@@ -152,7 +213,7 @@ $(document).ready(function () {
   // Function Delete Data
   function deleteData(tondo, name) {
     formdeleteData(tondo);
-    window.location.href = route('r_unit.index');
+    window.location.href = route('r_category.index');
   }
 
    // Click Delete Button
@@ -166,9 +227,8 @@ $(document).ready(function () {
     clear();
   });
 
-  // Open Modal
   modalTypeProject.on('shown.bs.modal', function (e) {
-    NameInput.focus();
+    CodeInput.focus();
   });
 
   // Trigger Toast

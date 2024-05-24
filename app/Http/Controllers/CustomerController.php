@@ -22,7 +22,8 @@ class CustomerController extends AdminController
         return response()->view("admin.master.customer", $supplyData);
     }
 
-    public function getDatacustomers(Request $request, DataTables $dataTables) {
+    public function getDatacustomers(Request $request, DataTables $dataTables)
+    {
         if ($request->ajax()) {
 
             $customers = Customer::query();
@@ -58,37 +59,43 @@ class CustomerController extends AdminController
      */
     public function store(Request $request)
     {
-        try {
+        $exist_customer = Customer::find($request->code);
+        if (isset($exist_customer)) {
+            return response()->redirectToRoute("r_customer.index")->with("error", "Code <b>" . $request->code . "</b> Sudah tersedia");
+        } else {
+            try {
 
-            $supplyModel = Customer::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("CUST" ,$supplyModel, false,"code");
-            $name = $request->post("name");
-            $address = $request->post("address");
-            $zip_code = $request->post("zip_code");
-            $npwp = $request->post("npwp");
-            $email = $request->post("email");
-            $phone = $request->post("phone");
-            $coa_code = $request->post("coa_code");
+                $supplyModel = Customer::orderBy("code", "desc")->lockForUpdate()->first();
+                $code_auto = $this->automaticCode("CUST", $supplyModel, false, "code");
+                $code = $request->post("code");
+                $name = $request->post("name");
+                $address = $request->post("address");
+                $zip_code = $request->post("zip_code");
+                $npwp = $request->post("npwp");
+                $email = $request->post("email");
+                $phone = $request->post("phone");
+                $coa_code = $request->post("coa_code");
 
 
-            $typeProject = new Customer();
-            $typeProject->code = $code;
-            $typeProject->name =  $name;
-            $typeProject->address =  $address;
-            $typeProject->zip_code =  $zip_code;
-            $typeProject->npwp =  $npwp;
-            $typeProject->email =  $email;
-            $typeProject->phone =  $phone;
-            $typeProject->coa_code =  $coa_code;
-            $typeProject->created_by = Auth::user()->username;
-            $typeProject->save();
+                $typeProject = new Customer();
+                $typeProject->code = $code!='' ? $code : $code_auto;
+                $typeProject->name =  $name;
+                $typeProject->address =  $address;
+                $typeProject->zip_code =  $zip_code;
+                $typeProject->npwp =  $npwp;
+                $typeProject->email =  $email;
+                $typeProject->phone =  $phone;
+                $typeProject->coa_code =  $coa_code;
+                $typeProject->created_by = Auth::user()->username;
+                $typeProject->save();
 
-            // Session::flash('error', `Data Berhasil Disimpan`);
+                // Session::flash('error', `Data Berhasil Disimpan`);
 
-            return response()->redirectToRoute("r_customer.index")->with("success", "Data $code Succesfully Created");
-        } catch (\Throwable $th) {
-            // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+                return response()->redirectToRoute("r_customer.index")->with("success", "Data ".$typeProject->code." Succesfully Created");
+            } catch (\Throwable $th) {
+                // Session::flash('error', $th->getMessage());
+                return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+            }
         }
     }
 
@@ -105,11 +112,10 @@ class CustomerController extends AdminController
      */
     public function edit(string $id, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $dataProjectType = Customer::query()->where("code", $id)->first();
 
             return json_encode($dataProjectType);
-
         }
     }
 
@@ -127,7 +133,7 @@ class CustomerController extends AdminController
             $email = $request->post("email");
             $phone = $request->post("phone");
             $coa_code = $request->post("coa_code");
-            $getRole = Customer::find($id );
+            $getRole = Customer::find($id);
 
             $getRole->name = $name;
             $getRole->coa_code = $coa_code;
@@ -140,7 +146,7 @@ class CustomerController extends AdminController
             $getRole->updated_by = Auth::user()->username;
             $getRole->update();
 
-            return response()->redirectToRoute("r_customer.index")->with("success", "Data ".$name." Successfully Updated");
+            return response()->redirectToRoute("r_customer.index")->with("success", "Data " . $name . " Successfully Updated");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
@@ -153,36 +159,37 @@ class CustomerController extends AdminController
     public function destroy(string $id)
     {
         try {
-            Customer::where("code",$id )->delete();
+            Customer::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_customer.index")->with("success", "Data $id Successfully Deleted");
+            return response()->redirectToRoute("r_customer.index")->with("success", "Data ".$id." Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+            // return response()->redirectToRoute("r_customer.index")->with("error", $th->getMessage());
+            return $this->errorException($th,"r_customer.index", $id );
         }
     }
 
-    public function getDataCustomerForModal(Request $request, DataTables $dataTables){
+    public function getDataCustomerForModal(Request $request, DataTables $dataTables)
+    {
 
 
-        if ($request->ajax()){
+        if ($request->ajax()) {
 
 
             $customers = Customer::query();
 
 
             return $dataTables->of($customers)
-            ->addColumn('action', function ($row) {
+                ->addColumn('action', function ($row) {
 
-                return '
+                    return '
                 <div class="d-flex justify-content-center">
-                    <button class="btn btn-sm btn-success selectcustomerbtn" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select"><i class="fa fa-check"></i> Select</button>
+                    <button class="btn btn-sm btn-success selectcustomerbtn" data-code="' . $row->code . '"  data-name="' . $row->name . '" title="Select"><i class="fa fa-check"></i> Select</button>
                 </div>';
-            })
-            ->rawColumns(['action'])
-            ->addIndexColumn()
-            ->make(true);
-
+                })
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
         }
     }
 }

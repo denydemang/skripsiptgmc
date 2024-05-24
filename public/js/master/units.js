@@ -3,58 +3,21 @@ import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 
-$(document).ready(async function () {
+$(document).ready(function () {
   let modalTitle = $('.modal-title');
   let CodeInput = $('.code');
   let NameInput = $('.name');
-  let AddressInput = $('.address');
-  let ZipCodeInput = $('.zip_code');
-  let NPWPInput = $('.npwp');
-  let EmailInput = $('.email');
-  let PhoneInput = $('.phone');
-  let CoaCodeInput = $('.coa_code');
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
-
-  const pilih = $('<option value="" id="pilih" selected="">-- Pilih COA --</option>')
-
-
-  try {
-    // Panggil fungsi getDataRelasi dengan await untuk menunggu hasilnya
-    const result = await getDataRelasi();
-
-    // Lakukan sesuatu dengan hasilnya
-    console.log(result);
-    if (result.length != 0) {
-        const selectElement = $('#coa_code');
-        selectElement.append(pilih);
-        result.forEach(item => {
-            const option = $('<option></option>');
-            option.attr('value', item.code); // Atur nilai option sesuai dengan data
-            option.text(`( ${item.code} ) - ${item.name}`); // Atur teks option sesuai dengan data
-            selectElement.append(option); // Masukkan option ke dalam elemen select
-        });
-
-    }
-} catch (error) {
-    // Tangani kesalahan jika terjadi
-    console.error('Error:', error);
-}
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
 
-  var getDataProject = route('admin.getsuppliers');
+  var getDataProject = route('admin.getUnits');
   const columns = [
     { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
     { data: 'code', name: 'code', title: 'Code', searchable: true },
     { data: 'name', name: 'name', title: 'Name', searchable: true },
-    { data: 'address', name: 'address', title: 'Address', searchable: false, orderable: false, width: '10%' },
-    { data: 'zip_code', name: 'zip_code', title: 'Zip Code', searchable: true },
-    { data: 'npwp', name: 'npwp', title: 'NPWP', searchable: true },
-    { data: 'email', name: 'email', title: 'Email', searchable: true },
-    { data: 'phone', name: 'phone', title: 'Phone', searchable: true },
-    { data: 'coa_code', name: 'coa_code', title: 'COA Code', searchable: true },
     { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
     { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
   ];
@@ -69,7 +32,7 @@ $(document).ready(async function () {
   // Function Get Edit Data
   // ------------------------------------------------------------
   async function getData(tondo = '') {
-    const urlRequest = route('r_supplier.edit', tondo);
+    const urlRequest = route('r_unit.edit', tondo);
     const method = 'GET';
     const data = {
       id: tondo
@@ -83,28 +46,10 @@ $(document).ready(async function () {
       return null;
     }
   }
-
-  async function getDataRelasi(tondo = '') {
-    const urlRequest = route('admin.coa', tondo);
-    const method = 'GET';
-    const data = {
-      id: tondo
-    };
-
-    try {
-      const ajx = new AjaxRequest(urlRequest, method, data);
-      return await ajx.getData();
-    } catch (error) {
-      console.error('Error:', error);
-      return null;
-    }
-  }
-
-
 
   async function formdeleteData(tondo = '') {
     // let token = $('meta[name="csrf-token"]').attr('content');
-    const urlRequest = route('r_supplier.destroy', tondo);
+    const urlRequest = route('r_unit.destroy', tondo);
     const method = 'DELETE';
     const data = {
       id: tondo,
@@ -129,54 +74,25 @@ $(document).ready(async function () {
       NameInput.focus();
       return false;
     }
-    AddressInput.removeClass('is-invalid');
-    if (AddressInput.val() == '') {
-      AddressInput.addClass('is-invalid');
-      AddressInput.focus();
-      return false;
-    }
-    PhoneInput.removeClass('is-invalid');
-    if (PhoneInput.val() == '') {
-      PhoneInput.addClass('is-invalid');
-      PhoneInput.focus();
-      return false;
-    }
-    CoaCodeInput.removeClass('is-invalid');
-    if (CoaCodeInput.val() == '') {
-      CoaCodeInput.addClass('is-invalid');
-      CoaCodeInput.focus();
-      return false;
-    }
     return true;
-  }
-
-  //   Clear input
-  function clear() {
-    NameInput.removeClass('is-invalid');
-    AddressInput.removeClass('is-invalid');
-    ZipCodeInput.removeClass('is-invalid');
-    NPWPInput.removeClass('is-invalid');
-    EmailInput.removeClass('is-invalid');
-    PhoneInput.removeClass('is-invalid');
-    CoaCodeInput.removeClass('is-invalid');
-    NameInput.val('');
-    AddressInput.val('');
-    ZipCodeInput.val('');
-    NPWPInput.val('');
-    EmailInput.val('');
-    PhoneInput.val('');
-    CoaCodeInput.val('');
   }
 
   // CLICK ADD Button
   $(document).on('click', '.addbtn', function () {
     modalTypeProject.modal('show');
-    modalTitle.html('Add New Supplier');
-    CodeInput.val('AUTO');
-    CodeInput.prop('readonly', true);
+    modalTitle.html('Add New Unit');
+    CodeInput.val('');
+    CodeInput.prop('readonly', false);
+    $('#pesanCode').show()
     updateMode = false;
   });
 
+//   Clear input
+  function clear() {
+    NameInput.removeClass('is-invalid');
+    CodeInput.val('');
+    NameInput.val('');
+  }
 
   // Submit Form
   $(document).on('submit', '#formProjectType', function (e) {
@@ -184,7 +100,7 @@ $(document).ready(async function () {
 
     if (validate()) {
       if (!updateMode) {
-        var addProjectTypeURL = route('r_supplier.store');
+        var addProjectTypeURL = route('r_unit.store');
         $(this).attr('action', addProjectTypeURL);
         $(this)[0].submit();
       } else {
@@ -198,7 +114,7 @@ $(document).ready(async function () {
         var form = $(this);
         form.append(inputMethod);
 
-        var editProjectTypeURL = route('r_supplier.update', tondo);
+        var editProjectTypeURL = route('r_unit.update', tondo);
         $(this).attr('action', editProjectTypeURL);
         $(this)[0].submit();
       }
@@ -210,12 +126,6 @@ $(document).ready(async function () {
     let text = 'Fetching Data .....';
     CodeInput.val(text);
     NameInput.val(text);
-    AddressInput.val(text);
-    ZipCodeInput.val(text);
-    NPWPInput.val(text);
-    EmailInput.val(text);
-    PhoneInput.val(text);
-    CoaCodeInput.val(text);
 
   }
 
@@ -224,21 +134,16 @@ $(document).ready(async function () {
     if (data || data != null) {
       CodeInput.val(data.code);
       NameInput.val(data.name);
-      AddressInput.val(data.address);
-      ZipCodeInput.val(data.address);
-      NPWPInput.val(data.address);
-      EmailInput.val(data.address);
-      PhoneInput.val(data.phone);
-      CoaCodeInput.val(data.coa_code);
     }
   }
 
   // Btn Edit
   $(document).on('click', '.editbtn', async function () {
     let code = $(this).data('code');
-    modalTitle.html('Edit Supplier');
+    modalTitle.html('Edit Unit');
     updateMode = true;
     modalTypeProject.modal('show');
+    $('#pesanCode').hide()
     CodeInput.prop('readonly', true);
     $('.code').val(code);
     isFetchingData();
@@ -250,7 +155,7 @@ $(document).ready(async function () {
   // Function Delete Data
   function deleteData(tondo, name) {
     formdeleteData(tondo);
-    window.location.href = route('r_supplier.index');
+    window.location.href = route('r_unit.index');
   }
 
    // Click Delete Button
@@ -264,6 +169,7 @@ $(document).ready(async function () {
     clear();
   });
 
+  // Open Modal
   modalTypeProject.on('shown.bs.modal', function (e) {
     NameInput.focus();
   });

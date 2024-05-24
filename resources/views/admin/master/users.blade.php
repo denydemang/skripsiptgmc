@@ -49,63 +49,63 @@
 	</div>
 
 
-	{{-- MODAL FORM --}}
-	<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-		<div class="modal-dialog modal-primary" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title"></h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-12">
-							<form id="formProjectType" action="asdasda" method="post">
-								@csrf
-								<div class="form-group">
-									<label for="username">username</label>
-									<input class="form-control username" type="text" name="username" style="font-weight: bolder">
-									<div class="invalid-feedback">
-										<b>username Cannot Be Blank </b>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="name">Name</label>
-									<input class="form-control name" type="text" name="name" style="font-weight: bolder">
-									<div class="invalid-feedback">
-										<b>Name Cannot Be Blank </b>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="name">Password</label>
-									<input class="form-control password" type="text" name="password" style="font-weight: bolder">
-									<div class="invalid-feedback">
-										<b>Password Cannot Be Blank </b>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="role">Role</label>
-									{{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
-									<select class="form-control role" name="role" id="role">
-									</select>
-									<div class="invalid-feedback">
-										<b>Role Cannot Be Blank </b>
-									</div>
-								</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-success btnsave">Save changes</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-	{{-- Notif Flash Message --}}
-	@include('flashmessage')
-	<script src="{{ asset('/') }}js/users/users.js" type="module"></script>
+{{-- MODAL FORM --}}
+<div class="modal fade" id="modal-popup" role="dialog" aria-labelledby="exampleModalLabel">
+  <div class="modal-dialog modal-primary" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <form id="formProjectType" action="asdasda" method="post">
+              @csrf
+              <div class="form-group">
+                <label for="username">username</label>
+                <input class="form-control username" type="text" name="username" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>username Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Name</label>
+                <input class="form-control name" type="text" name="name" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Name Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Password</label>
+                <input class="form-control password" type="text" name="password" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b>Password Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="role">Role</label>
+                {{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
+                <select class="form-control role" name="role" id="role">
+                </select>
+                <div class="invalid-feedback">
+                  <b>Role Cannot Be Blank </b>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-success btnsave">Save changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{-- Notif Flash Message --}}
+@include('flashmessage')
+<script src="{{ asset('/') }}js/master/users.js" type="module"></script>
 @endsection

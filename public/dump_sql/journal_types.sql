@@ -11,18 +11,22 @@
  Target Server Version : 110300 (11.3.0-MariaDB-log)
  File Encoding         : 65001
 
- Date: 17/04/2024 22:05:33
+ Date: 24/05/2024 23:06:02
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
+-- Table structure for journal_types
+-- ----------------------------
 -- Records of journal_types
 -- ----------------------------
 INSERT INTO `journal_types` VALUES ('JKK', 'Jurnal Kas Keluar', NULL, NULL, NULL, NULL);
 INSERT INTO `journal_types` VALUES ('JKM', 'Jurnal Kas Masuk', NULL, NULL, NULL, NULL);
 INSERT INTO `journal_types` VALUES ('JP', 'Jurnal Penyesuaian', NULL, NULL, NULL, NULL);
+INSERT INTO `journal_types` VALUES ('JPEM', 'Jurnal Pembelian', NULL, NULL, NULL, NULL);
+INSERT INTO `journal_types` VALUES ('JPEN', 'Jurnal Penjualan', NULL, NULL, NULL, NULL);
 INSERT INTO `journal_types` VALUES ('JU', 'Jurnal Umum', NULL, NULL, NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

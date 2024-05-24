@@ -15,25 +15,25 @@ class AdminController extends Controller
         $parts = explode('.', $angka);
         $angka_bulat = abs($parts[0]);
         $angka_desimal = isset($parts[1]) ? $parts[1] : 0;
-    
+
         // Konversi bagian bulat
         $terbilang_bulat = $this->terbilang_int($angka_bulat);
-    
+
         // Konversi bagian desimal jika ada
         $terbilang_desimal = '';
         if ($angka_desimal > 0) {
             $terbilang_desimal = ' Koma ' . $this->terbilang_int($angka_desimal);
         }
-    
+
         return $terbilang_bulat . $terbilang_desimal;
     }
-    
+
     public function terbilang_int($angka) {
         $angka = (string) $angka;
         $length = strlen($angka);
         $terbilang = '';
         $angka_digit = array('', 'Satu', 'Dua', 'Tiga', 'Empat', 'Lima', 'Enam', 'Tujuh', 'Delapan', 'Sembilan');
-    
+
         if ($length == 1) {
             $terbilang = $angka_digit[$angka];
         } elseif ($length == 2) {
@@ -67,10 +67,10 @@ class AdminController extends Controller
             $temp = $this->terbilang_int((int) substr($angka, 0, -12));
             $terbilang = $temp . ' Triliun ' . $this->terbilang_int((int) substr($angka, -12));
         }
-    
+
         return $terbilang;
     }
-    
+
     public function dashboard(Request $request){
         return response()
         ->view(
@@ -84,7 +84,7 @@ class AdminController extends Controller
     }
 
     public function errorException($ex, $routeRedirectName , $code =""){
-        if (strpos($ex->getMessage(), "cannot delete or update a parent row")){
+        if (strpos($ex->getMessage(), "Cannot delete or update a parent row")){
             return response()->redirectToRoute($routeRedirectName)->with("error","Unable To Delete Or Update $code Already Used By Another Transaction");
         } else {
             // Session::flash('error', $th->getMessage());
@@ -93,7 +93,7 @@ class AdminController extends Controller
     }
 
      public function errorException2($ex, $code =""){
-        if (strpos($ex->getMessage(), "cannot delete or update a parent row")){
+        if (strpos($ex->getMessage(), "Cannot delete or update a parent row")){
             throw new Exception("Unable To Delete Or Update $code Already Used By Another Transaction");
         } else {
             throw new Exception($ex->getMessage());

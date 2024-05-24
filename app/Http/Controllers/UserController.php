@@ -137,7 +137,8 @@ class UserController extends AdminController
             return response()->redirectToRoute("admin.users")->with("success", "Data ".$username." Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("admin.users")->with("error", $th->getMessage());
+            // return response()->redirectToRoute("admin.users")->with("error", $th->getMessage());
+            return $this->errorException($th,"admin.users", $username );
         }
 
 

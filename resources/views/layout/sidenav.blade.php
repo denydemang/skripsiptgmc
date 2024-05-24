@@ -3,7 +3,7 @@
 	<div class="scrollbar-inner">
 		<!-- Brand -->
 		<div class="sidenav-header d-flex align-items-center">
-			<a class="navbar-brand" href="./pages/dashboards/dashboard.html">
+			<a class="navbar-brand" href="/">
 				<h4 style="color: blue">PT GMJ DASHBOARD</h4>
 			</a>
 			<div class="ml-auto">
@@ -66,20 +66,11 @@
 						</div>
 					</li>
 					<li class="nav-item">
-						@php
-							$allmaster = [
-							    'r_supplier.index',
-							    'r_category.index',
-							    'r_item.index',
-							    'r_customer.index',
-							    'r_unit.index',
-							    'admin.users',
-							    'r_role.index',
-							    'admin.coalist',
-							];
-						@endphp
-						<a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button"
-							aria-expanded="{{ in_array($sessionRoute, $allmaster) ? 'true' : 'false' }}" aria-controls="navbar-examples">
+                        @php
+                            $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index', 'r_upah.index','admin.coalist']
+                        @endphp
+						<a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="{{ in_array($sessionRoute, $allmaster) ? 'true' : 'false' }}"
+							aria-controls="navbar-examples">
 							<i class="ni ni-ungroup text-orange"></i>
 							<span class="nav-link-text">Master</span>
 						</a>
@@ -105,6 +96,9 @@
 								</li>
 								<li class="nav-item {{ $sessionRoute == 'r_role.index' ? 'active' : '' }}">
 									<a href="{{ route('r_role.index') }}" class="nav-link">Master Role</a>
+								</li>
+                                <li class="nav-item {{ $sessionRoute == 'r_upah.index' ? 'active' : '' }}">
+									<a href="{{ route('r_upah.index') }}" class="nav-link">Master Upah</a>
 								</li>
 								<li class="nav-item {{ $sessionRoute == 'admin.coalist' ? 'active' : '' }}">
 									<a href="{{ route('admin.coalist') }}" class="nav-link">Master COA</a>

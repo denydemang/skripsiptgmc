@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
             UnitSeeder::class,
             ItemSeeder::class,
             CustomerSeeder::class,
+            PaymentTermSeeder::class,
         ]);
     }
 }

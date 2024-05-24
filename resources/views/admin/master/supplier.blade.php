@@ -45,12 +45,38 @@
 			</div>
 		</div>
 		<!-- Footer -->
-		@include('layout.footer')
+		<footer class="footer pt-0">
+			<div class="row align-items-center justify-content-lg-between">
+				<div class="col-lg-6">
+					<div class="copyright text-lg-left text-muted text-center">
+						&copy; 2018
+						<a href="https://www.creative-tim.com" class="font-weight-bold ml-1" target="_blank">PT GENTA MULTI JAYYA</a>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<ul class="nav nav-footer justify-content-center justify-content-lg-end">
+						<li class="nav-item">
+							<a href="https://www.creative-tim.com" class="nav-link" target="_blank">Creative Tim</a>
+						</li>
+						<li class="nav-item">
+							<a href="https://www.creative-tim.com/presentation" class="nav-link" target="_blank">About Us</a>
+						</li>
+						<li class="nav-item">
+							<a href="http://blog.creative-tim.com" class="nav-link" target="_blank">Blog</a>
+						</li>
+						<li class="nav-item">
+							<a href="https://www.creative-tim.com/license" class="nav-link" target="_blank">License</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</footer>
 	</div>
 
 
 	{{-- MODAL FORM --}}
-	<div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	{{-- <div class="modal fade" id="modal-popup" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"> --}}
+	<div class="modal fade" id="modal-popup" role="dialog" aria-labelledby="exampleModalLabel">
 		<div class="modal-dialog modal-primary" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -65,21 +91,23 @@
 							<form id="formProjectType" action="asdasda" method="post">
 								@csrf
 								<div class="form-group">
-									<label for="code">Code</label>
+									<label for="code">Code <span title="Wajib Diisi" style="color: #23f234"><br>
+											<i id="pesanCode">*): Harap Diisi dengan Code Unik, jika kosong akan Tergenerate Code otomatis
+											</i></span></label>
 									<input class="form-control code" type="text" name="code" style="font-weight: bolder">
 								</div>
 								<div class="form-group">
-									<label for="name">Name</label>
+									<label for="name">Name <span title="Wajib Diisi" style="color: red">*</span></label>
 									<input class="form-control name" type="text" name="name" style="font-weight: bolder">
 									<div class="invalid-feedback">
-										<b>Name Cannot Be Blank </b>
+										<b>Name Tidak Boleh Kosong </b>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="address">Address</label>
+									<label for="address">Address <span title="Wajib Diisi" style="color: red">*</span></label>
 									<input class="form-control address" type="text" name="address" style="font-weight: bolder">
 									<div class="invalid-feedback">
-										<b>Address Cannot Be Blank </b>
+										<b>Address Tidak Boleh Kosong </b>
 									</div>
 								</div>
 								<div class="form-group">
@@ -95,19 +123,23 @@
 									<input class="form-control email" type="text" name="email" style="font-weight: bolder">
 								</div>
 								<div class="form-group">
-									<label for="phone">Phone</label>
+									<label for="phone">Phone <span title="Wajib Diisi" style="color: red">*</span></label>
 									<input class="form-control phone" type="text" name="phone" style="font-weight: bolder">
 									<div class="invalid-feedback">
-										<b>Phone Cannot Be Blank </b>
+										<b>Phone Tidak Boleh Kosong </b>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="role">COA</label>
+									<label for="role">COA <span title="Wajib Diisi" style="color: red">*</span></label>
+									{{-- <input type="text" readonly class="form-control form-control-sm inputcoapayable"
+                value=""
+                id="example3cols1Input"> --}}
 									{{-- <input class="form-control description" type="text" name="description" style="font-weight: bolder"> --}}
-									<select class="form-control coa_code" name="coa_code" id="coa_code">
+									<select class="form-control coa_code" name="coa_code" id="coa_code" style="height:45px">
 									</select>
+									{{-- @include('component.btnsearchcoa') --}}
 									<div class="invalid-feedback">
-										<b>Coa Code Cannot Be Blank </b>
+										<b>Coa Code Tidak Boleh Kosong </b>
 									</div>
 								</div>
 						</div>
@@ -123,5 +155,10 @@
 	</div>
 	{{-- Notif Flash Message --}}
 	@include('flashmessage')
-	<script src="{{ asset('/') }}js/suppliers/suppliers.js" type="module"></script>
+
+	{{-- MODAL FORM --}}
+	{{-- @include('searchModal.coasearch') --}}
+
+
+	<script src="{{ asset('/') }}js/master/suppliers.js" type="module"></script>
 @endsection

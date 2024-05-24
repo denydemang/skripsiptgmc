@@ -18,6 +18,7 @@ class SupplierController extends AdminController
             'title' => 'Supplier',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
+            'data' => [],
 
 
         ];
@@ -46,7 +47,8 @@ class SupplierController extends AdminController
         }
     }
 
-    public function getDatasuppliers(Request $request, DataTables $dataTables) {
+    public function getDatasuppliers(Request $request, DataTables $dataTables)
+    {
         if ($request->ajax()) {
 
             $suppliers = Supplier::query();
@@ -82,37 +84,43 @@ class SupplierController extends AdminController
      */
     public function store(Request $request)
     {
-        try {
+        $exist_supplier = Supplier::find($request->code);
+        if (isset($exist_supplier)) {
+            return response()->redirectToRoute("r_supplier.index")->with("error", "Code <b>" . $request->code . "</b> Sudah tersedia");
+        } else {
+            try {
 
-            $supplyModel = Supplier::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("SUPP" ,$supplyModel, false,"code");
-            $name = $request->post("name");
-            $address = $request->post("address");
-            $zip_code = $request->post("zip_code");
-            $npwp = $request->post("npwp");
-            $email = $request->post("email");
-            $phone = $request->post("phone");
-            $coa_code = $request->post("coa_code");
+                $supplyModel = Supplier::orderBy("code", "desc")->lockForUpdate()->first();
+                $code_auto = $this->automaticCode("SUPP", $supplyModel, false, "code");
+                $code = $request->post("code");
+                $name = $request->post("name");
+                $address = $request->post("address");
+                $zip_code = $request->post("zip_code");
+                $npwp = $request->post("npwp");
+                $email = $request->post("email");
+                $phone = $request->post("phone");
+                $coa_code = $request->post("coa_code");
 
 
-            $typeProject = new Supplier();
-            $typeProject->code = $code;
-            $typeProject->name =  $name;
-            $typeProject->address =  $address;
-            $typeProject->zip_code =  $zip_code;
-            $typeProject->npwp =  $npwp;
-            $typeProject->email =  $email;
-            $typeProject->phone =  $phone;
-            $typeProject->coa_code =  $coa_code;
-            $typeProject->created_by = Auth::user()->username;
-            $typeProject->save();
+                $typeProject = new Supplier();
+                $typeProject->code = $code != '' ? $code : $code_auto;
+                $typeProject->name =  $name;
+                $typeProject->address =  $address;
+                $typeProject->zip_code =  $zip_code;
+                $typeProject->npwp =  $npwp;
+                $typeProject->email =  $email;
+                $typeProject->phone =  $phone;
+                $typeProject->coa_code =  $coa_code;
+                $typeProject->created_by = Auth::user()->username;
+                $typeProject->save();
 
-            // Session::flash('error', `Data Berhasil Disimpan`);
+                // Session::flash('error', `Data Berhasil Disimpan`);
 
-            return response()->redirectToRoute("r_supplier.index")->with("success", "Data $code Succesfully Created");
-        } catch (\Throwable $th) {
-            // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_supplier.index")->with("error", $th->getMessage());
+                return response()->redirectToRoute("r_supplier.index")->with("success", "Data ".$typeProject->code." Succesfully Created");
+            } catch (\Throwable $th) {
+                // Session::flash('error', $th->getMessage());
+                return response()->redirectToRoute("r_supplier.index")->with("error", $th->getMessage());
+            }
         }
     }
 
@@ -129,11 +137,10 @@ class SupplierController extends AdminController
      */
     public function edit(string $id, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $dataProjectType = Supplier::query()->where("code", $id)->first();
 
             return json_encode($dataProjectType);
-
         }
     }
 
@@ -151,7 +158,7 @@ class SupplierController extends AdminController
             $email = $request->post("email");
             $phone = $request->post("phone");
             $coa_code = $request->post("coa_code");
-            $getRole = Supplier::find($id );
+            $getRole = Supplier::find($id);
 
             $getRole->name = $name;
             $getRole->coa_code = $coa_code;
@@ -164,7 +171,7 @@ class SupplierController extends AdminController
             $getRole->updated_by = Auth::user()->username;
             $getRole->update();
 
-            return response()->redirectToRoute("r_supplier.index")->with("success", "Data ".$name." Successfully Updated");
+            return response()->redirectToRoute("r_supplier.index")->with("success", "Data " . $name . " Successfully Updated");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_supplier.index")->with("error", $th->getMessage());
@@ -177,12 +184,13 @@ class SupplierController extends AdminController
     public function destroy(string $id)
     {
         try {
-            Supplier::where("code",$id )->delete();
+            Supplier::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_supplier.index")->with("success", "Data Successfully Deleted");
+            return response()->redirectToRoute("r_supplier.index")->with("success", "Data " . $id . " Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return $this->errorException($th, "r_supplier.index");
+            // return $this->errorException($th, "r_supplier.index");
+            return $this->errorException($th,"r_supplier.index", $id );
         }
     }
 }

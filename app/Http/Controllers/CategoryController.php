@@ -25,7 +25,8 @@ class CategoryController extends AdminController
         return response()->view("admin.master.category", $supplyData);
     }
 
-    public function getDatacategorys(Request $request, DataTables $dataTables) {
+    public function getDatacategorys(Request $request, DataTables $dataTables)
+    {
         if ($request->ajax()) {
 
             $categorys = Category::query();
@@ -61,27 +62,33 @@ class CategoryController extends AdminController
      */
     public function store(Request $request)
     {
-        try {
+        $exist_category = Category::find($request->code);
+        if (isset($exist_category)) {
+            return response()->redirectToRoute("r_category.index")->with("error", "Code <b>" . $request->code . "</b> Sudah tersedia");
+        } else {
+            try {
 
-            $supplyModel = Category::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("CTG" ,$supplyModel, false,"code");
-            $name = $request->post("name");
-            $coa_code = $request->post("coa_code");
+                $supplyModel = Category::orderBy("code", "desc")->lockForUpdate()->first();
+                $code_auto = $this->automaticCode("CTG", $supplyModel, false, "code");
+                $code = $request->post("code");
+                $name = $request->post("name");
+                $coa_code = $request->post("coa_code");
 
 
-            $typeProject = new Category();
-            $typeProject->code = $code;
-            $typeProject->name =  $name;
-            $typeProject->coa_code =  $coa_code;
-            $typeProject->created_by = Auth::user()->username;
-            $typeProject->save();
+                $typeProject = new Category();
+                $typeProject->code = $code!='' ? $code : $code_auto;
+                $typeProject->name =  $name;
+                $typeProject->coa_code =  $coa_code;
+                $typeProject->created_by = Auth::user()->username;
+                $typeProject->save();
 
-            // Session::flash('error', `Data Berhasil Disimpan`);
+                // Session::flash('error', `Data Berhasil Disimpan`);
 
-            return response()->redirectToRoute("r_category.index")->with("success", "Data $code Succesfully Created");
-        } catch (\Throwable $th) {
-            // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
+                return response()->redirectToRoute("r_category.index")->with("success", "Data ".$typeProject->code." Succesfully Created");
+            } catch (\Throwable $th) {
+                // Session::flash('error', $th->getMessage());
+                return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
+            }
         }
     }
 
@@ -98,11 +105,10 @@ class CategoryController extends AdminController
      */
     public function edit(string $id, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $dataProjectType = Category::query()->where("code", $id)->first();
 
             return json_encode($dataProjectType);
-
         }
     }
 
@@ -115,13 +121,13 @@ class CategoryController extends AdminController
 
             $name = $request->post("name");
             $coa_code = $request->post("coa_code");
-            $getRole = Category::find($id );
+            $getRole = Category::find($id);
             $getRole->name = $name;
             $getRole->coa_code = $coa_code;
             $getRole->updated_by = Auth::user()->username;
             $getRole->update();
 
-            return response()->redirectToRoute("r_category.index")->with("success", "Data ".$name." Successfully Updated");
+            return response()->redirectToRoute("r_category.index")->with("success", "Data " . $name . " Successfully Updated");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_category.index")->with("error", $th->getMessage());
@@ -134,9 +140,9 @@ class CategoryController extends AdminController
     public function destroy(string $id)
     {
         try {
-            Category::where("code",$id )->delete();
+            Category::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_category.index")->with("success", "Data Successfully Deleted");
+            return response()->redirectToRoute("r_category.index")->with("success", "Data ".$id." Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return $this->errorException($th,"r_category.index", $id );

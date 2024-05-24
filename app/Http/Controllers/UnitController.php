@@ -25,7 +25,8 @@ class UnitController extends AdminController
         return response()->view("admin.master.unit", $supplyData);
     }
 
-    public function getDataUnits(Request $request, DataTables $dataTables) {
+    public function getDataUnits(Request $request, DataTables $dataTables)
+    {
         if ($request->ajax()) {
 
             $units = Unit::query();
@@ -61,25 +62,31 @@ class UnitController extends AdminController
      */
     public function store(Request $request)
     {
-        try {
+        $exist_unit = Unit::find($request->code);
+        if (isset($exist_unit)) {
+            return response()->redirectToRoute("r_unit.index")->with("error", "Code <b>" . $request->code . "</b> Sudah tersedia");
+        } else {
+            try {
 
-            $supplyModel = Unit::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("UN_0" ,$supplyModel, false,"code");
-            $name = $request->post("name");
+                $supplyModel = Unit::orderBy("code", "desc")->lockForUpdate()->first();
+                $code_auto = $this->automaticCode("UN_0", $supplyModel, false, "code");
+                $code = $request->post("code");
+                $name = $request->post("name");
 
 
-            $typeProject = new Unit();
-            $typeProject->code = $code;
-            $typeProject->name =  $name;
-            $typeProject->created_by = Auth::user()->username;
-            $typeProject->save();
+                $typeProject = new Unit();
+                $typeProject->code = $code!='' ? $code : $code_auto;
+                $typeProject->name =  $name;
+                $typeProject->created_by = Auth::user()->username;
+                $typeProject->save();
 
-            // Session::flash('error', `Data Berhasil Disimpan`);
+                // Session::flash('error', `Data Berhasil Disimpan`);
 
-            return response()->redirectToRoute("r_unit.index")->with("success", "Data $code Succesfully Created");
-        } catch (\Throwable $th) {
-            // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+                return response()->redirectToRoute("r_unit.index")->with("success", "Data ".$typeProject->code." Succesfully Created");
+            } catch (\Throwable $th) {
+                // Session::flash('error', $th->getMessage());
+                return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+            }
         }
     }
 
@@ -96,11 +103,10 @@ class UnitController extends AdminController
      */
     public function edit(string $id, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $dataProjectType = Unit::query()->where("code", $id)->first();
 
             return json_encode($dataProjectType);
-
         }
     }
 
@@ -112,12 +118,12 @@ class UnitController extends AdminController
         try {
 
             $name = $request->post("name");
-            $getRole = Unit::find($id );
+            $getRole = Unit::find($id);
             $getRole->name = $name;
             $getRole->updated_by = Auth::user()->username;
             $getRole->update();
 
-            return response()->redirectToRoute("r_unit.index")->with("success", "Data ".$name." Successfully Updated");
+            return response()->redirectToRoute("r_unit.index")->with("success", "Data " . $name . " Successfully Updated");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
@@ -130,12 +136,13 @@ class UnitController extends AdminController
     public function destroy(string $id)
     {
         try {
-            unit::where("code",$id )->delete();
+            unit::where("code", $id)->delete();
 
             return response()->redirectToRoute("r_unit.index")->with("success", "Data Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+            // return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());
+            return $this->errorException($th,"r_unit.index", $id );
         }
     }
 }

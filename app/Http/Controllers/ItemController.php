@@ -23,7 +23,8 @@ class ItemController extends AdminController
         return response()->view("admin.master.item", $supplyData);
     }
 
-    public function getDataitems(Request $request, DataTables $dataTables) {
+    public function getDataitems(Request $request, DataTables $dataTables)
+    {
         if ($request->ajax()) {
 
             $items = Item::query();
@@ -59,33 +60,39 @@ class ItemController extends AdminController
      */
     public function store(Request $request)
     {
-        try {
+        $exist_item = Item::find($request->code);
+        if (isset($exist_item)) {
+            return response()->redirectToRoute("r_item.index")->with("error", "Code <b>" . $request->code . "</b> Sudah tersedia");
+        } else {
+            try {
 
-            $supplyModel = Item::orderBy("code", "desc")->lockForUpdate()->first();
-            $code = $this->automaticCode("ITEM" ,$supplyModel, false,"code");
-            $name = $request->post("name");
-            $unit_code = $request->post("unit_code");
-            $min_stock = $request->post("min_stock");
-            $max_stock = $request->post("max_stock");
-            $category_code = $request->post("category_code");
+                $supplyModel = Item::orderBy("code", "desc")->lockForUpdate()->first();
+                $code_auto = $this->automaticCode("ITEM", $supplyModel, false, "code");
+                $code = $request->post("code");
+                $name = $request->post("name");
+                $unit_code = $request->post("unit_code");
+                $min_stock = $request->post("min_stock");
+                $max_stock = $request->post("max_stock");
+                $category_code = $request->post("category_code");
 
 
-            $typeProject = new Item();
-            $typeProject->code = $code;
-            $typeProject->name =  $name;
-            $typeProject->unit_code =  $unit_code;
-            $typeProject->min_stock =  $min_stock;
-            $typeProject->max_stock =  $max_stock;
-            $typeProject->category_code =  $category_code;
-            $typeProject->created_by = Auth::user()->username;
-            $typeProject->save();
+                $typeProject = new Item();
+                $typeProject->code = $code!='' ? $code : $code_auto;
+                $typeProject->name =  $name;
+                $typeProject->unit_code =  $unit_code;
+                $typeProject->min_stock =  $min_stock;
+                $typeProject->max_stock =  $max_stock;
+                $typeProject->category_code =  $category_code;
+                $typeProject->created_by = Auth::user()->username;
+                $typeProject->save();
 
-            // Session::flash('error', `Data Berhasil Disimpan`);
+                // Session::flash('error', `Data Berhasil Disimpan`);
 
-            return response()->redirectToRoute("r_item.index")->with("success", "Data $code Succesfully Created");
-        } catch (\Throwable $th) {
-            // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());
+                return response()->redirectToRoute("r_item.index")->with("success", "Data ".$typeProject->code." Succesfully Created");
+            } catch (\Throwable $th) {
+                // Session::flash('error', $th->getMessage());
+                return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());
+            }
         }
     }
 
@@ -102,11 +109,10 @@ class ItemController extends AdminController
      */
     public function edit(string $id, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $dataProjectType = Item::query()->where("code", $id)->first();
 
             return json_encode($dataProjectType);
-
         }
     }
 
@@ -123,7 +129,7 @@ class ItemController extends AdminController
             $max_stock = $request->post("max_stock");
             $category_code = $request->post("category_code");
 
-            $getRole = Item::find($id );
+            $getRole = Item::find($id);
             $getRole->name = $name;
             $getRole->unit_code = $unit_code;
             $getRole->min_stock = $min_stock;
@@ -132,7 +138,7 @@ class ItemController extends AdminController
             $getRole->updated_by = Auth::user()->username;
             $getRole->update();
 
-            return response()->redirectToRoute("r_item.index")->with("success", "Data ".$name." Successfully Updated");
+            return response()->redirectToRoute("r_item.index")->with("success", "Data " . $name . " Successfully Updated");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());
@@ -145,49 +151,56 @@ class ItemController extends AdminController
     public function destroy(string $id)
     {
         try {
-            Item::where("code",$id )->delete();
+            Item::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_item.index")->with("success", "Data Successfully Deleted");
+            return response()->redirectToRoute("r_item.index")->with("success", "Data " . $id . " Successfully Deleted");
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
-            return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());
+            // return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());
+            return $this->errorException($th,"r_item.index", $id );
         }
     }
 
-    public function getTableItemSearch(Request $request, DataTables $dataTables){
+    public function getTableItemSearch(Request $request, DataTables $dataTables)
+    {
 
-        if ($request->Ajax()){
+        if ($request->Ajax()) {
 
-            $items = Item::leftjoin('stocks',"items.code", "=", "stocks.item_code" )
-            ->leftjoin('categories', 'items.category_code', '=', 'categories.code' )
-                ->select('items.code', 'items.name', 'items.unit_code', 'categories.code as category_code',
-                'categories.name as category_name', 'items.min_stock', 'items.max_stock', DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks'))
+            $items = Item::leftjoin('stocks', "items.code", "=", "stocks.item_code")
+                ->leftjoin('categories', 'items.category_code', '=', 'categories.code')
+                ->select(
+                    'items.code',
+                    'items.name',
+                    'items.unit_code',
+                    'categories.code as category_code',
+                    'categories.name as category_name',
+                    'items.min_stock',
+                    'items.max_stock',
+                    DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks')
+                )
                 ->groupBy('items.code', 'items.name', 'items.unit_code', 'categories.code', 'categories.name', 'items.min_stock', 'items.max_stock');
 
-                return $dataTables->of($items)
+            return $dataTables->of($items)
                 ->addColumn('action', function ($row) {
 
                     $data = '<div class="d-flex justify-content-center">
-                    <button class="btn btn-sm btn-success selectitembtn" data-stocks="'.$row->stocks.'" data-min_stock="'.$row->min_stock.'" data-max_stock="'.$row->max_stock.'" data-unit="'.$row->unit_code.'" data-code="'.$row->code.'"  data-name="'.$row->name.'" title="Select Item"><i class="fa fa-check"></i> Select</button>
+                    <button class="btn btn-sm btn-success selectitembtn" data-stocks="' . $row->stocks . '" data-min_stock="' . $row->min_stock . '" data-max_stock="' . $row->max_stock . '" data-unit="' . $row->unit_code . '" data-code="' . $row->code . '"  data-name="' . $row->name . '" title="Select Item"><i class="fa fa-check"></i> Select</button>
                     </div>';
 
                     return $data;
                 })
-                ->editColumn('stocks', function($row) {
+                ->editColumn('stocks', function ($row) {
                     return (float)$row->stocks;
                 })
-                ->editColumn('min_stock', function($row) {
+                ->editColumn('min_stock', function ($row) {
                     return (float)$row->min_stock;
                 })
-                ->editColumn('max_stock', function($row) {
+                ->editColumn('max_stock', function ($row) {
                     return (float)$row->max_stock;
                 })
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);
-
-
         }
-
     }
 }
