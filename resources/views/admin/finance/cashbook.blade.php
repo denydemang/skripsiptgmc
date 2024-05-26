@@ -43,6 +43,14 @@
 														<option value="1">Approved</option>
 													</select>
 												</div>
+												<div class="mb-2" style="width: 200px">
+													<h4>Type</h4>
+													<select class="form-control" id="statusSelectType">
+														<option selected value="">All</option>
+														<option value="P">Payment</option>
+														<option value="R">Receive</option>
+													</select>
+												</div>
 											</div>
 										</div>
 										<div>
@@ -130,7 +138,8 @@
 
 
 	{{-- MODAL FORM --}}
-	<div class="modal fade" id="modal-detailpurchase" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+	<div class="modal fade" id="modal-detailpurchase" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel">
 		<div class="modal-dialog modal-lg modal-success" role="document">
 			<div class="modal-content">
 				<div class="modal-header">

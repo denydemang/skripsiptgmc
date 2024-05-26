@@ -387,14 +387,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // GET VIEW
         Route::get('/admin/cashbook', 'getViewCashBook')->name('admin.cashbook');
         Route::get('/admin/cashbook/add', 'getViewCashbookManage')->name('admin.addCashbookView');
-        // Route::get('/admin/payment/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
+        Route::get('/admin/cashbook/edit/{id}', 'getViewCashbookManage')->name('admin.editCashbookView');
         
         // CRUD
         Route::post('/admin/cashbook/gettable', 'getTableCashBook')->name('admin.tablecashbook');
         Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
         Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
         Route::post('/admin/cashbook/add', 'addCashbook')->name('admin.addcashbook');
-        // Route::post('/admin/payment/edit/{id}', 'editPayment')->name('admin.editpayment');
+        Route::post('/admin/cashbook/edit/{id}', 'editCashbook')->name('admin.editcashbook');
         Route::get('/admin/cashbook/delete/{id}', 'deletecashbook')->name('admin.deletecashbook');
         Route::get('/admin/cashbook/approve/{id}', 'approvecashbook')->name('admin.approvecashbook');
         // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');

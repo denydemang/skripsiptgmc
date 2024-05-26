@@ -66,11 +66,21 @@
 						</div>
 					</li>
 					<li class="nav-item">
-                        @php
-                            $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index', 'r_upah.index','admin.coalist']
-                        @endphp
-						<a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button" aria-expanded="{{ in_array($sessionRoute, $allmaster) ? 'true' : 'false' }}"
-							aria-controls="navbar-examples">
+						@php
+							$allmaster = [
+							    'r_supplier.index',
+							    'r_category.index',
+							    'r_item.index',
+							    'r_customer.index',
+							    'r_unit.index',
+							    'admin.users',
+							    'r_role.index',
+							    'r_upah.index',
+							    'admin.coalist',
+							];
+						@endphp
+						<a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button"
+							aria-expanded="{{ in_array($sessionRoute, $allmaster) ? 'true' : 'false' }}" aria-controls="navbar-examples">
 							<i class="ni ni-ungroup text-orange"></i>
 							<span class="nav-link-text">Master</span>
 						</a>
@@ -97,7 +107,7 @@
 								<li class="nav-item {{ $sessionRoute == 'r_role.index' ? 'active' : '' }}">
 									<a href="{{ route('r_role.index') }}" class="nav-link">Master Role</a>
 								</li>
-                                <li class="nav-item {{ $sessionRoute == 'r_upah.index' ? 'active' : '' }}">
+								<li class="nav-item {{ $sessionRoute == 'r_upah.index' ? 'active' : '' }}">
 									<a href="{{ route('r_upah.index') }}" class="nav-link">Master Upah</a>
 								</li>
 								<li class="nav-item {{ $sessionRoute == 'admin.coalist' ? 'active' : '' }}">
@@ -129,7 +139,13 @@
 						</div>
 					</li>
 					@php
-						$allfinance = ['admin.payment', 'admin.addPaymentView', 'admin.editPaymentView', 'admin.cashbook'];
+						$allfinance = [
+						    'admin.payment',
+						    'admin.addPaymentView',
+						    'admin.editPaymentView',
+						    'admin.cashbook',
+						    'admin.addCashbookView',
+						];
 					@endphp
 					<li class="nav-item">
 						<a class="nav-link" href="#navbar-finance" data-toggle="collapse" role="button"
@@ -147,7 +163,7 @@
 									<a href="./pages/components/cards.html" class="nav-link">Receipt</a>
 								</li>
 								<li
-									class="nav-item {{ $sessionRoute == 'admin.payment' || $sessionRoute == 'admin.cashbook' ? 'active' : '' }}">
+									class="nav-item {{ $sessionRoute == 'admin.cashbook' || $sessionRoute == 'admin.addCashbookView' ? 'active' : '' }}">
 									<a href="{{ route('admin.cashbook') }}" class="nav-link">Cash Book</a>
 								</li>
 								<li class="nav-item">

@@ -517,7 +517,7 @@ class AccountingController extends AdminController
         $journalDetail->description =  $Cashbook->CbpType == "P" ? "$Cashbook->description $Cashbook->cash_no" : "$Cashbook_detail->description $Cashbook->cash_no" ;
         $journalDetail->coa_code =  $Cashbook->CbpType == "P" ?  $Cashbook->COA_Cash : $Cashbook_detail->coa ;
         $journalDetail->debit =  0 ;
-        $journalDetail->kredit = $Cashbook->CbpType == "P" ? round(floatval($Cashbook->total_transaction), 2) : round(floatval($Cashbook_detail->total_amount), 2) ;
+        $journalDetail->kredit = $Cashbook->CbpType == "P" ? round(floatval($Cashbook->total_transaction), 2) : round(floatval($Cashbook_detail->amount), 2) ;
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
 

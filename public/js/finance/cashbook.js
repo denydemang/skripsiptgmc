@@ -31,6 +31,7 @@ $(document).ready(function () {
   let supplyData = {
     is_approve: '',
     paystatus: '',
+    type: '',
     startDate: startMONTH,
     endDate: lastMONTH
   };
@@ -149,57 +150,6 @@ $(document).ready(function () {
     window.location.href = urlRequest;
   }
 
-  function populateData(DetailPurchase = []) {
-    // Populate Title Detail
-    let purchaseNO = DetailPurchase[0].purchase_no;
-
-    titledetail.html(`Purchase No: ${purchaseNO}`);
-    let htmlDetailPurchase = '';
-    let counterDetailPurchase = 1;
-    let grand_total = 0;
-
-    // Populate DetailPurchase when view detail
-    DetailPurchase.forEach((item) => {
-      htmlDetailPurchase += `
-      <tr>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${counterDetailPurchase}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${item.item_code}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${item.name}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${parseFloat(item.qty)}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${item.unit_code}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.price)}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.total)}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.discount)}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.sub_total)}</td>
-      </tr>
-  
-      `;
-      grand_total += parseFloat(item.sub_total);
-      counterDetailPurchase++;
-    });
-    htmlDetailPurchase += `
-    <tr>
-      <td colspan="8" style="white-space:no-wrap;border-color: rgb(142, 237, 175);text-align:right;padding-right: 6px"><b>Grand Total</b></td>
-      <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);"><b>${formatRupiah1(grand_total)}</b></td>
-    </tr>
-    `;
-
-    listDetailPurchase.html(htmlDetailPurchase);
-  }
-
-  function printRecap() {
-    let urlRoute = route('admin.printrecappayment');
-
-    urlRoute =
-      urlRoute +
-      `?suppliercode=${supplierCode.val()}&startDate=${moment(supplyData.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}&endDate=${moment(
-        supplyData.endDate,
-        'DD/MM/YYYY'
-      ).format('YYYY-MM-DD')}&is_approve=${supplyData.is_approve}`;
-
-    window.open(urlRoute, '_blank');
-  }
-
   async function getDetailCB(code) {
     getPRTable1 = route('admin.tablecashbook1', code);
     Cbdetailno.html(code);
@@ -236,11 +186,13 @@ $(document).ready(function () {
     reloadTable(method, tableName, columns, getPRTable, supplyData);
   });
 
-  // change Select Paid Status
-  $(document).on('change', '#statusSelectPaidStatus', function () {
+  // change Select Type
+  $(document).on('change', '#statusSelectType', function () {
     let val = $(this).val();
-    supplyData.paystatus = val;
+    supplyData.type = val;
 
+    getDetailCB('---');
+    getDetailCB2('---');
     reloadTable(method, tableName, columns, getPRTable, supplyData);
   });
 
@@ -267,7 +219,7 @@ $(document).ready(function () {
   // Click Edit Button
   $(document).on('click', '.editbtn', function () {
     let code = $(this).data('code');
-    let url = route('admin.editPaymentView', code);
+    let url = route('admin.editCashbookView', code);
 
     window.location.href = url;
   });

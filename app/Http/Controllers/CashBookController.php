@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Yajra\DataTables\DataTables;
 
 class CashBookController extends AdminController
@@ -31,17 +32,40 @@ class CashBookController extends AdminController
         $data= [];
         if ($code){ //If In Update Mode
 
-            $cahsbook = CashBook::where("cash_no", $code)
-            ->where("is_approve" , 0)
+            $cashbook = CashBook::where("cash_no", $code)
+            ->join("coa", "cash_books.COA_Cash", "=", "coa.code")
+            ->select("cash_books.*" , "coa.code as coa_code", "coa.name as coa_name")
+            ->where("cash_books.is_approve" , 0)
             ->first();
+
+            $cashbookdetail = CashBook_Detail::where("cash_no", $code)
+            ->join("coa", "cash_book_details.coa", "=", "coa.code")
+            ->select("cash_book_details.*" , "coa.code as coa_code", "coa.name as coa_name")
+            ->first();
+
+            $cashbookdetailb = CashBook_DetailB::where("cash_no", $code)
+            ->join("coa", "cash_books_detail_b.COA", "=", "coa.code")
+            ->select("cash_books_detail_b.*" , "coa.code as coa_code", "coa.name as coa_name")
+            ->first();
+
+            if (!$cashbookdetailb){
+                $cashbookdetailb = [];
+                $cashbookdetailb['coa_name'] = "";
+                $cashbookdetailb['coa_code'] = "";
+                $cashbookdetailb['debit'] = 0;
+                $cashbookdetailb['credit'] = 0;
+                $cashbookdetailb['description'] = "";
+            }
         
-            if (!$cahsbook){
+            if (!$cashbook){
                 abort(404);
             }
 
+            $data['cashbook'] = $cashbook;
+            $data['cashbookdetail'] = $cashbookdetail;
+            $data['cashbookdetailb'] = $cashbookdetailb;
 
-        // $data['payment'] = $payment;
-        // $data['detail'] = json_encode($results);
+
         }
         $supplyData = [
             'title' =>$request->route()->getName() == 'admin.addCashbookView' ?  'Add New CashBook' : 'Edit CashBook',
@@ -57,6 +81,7 @@ class CashBookController extends AdminController
         if ($request->ajax()){
         
             $is_approve = intval($request->is_approve) >=  0  ? $request->is_approve : null ;
+            $type =  $request->type  ;
             $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
             $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
             
@@ -66,6 +91,9 @@ class CashBookController extends AdminController
             ->select("cash_books.*", "COA.code as coa_code", "COA.name as coa_name")
             ->when($is_approve !== null , function($query) use($is_approve){
                 $query->where('is_approve', $is_approve);
+            })
+            ->when($type !== null , function($query) use($type){
+                $query->where('CbpType', $type);
             });
 
             return $dataTables->of($cashbook)
@@ -240,6 +268,148 @@ class CashBookController extends AdminController
     public function printjurnalcashbook($id){
         $printcontroller = new PrintController();
         return $printcontroller->printcashbookjournal($id);
+    }
+
+    public function addCashbook(Request $request){
+
+        if ($request->ajax()){
+
+            try {
+                //code...
+
+                DB::beginTransaction();
+                $data = $request->all();
+                $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+                $code = "";
+
+                if ($data['CbpType'] == "P"){
+                    $CashBook = CashBook::where("cash_no" , "like" , "%CBP%")->orderBy("cash_no", "desc")->lockforUpdate()->first();
+                    $code = $this->automaticCode('CBP' ,$CashBook, true,  'cash_no');
+                } else {
+                    $CashBook = CashBook::where("cash_no" , "like" , "%CBR%")->orderBy("cash_no", "desc")->lockforUpdate()->first();
+                    $code = $this->automaticCode('CBR' ,$CashBook, true,  'cash_no');
+                }
+
+
+                $cashbook = New CashBook();
+                $cashbook->cash_no = $code;
+                $cashbook->transaction_date = $data['transaction_date'];
+                $cashbook->COA_Cash = $data['COA_Cash'];
+                $cashbook->ref = $data['ref_no']  ;
+                $cashbook->total_transaction = floatval($data['total_transaction']);
+                $cashbook->description = $data['description'];
+                $cashbook->CbpType = $data['CbpType'];
+                $cashbook->is_approve = 0;
+                $cashbook->approved_by = "";
+                $cashbook->created_by = Auth::user()->username;
+                $cashbook->save();
+
+                $cashbookdetail =  New CashBook_Detail();
+                $cashbookdetail->cash_no = $code;
+                $cashbookdetail->coa = $data['coa_lawan'];
+                $cashbookdetail->description = $data['description'];
+                $cashbookdetail->amount = floatval($data['amount_lawan']);
+                $cashbookdetail->d_k = $data['CbpType'] == "P" ? "d" : "k";
+                $cashbookdetail->created_by = Auth::user()->username;
+                $cashbookdetail->save();
+
+                if ($data['coa_adjustment'] != null || $data['coa_adjustment']  != ''){
+
+                    $cashbookdetailb =  New CashBook_DetailB();
+                    $cashbookdetailb->cash_no = $code;
+                    $cashbookdetailb->coa = $data['coa_adjustment'];
+                    $cashbookdetailb->transaction_date = $data['transaction_date'];
+                    $cashbookdetailb->ref = "";
+                    $cashbookdetailb->description = $data['coa_adjustment_description'];
+                    $cashbookdetailb->debit = floatval($data['coa_adjusment_debit']);
+                    $cashbookdetailb->credit = floatval($data['coa_adjustment_kredit']);
+                    $cashbookdetailb->created_by = Auth::user()->username;
+                    $cashbookdetailb->save();
+                }
+
+
+
+                DB::commit();
+                Session::flash('success',  "New Cashbook : $code Succesfully Created");
+                return json_encode(true);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+            
+
+
+        } else {
+            abort(404);
+        }
+    }
+
+    public function editCashbook($code ,Request $request){
+
+        if ($request->ajax()){
+
+            try {
+                //code...
+
+                DB::beginTransaction();
+                $data = $request->all();
+                $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+
+                $cashbook = CashBook::where("cash_no", $code)->first();
+                $cashbook->transaction_date = $data['transaction_date'];
+                $cashbook->COA_Cash = $data['COA_Cash'];
+                $cashbook->ref = $data['ref_no']  ;
+                $cashbook->total_transaction = floatval($data['total_transaction']);
+                $cashbook->description = $data['description'];
+                $cashbook->CbpType = $data['CbpType'];
+                $cashbook->is_approve = 0;
+                $cashbook->approved_by = "";
+                $cashbook->updated_by = Auth::user()->username;
+                $cashbook->update();
+
+                $cashbookdetail = CashBook_Detail::where("cash_no", $code)->first();
+                $cashbookdetail->coa = $data['coa_lawan'];
+                $cashbookdetail->description = $data['description'];
+                $cashbookdetail->amount = floatval($data['amount_lawan']);
+                $cashbookdetail->d_k = $data['CbpType'] == "P" ? "d" : "k";
+                $cashbookdetail->updated_by = Auth::user()->username;
+                $cashbookdetail->update();
+
+                if ($data['coa_adjustment'] != null || $data['coa_adjustment']  != ''){
+
+
+                    $cashbookdetailb = CashBook_DetailB::where("cash_no", $code)->update(
+                        [
+                            'coa' =>  $data['coa_adjustment'] ,
+                            'transaction_date' => $data['transaction_date'],
+                            'ref' => "",
+                            'description' =>  $data['coa_adjustment_description'],
+                            'debit' => floatval($data['coa_adjusment_debit']),
+                            'credit' => floatval($data['coa_adjustment_kredit']),
+                            'updated_by' => Auth::user()->username
+
+                        ]
+
+
+                    );
+                }
+
+
+
+                DB::commit();
+                Session::flash('success',  "Cashbook : $code Succesfully Updated");
+                return json_encode(true);
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+            
+
+
+        } else {
+            abort(404);
+        }
+
     }
 
         

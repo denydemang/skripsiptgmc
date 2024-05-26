@@ -7,11 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class CashBook_DetailB extends Model
 {
-    
     use HasFactory;
     protected $table = "cash_books_detail_b";
-    protected $primaryKey = "id";
-    public $incrementing = true;
+    public $incrementing = false;
     public $timestamps = true;
     protected $fillable = [
         'cash_no',
