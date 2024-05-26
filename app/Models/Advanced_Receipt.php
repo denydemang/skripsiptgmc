@@ -14,12 +14,16 @@ class Advanced_Receipt extends Model
     public $incrementing = false;
     public $timestamps = true;
     protected $fillable = [
-        'code',
-        'project_code',
-        'item_code',
-        'unit_code',
-        'qty_estimated',
-        'qty_used',
+        'adr_no',
+        'transaction_date',
+        'customer_code',
+        'coa_kredit',
+        'coa_debit',
+        'deposit_amount',
+        'deposit_allocation',
+        'description',
+        'is_approve',
+        'approved_by',
         'created_at',
         'created_by',
         'updated_at',

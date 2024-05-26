@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdvanceReceiptController;
 use App\Http\Controllers\CashBookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\COAController;
@@ -404,6 +405,31 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // Route::get('/admin/cashbook/detail/print/{id}', 'printdetailcashbook')->name('admin.printdetailcashbook');
         Route::get('/admin/cashbook/jurnal/print/{id}', 'printjurnalcashbook')->name('admin.printjurnalcashbook');
         // Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
+
+    });
+
+    Route::controller(AdvanceReceiptController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/advancedreceipt', 'getViewAdvancedReceipt')->name('admin.advancedreceipt');
+        Route::get('/admin/advancedreceipt/add', 'getViewAdvancedReceiptManage')->name('admin.addAdvancedReceiptView');
+        Route::get('/admin/advancedreceipt/edit/{id}', 'getViewAdvancedReceiptManage')->name('admin.editAdvancedReceiptView');
+        
+        // // CRUD
+        Route::post('/admin/advancedreceipt/gettable', 'getTableAR')->name('admin.tablear');
+        // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
+        // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
+        Route::post('/admin/advancedreceipt/add', 'addAR')->name('admin.addAR');
+        Route::post('/admin/advancedreceipt/edit/{id}', 'editAR')->name('admin.editAR');
+        Route::get('/admin/advancedreceipt/delete/{id}', 'deletear')->name('admin.deletear');
+        Route::get('/admin/advancedreceipt/approve/{id}', 'approvear')->name('admin.approvear');
+        // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+
+
+        // Print
+        Route::get('/admin/advancedreceipt/detail/print/{id}', 'printdetailar')->name('admin.printdetailar');
+        Route::get('/admin/advancedreceipt/jurnal/print/{id}', 'printjurnalar')->name('admin.printjurnalar');
+        Route::get('/admin/advancedreceipt/recap/print', 'printrecapar')->name('admin.printrecapar');
 
     });
 

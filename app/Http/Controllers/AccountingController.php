@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Advanced_Receipt;
 use App\Models\CashBook;
 use App\Models\CashBook_Detail;
 use App\Models\CashBook_DetailB;
@@ -503,6 +504,8 @@ class AccountingController extends AdminController
         $journal->created_by =Auth::user()->username;
         $journal->save();
 
+        
+        //Insert Detail Journal 
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
         $journalDetail->description =  $Cashbook->CbpType == "P" ? "$Cashbook_detail->description $Cashbook->cash_no" : "$Cashbook->description $Cashbook->cash_no" ;
@@ -531,6 +534,48 @@ class AccountingController extends AdminController
             $journalDetail->created_by = Auth::user()->username;
             $journalDetail->save();
         }
+
+
+    }
+
+    public function journalAdvancedReceipt($code){
+
+        $AR = Advanced_Receipt::where("adr_no", $code)->first();
+
+
+        $supplyModel = Journal::where("voucher_no", 'like', "%JKM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode("JKM", $supplyModel,true,"voucher_no");
+
+        
+        // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date = $AR->transaction_date;
+        $journal->ref_no = $AR->adr_no;
+        $journal->journal_type_code = "JKM";
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        
+        //Insert Detail Journal 
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  $AR->description ." ( $AR->adr_no - $AR->customer_code )";
+        $journalDetail->coa_code = $AR->coa_debit;
+        $journalDetail->debit = round(floatval($AR->deposit_amount));
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  $AR->description ." ( $AR->adr_no - $AR->customer_code )";
+        $journalDetail->coa_code = $AR->coa_kredit ;
+        $journalDetail->debit =  0 ;
+        $journalDetail->kredit = round(floatval($AR->deposit_amount));
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
 
 
     }
