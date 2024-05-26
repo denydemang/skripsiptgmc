@@ -39,7 +39,7 @@
 									<a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
 								</li>
 								<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-								<li class="breadcrumb-item"><a href="{{ route('admin.purchase') }}">Payment</a></li>
+								<li class="breadcrumb-item"><a href="{{ route('admin.payment') }}">Payment</a></li>
 								@if ($sessionRoute == 'admin.addPaymentView')
 									<li class="breadcrumb-item active" aria-current="page">Add</li>
 								@else
@@ -97,7 +97,6 @@
 													<option value="Transfer Bank">Transfer Bank</option>
 													<option value="Cash/Tunai">Cash/Tunai</option>
 													<option value="M-Banking">M-Banking</option>
-													<option value="COD">COD</option>
 												</select>
 												<div class="datapaymentmethod"
 													data-paymentmethod="{{ $sessionRoute == 'admin.addPaymentView' ? '' : $data['payment']['payment_method'] }}">

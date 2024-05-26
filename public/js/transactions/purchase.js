@@ -52,7 +52,7 @@ $(document).ready(function () {
     { data: 'supplier_address', name: 'supplier_address', title: 'Supplier Address', searchable: true },
     { data: 'supplier_phone', name: 'supplier_phone', title: 'Supplier Phone', searchable: true },
     { data: 'total', name: 'total', title: 'Total', searchable: false },
-    { data: 'other_fee', name: 'other_fee', title: 'Other Fee', searchable: false },
+    { data: 'other_fee', name: 'other_fee', title: 'Freight In', searchable: false },
     { data: 'percent_ppn', name: 'percent_ppn', title: 'Percent PPN', searchable: false },
     { data: 'ppn_amount', name: 'ppn_amount', title: 'PPN Amount', searchable: true },
     { data: 'grand_total', name: 'grand_total', title: 'Grand Total', searchable: false },

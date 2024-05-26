@@ -178,7 +178,7 @@
 									</div>
 									<div class="col-lg-5 offset-lg-7">
 										<div class="form-group row">
-											<label class="form-control-label col-6" style="text-align: right;padding-top:3px">Other Fee</label>
+											<label class="form-control-label col-6" style="text-align: right;padding-top:3px">Freight In</label>
 											<input type="text" class="form-control inputotherfee form-control-sm col-6 bg-success text-white"
 												style="font-weight: bold">
 											<div class="dataotherfee"

@@ -59,7 +59,6 @@ class PaymentController extends AdminController
             ->mergeBindings($subQuery)
             ->select('qry.purchase_no','qry.supplier_code', 'qry.transaction_date','qry.is_approve', 'qry.due_date', 'qry.balance')
             ->where("qry.purchase_no", "=", $payment->ref_no)
-            ->where('qry.balance' , ">", 0)
             ->where("qry.due_date", ">=" , DB::raw("CURDATE()"))
             ->first();
             

@@ -112,7 +112,7 @@
 												<th scope="col">Supplier Address</th>
 												<th scope="col">Supplier Phone</th>
 												<th scope="col">Total</th>
-												<th scope="col">Other Fee</th>
+												<th scope="col">Freight In</th>
 												<th scope="col">Percent PPN</th>
 												<th scope="col">PPN Amount</th>
 												<th scope="col">Grand Total</th>
