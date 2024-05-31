@@ -58,10 +58,10 @@
 								<li class="nav-item {{ $sessionRoute == 'admin.projectrecapview' ? 'active' : '' }}">
 									<a href="{{ route('admin.projectrecapview') }}" class="nav-link">Project Recap</a>
 								</li>
-								<li
+								{{-- <li
 									class="nav-item {{ $sessionRoute == 'admin.projectrealisationview' || $sessionRoute == 'admin.projectrealisationfinishview' ? 'active' : '' }}">
 									<a href="{{ route('admin.projectrealisationview') }}" class="nav-link">Project Realisation</a>
-								</li>
+								</li> --}}
 							</ul>
 						</div>
 					</li>
@@ -118,7 +118,13 @@
 					</li>
 					<li class="nav-item">
 						@php
-							$alltransaction = ['admin.purchase', 'admin.addPurchaseView', 'admin.editPurchaseView'];
+							$alltransaction = [
+							    'admin.purchase',
+							    'admin.addPurchaseView',
+							    'admin.editPurchaseView',
+							    'admin.invoice',
+							    'admin.addInvoiceView',
+							];
 						@endphp
 						<a class="nav-link" href="#navbar-transaction" data-toggle="collapse"
 							role="button"aria-expanded="{{ in_array($sessionRoute, $alltransaction) ? 'true' : 'false' }}"
@@ -132,8 +138,9 @@
 									class="nav-item {{ $sessionRoute == 'admin.purchase' || $sessionRoute == 'admin.addPurchaseView' || $sessionRoute == 'admin.editPurchaseView' ? 'active' : '' }}">
 									<a href="{{ route('admin.purchase') }}" class="nav-link">Purchase Transaction</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/components/cards.html" class="nav-link">Invoice</a>
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.invoice' || $sessionRoute == 'admin.addInvoiceView' ? 'active' : '' }}">
+									<a href="{{ route('admin.invoice') }}" class="nav-link">Invoice</a>
 								</li>
 							</ul>
 						</div>

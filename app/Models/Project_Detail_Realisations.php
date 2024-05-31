@@ -13,7 +13,7 @@ class Project_Detail_Realisations extends Model
     public $incrementing = true;
     public $timestamps = true;
     protected $fillable = [
-        'project_code',
+        'project_realisation_code',
         'item_code', 
         'unit_code',
         'qty_estimated',

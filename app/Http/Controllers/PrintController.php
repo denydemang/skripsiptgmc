@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Advanced_Receipt;
 use App\Models\CashBook;
+use App\Models\Invoice;
 use App\Models\Item;
 use App\Models\Journal;
 use App\Models\Payment;
@@ -743,5 +744,145 @@ class PrintController extends AdminController
             throw new \Exception($th->getMessage());
         }
     
+    }
+
+    public function printjurnalinvoice($id){
+
+
+        try {
+            //code...
+            $journal = Journal::join('journal_details', "journals.voucher_no", "=", "journal_details.voucher_no")
+            ->join("coa", "journal_details.coa_code", "=", "coa.code")
+            ->where("journals.ref_no", $id)
+            ->select("coa.name", "journals.*", "journal_details.*")
+            ->orderBy("journal_details.debit", 'desc')
+            ->get();
+            
+            if (count($journal) == 0){
+                throw new Exception();
+            }
+    
+            $invoice = Invoice::where("invoice_no", $id)
+                                ->join("customers", "invoices.customer_code", "=", "customers.code")
+                                ->select("invoices.*", 'customers.code as customer_code', "customers.name as customer_name")
+                                ->first();
+    
+            $data = [
+                "invoice" => $invoice,
+                "journal" => $journal,
+            ];
+    
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->loadview("admin.transactions.prints.printjurnalinvoice", $data);
+            return $pdf->stream("JournalInvoice-$id.pdf", array("Attachment" => false));
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+    }
+
+    public function printdetailinvoice($id){
+        $invoices = Invoice::join("customers", "customers.code" , "=", "invoices.customer_code")
+        ->join("project_realisations", "project_realisations.code" , "=", "invoices.project_realisation_code")
+        ->join("projects", "projects.code" , "=", "project_realisations.project_code")
+        ->select('invoices.*', 'projects.name as project_name', "projects.code as project_code","customers.code as customer_code", "customers.name as customer_name",
+                "project_realisations.code as project_realisation_code" , "project_realisations.percent_realisation", "project_realisations.realisation_amount" ,"projects.budget as project_amount")
+        ->where("invoices.invoice_no", $id)->first();
+
+        // return $invoices;
+        
+        if (!$invoices){
+        abort(404);
+        };
+        $data = [
+        "invoices" => $invoices,
+        "terbilang" => $this->terbilang(floatval($invoices['grand_total']) - floatval($invoices['paid_amount']))
+        ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->loadview("admin.transactions.prints.printdetailinvoice",$data);
+        return $pdf->stream("Invoice-($id).pdf", array("Attachment" => false));
+
+    }
+
+    public function printrecapinvoice($customercode ,$startDate, $endDate, $is_approve, $paidStatus){
+
+        try {
+
+
+            //code...
+            $invoice = Invoice::join("customers", "invoices.customer_code" , "=", "customers.code")
+            ->select('invoices.*', DB::raw('ifnull(customers.name ,"-" ) as customer_name'),  DB::raw('ifnull(customers.address ,"-" ) as customer_address'), DB::raw('ifnull(customers.phone,"-" ) as customer_phone'))
+            ->whereBetween('invoices.transaction_date', [$startDate,$endDate])
+            ->when($is_approve !== null , function($query) use($is_approve){
+                $query->where('is_approve', $is_approve);
+            })
+            ->when($customercode !== null , function($query) use($customercode){
+                $query->where('customer_code', $customercode);
+            })
+            ->when($paidStatus !== null , function($query) use($paidStatus){
+                    switch (intval($paidStatus)) {
+                        case 0:
+                            # Unpaid
+                            $query->whereRaw("
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0 
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
+                            ELSE 0
+                            END = 1
+                            
+                            ");
+    
+                            break;
+                        case 1:
+                            # Fullpaid
+                            $query->whereRaw("grand_total - paid_amount <= 0");
+    
+                            break;
+                        case 2:
+                            # Outstanding
+                            $query->whereRaw("
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0 
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
+                            ELSE 0
+                            END = 1
+                            
+                            ");
+    
+                            break;
+                        case 3:
+                            # Overdue
+                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            ELSE 0
+                            END = 1 ");
+    
+                            break;
+                        
+                    }
+            })->get();
+
+    
+            $data = [
+                "invoice" => $invoice,
+                "paidStatus" =>$paidStatus,
+                "is_approve"=> $is_approve,
+                "startDate" => $startDate,
+                "endDate" => $endDate,
+                'customercode'=> $customercode
+            ];
+
+            // return $data;
+    
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->loadview("admin.transactions.prints.printrecapinvoice", $data);
+            return $pdf->stream("PurchaseRecap($startDate-$endDate).pdf", array("Attachment" => false));
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+            // abort(404);
+        }
     }
 }

@@ -8,9 +8,11 @@ use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectRealisationController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\RoleController;
@@ -64,15 +66,15 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');
         Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
         Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
-        Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
-        Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
+        // Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
+        // Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
 
         // CRUD
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
         Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
         Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
-        Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
-        Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
+        // Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
+        // Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
         Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
         Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
@@ -92,6 +94,11 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     //     Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
     // });
+
+    Route::controller(ProjectRealisationController::class)->group(function(){
+        Route::get('/admin/projectrealisation/gettablesearch', 'getProjectRealisationSearchtable')->name('admin.getProjectRealisationSearchtable');
+    });
+
     Route::controller(COAController::class)->group(function () {
 
         Route::get("admin/coalist", 'getCOAView')->name('admin.coalist');
@@ -430,6 +437,32 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/advancedreceipt/detail/print/{id}', 'printdetailar')->name('admin.printdetailar');
         Route::get('/admin/advancedreceipt/jurnal/print/{id}', 'printjurnalar')->name('admin.printjurnalar');
         Route::get('/admin/advancedreceipt/recap/print', 'printrecapar')->name('admin.printrecapar');
+
+    });
+    
+
+    Route::controller(InvoiceController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/invoice', 'getViewInvoice')->name('admin.invoice');
+        Route::get('/admin/invoice/add', 'getViewInvoiceManage')->name('admin.addInvoiceView');
+        Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
+        
+        // // // CRUD
+        Route::post('/admin/invoice/gettable', 'getTableInvoice')->name('admin.tableinvoice');
+        // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
+        // // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
+        Route::post('/admin/invoice/add', 'addinvoice')->name('admin.addinvoice');
+        Route::post('/admin/invoice/edit/{id}', 'editinvoice')->name('admin.editinvoice');
+        Route::get('/admin/invoice/delete/{id}', 'deleteinvoices')->name('admin.deleteinvoices');
+        Route::get('/admin/invoice/approve/{id}', 'approveinvoices')->name('admin.approveinvoices');
+        // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+
+
+        // // Print
+        Route::get('/admin/invoice/detail/print/{id}', 'printdetailinvoice')->name('admin.printdetailinvoice');
+        Route::get('/admin/invoice/jurnal/print/{id}', 'printjurnalinvoice')->name('admin.printjurnalinvoice');
+        Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
 
     });
 

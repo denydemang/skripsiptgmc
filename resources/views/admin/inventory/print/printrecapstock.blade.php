@@ -86,6 +86,10 @@
 		#detail tbody td:nth-child(6):empty {
 			color: gray;
 		}
+
+		.imglogo {
+			width: 350px
+		}
 	</style>
 </head>
 

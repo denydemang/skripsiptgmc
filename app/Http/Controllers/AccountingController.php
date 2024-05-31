@@ -6,6 +6,7 @@ use App\Models\Advanced_Receipt;
 use App\Models\CashBook;
 use App\Models\CashBook_Detail;
 use App\Models\CashBook_DetailB;
+use App\Models\Invoice;
 use App\Models\Journal;
 use App\Models\Journal_Detail;
 use App\Models\Payment;
@@ -578,5 +579,59 @@ class AccountingController extends AdminController
         $journalDetail->save();
 
 
+    }
+
+    public function journalInvoices($code){
+        
+        $invoice = Invoice::join("customers", "customers.code", "=", "invoices.customer_code")
+                    ->join("coa", "coa.code", "=", "customers.coa_code")
+                    ->select("invoices.*","invoices.transaction_date", "customers.code as customer_code", "customers.name as customer_name", "coa.code as coa_code", "coa.name as coa_name")
+                    ->where("invoice_no", $code)
+                    ->first();
+
+        $supplyModel = Journal::where("voucher_no", 'like', "%JPEN%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode("JPEN", $supplyModel,true,"voucher_no");
+
+        
+        // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date = $invoice->transaction_date;
+        $journal->ref_no = $invoice->invoice_no;
+        $journal->journal_type_code = "JPEN";
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        
+        //Insert Detail Journal 
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  $invoice->description ." $invoice->invoice_no - $invoice->customer_code ";
+        $journalDetail->coa_code = $invoice->coa_code;
+        $journalDetail->debit = round(floatval($invoice->grand_total));
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+
+        if (floatval($invoice->percent_ppn) > 0){
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description =  $invoice->description ."  $invoice->invoice_no - $invoice->customer_code ";
+            $journalDetail->coa_code = '20.01.02.02';
+            $journalDetail->debit = 0;
+            $journalDetail->kredit = round(floatval($invoice->ppn_amount));
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  $invoice->description ."  $invoice->invoice_no - $invoice->customer_code ";
+        $journalDetail->coa_code = $invoice->coa_revenue;
+        $journalDetail->debit =  0 ;
+        $journalDetail->kredit = round(floatval($invoice->total));
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
     }
 }
