@@ -20,7 +20,7 @@ class InvoiceController extends AdminController
             'title' => 'Invoice',
             'users' => Auth::user(),
             'sessionRoute' =>  $request->route()->getName(),
-    
+
             ];
 
         return response()->view("admin.transactions.invoice",$supplyData);
@@ -41,15 +41,15 @@ class InvoiceController extends AdminController
             ->where('invoices.is_approve', 0)
             ->where('invoices.invoice_no', $code)
             ->first();
-        
-       
+
+
             if (!$invoice){
                 abort(404);
             }
 
 
             $data['invoices'] =  $invoice;
-                
+
         }
         $supplyData = [
             'title' =>$request->route()->getName() == 'admin.addInvoiceView' ?  'Add New Invoice' : 'Edit Invoice',
@@ -67,9 +67,9 @@ class InvoiceController extends AdminController
             DB::beginTransaction();
 
             Invoice::where("invoice_no", $id)->update(
-                
+
                 [
-                    
+
                     'is_approve' => 1,
                     'approved_by' => Auth::user()->name
                 ]
@@ -78,7 +78,7 @@ class InvoiceController extends AdminController
 
             $journal = new AccountingController();
             $journal->journalInvoices($id);
-        
+
             DB::commit();
             return response()->redirectToRoute("admin.invoice")->with("success", "Data Invoice $id Successfully Approved");
         } catch (\Throwable $th) {
@@ -91,13 +91,13 @@ class InvoiceController extends AdminController
     public function getTableInvoice(Request $request, DataTables $dataTables){
         if ($request->ajax()){
 
-        
+
             $is_approve = intval($request->is_approve) >=  0  ? $request->is_approve : null ;
             $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
             $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
-            $paidStatus = intval($request->paystatus) >= 0 ?  $request->paystatus : null;    
-            
-            
+            $paidStatus = intval($request->paystatus) >= 0 ?  $request->paystatus : null;
+
+
             $invoice = Invoice::join("customers", "invoices.customer_code" , "=", "customers.code")
             ->join("project_realisations", "project_realisations.code", "=", "invoices.project_realisation_code")
             ->join("projects", "project_realisations.project_code", "=", "projects.code")
@@ -111,12 +111,12 @@ class InvoiceController extends AdminController
                         case 0:
                             # Unpaid
                             $query->whereRaw("
-                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0 
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             ELSE 0
                             END = 1
-                            
+
                             ");
 
                             break;
@@ -128,25 +128,25 @@ class InvoiceController extends AdminController
                         case 2:
                             # Outstanding
                             $query->whereRaw("
-                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0 
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             ELSE 0
                             END = 1
-                            
+
                             ");
 
                             break;
                         case 3:
                             # Overdue
-                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0 
-                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0 
-                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(invoices.transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0
                             ELSE 0
                             END = 1 ");
 
                             break;
-                        
+
                     }
             });
 
@@ -184,7 +184,7 @@ class InvoiceController extends AdminController
                     }
                     return $html;
                 })
-                
+
                 ->filterColumn('project_realisation_code', function($query, $keyword) {
                     $query->whereRaw("project_realisations.code LIKE ?", ["%{$keyword}%"]);
                 })
@@ -211,7 +211,7 @@ class InvoiceController extends AdminController
                             <button class="btn btn-sm btn-warning approvebtn" data-code="'.$row->invoice_no.'" title="Approve"><i class="fa fa-check"></i></button>
                             <a href="'.route('admin.printdetailinvoice',['id' => $row->invoice_no]).'" target="_blank"><button class="btn btn-sm btn-info printbtn" data-code="'.$row->invoice_no.'" title="Print Invoice"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             # code...
                             break;
                             case 1: //Approved
@@ -220,14 +220,14 @@ class InvoiceController extends AdminController
                             <a href="'.route('admin.printdetailinvoice',['id' => $row->invoice_no]).'" target="_blank"><button class="btn btn-sm btn-info printbtn mr-2" data-code="'.$row->invoice_no.'" title="Print Invoice"><i class="fa fa-print"></i></button></a>
                             <a href="'.route('admin.printjurnalinvoice',['id' => $row->invoice_no]).'" target="_blank"><button class="btn btn-sm btn-warning printbtn" data-code="'.$row->invoice_no.'" title="Print Jurnal"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             break;
-                        
+
                         default:
                             # code...
                             break;
                     }
-    
+
                     return $html;
                 })
                 ->addColumn('due_date', function ($row) {
@@ -267,13 +267,13 @@ class InvoiceController extends AdminController
                             }
                         }
                     }
-    
+
                     return $html;
                 })
                 ->rawColumns(['action','is_approve' , 'paid_status'])
                 ->addIndexColumn()
                 ->make(true);
-                
+
         } else {
             abort(404);
         }
@@ -284,10 +284,10 @@ class InvoiceController extends AdminController
     public function deleteinvoices($id){
         try {
             DB::beginTransaction();
-      
+
             Invoice::where("invoice_no",$id )->delete();
             DB::commit();
-            
+
             return response()->redirectToRoute("admin.invoice")->with("success", "Data Invoice $id Successfully Deleted");
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -304,7 +304,7 @@ class InvoiceController extends AdminController
                 DB::beginTransaction();
                 $data = $request->all();
                 $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
-                
+
                 $payment = Invoice::orderBy("invoice_no", "desc")->lockforUpdate()->first();
                 $invno = $this->automaticCode('INV' ,$payment, true,  'invoice_no');
                 $data['invoice_no'] =$invno;
@@ -334,11 +334,11 @@ class InvoiceController extends AdminController
                 $invoice->save();
 
 
-            
+
                 DB::commit();
                 Session::flash('success',  "New Invoice :  $invoice->invoice_no Succesfully Created");
                 return json_encode(true);
-                
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
@@ -382,11 +382,11 @@ class InvoiceController extends AdminController
                 $invoice->update();
 
 
-            
+
                 DB::commit();
                 Session::flash('success',  "Invoice : $code Succesfully Updated");
                 return json_encode(true);
-                
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
@@ -406,12 +406,12 @@ class InvoiceController extends AdminController
         $printcontroller = new PrintController();
         return $printcontroller->printdetailinvoice($id);
     }
-    
+
     public function printrecapinvoice(Request $request){
         $is_approve = intval($request->is_approve) >=  0  ? $request->is_approve : null ;
         $startDate = $request->startDate;
         $endDate =  $request->endDate;
-        $paidStatus = intval($request->paystatus) >= 0 ?  $request->paystatus : null;   
+        $paidStatus = intval($request->paystatus) >= 0 ?  $request->paystatus : null;
         $customercode = $request->customercode;
 
         $printcontroller = new PrintController();

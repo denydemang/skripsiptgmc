@@ -170,7 +170,7 @@ $(document).ready(function () {
   // Click Edit Button
   $(document).on('click', '.editbtn', function () {
     let code = $(this).data('code');
-    let url = route('admin.editPaymentView', code);
+    let url = route('admin.editReceiptView', code);
 
     window.location.href = url;
   });

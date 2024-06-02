@@ -29,14 +29,18 @@ $(document).ready(function () {
   const datareceivedvia = $('.datareceivedvia').data('receivedvia');
   const datacustomercode = $('.datacustomercode').data('customercode');
   const datacustomername = $('.datacustomername').data('customername');
-  const dataamount = $('.dataamount').data('amount');
+  const datadepositamount = $('.inputdepositamount').data('depositamount');
+  const datadetail = $('.datadetail').data('detail');
+  const datacash_amountdetail = $('.datacash_amount').data('cashamount');
+  const datadeposit_amountdetail = $('.datadeposit_amount').data('depositamount');
+  const datatotal_amount = $('.datatotal_amount').data('totalamount');
   // End Property when in update mode
 
   // Tampungan Parsing hasil data update mode
   let detailpr = [''];
 
   // State
-  const updateMode = route().current() == 'admin.editPaymentView';
+  const updateMode = route().current() == 'admin.editReceiptView';
 
   //Validation Input
   let dataInput = ['.inputdescription'];
@@ -49,12 +53,12 @@ $(document).ready(function () {
     coa_cash_code: '',
     received_via: '',
     description: '',
-    deposit_balance: 0.0,
     detail: []
   };
 
   let transAmount = {
-    grand_total: 0
+    deposit_balance: 0.0,
+    deposit_amount: 0.0
   };
 
   let detail = {
@@ -64,7 +68,6 @@ $(document).ready(function () {
     cash_amount: 0.0,
     deposit_amount: 0.0,
     unpaid_amount: 0.0,
-    paid_amount: 0.0,
     balance: 0.0
   };
 
@@ -115,17 +118,22 @@ $(document).ready(function () {
 
   function prepareEdit() {
     inputtransdate.val(moment(datatransadate).format('DD/MM/YYYY'));
-    supplierCode.val(datasuppliercode);
-    supplierName.val(datasuppliername);
-    inputpaymentmethod.val(datapaymentmethod);
-    let detailPurchase = JSON.parse(JSON.parse(datapayment));
+    customerCode.val(datacustomercode);
+    customerName.val(datacustomername);
+    inputreceivedvia.val(datareceivedvia);
 
-    detail.unpaid_amount = parseFloat(detailPurchase.balance) + parseFloat(dataamount);
-    detail.due_date = moment(detailPurchase.due_date).format('DD/MM/YYYY');
-    detail.paid_amount = parseFloat(dataamount);
-    detail.ref_no = detailPurchase.purchase_no;
-    detail.transaction_date = moment(detailPurchase.transaction_date).format('DD/MM/YYYY');
-    detail.balance = detail.unpaid_amount - detail.paid_amount;
+    let detailInvoice = JSON.parse(JSON.parse(datadetail));
+
+    transAmount.deposit_amount = parseFloat(datadepositamount) + parseFloat(datadeposit_amountdetail);
+    transAmount.deposit_balance = transAmount.deposit_amount - parseFloat(datadeposit_amountdetail);
+
+    detail.unpaid_amount = parseFloat(detailInvoice.balance) + parseFloat(datatotal_amount);
+    detail.cash_amount = parseFloat(datacash_amountdetail);
+    detail.deposit_amount = parseFloat(datadeposit_amountdetail);
+    detail.due_date = moment(detailInvoice.due_date).format('DD/MM/YYYY');
+    detail.ref_no = detailInvoice.invoice_no;
+    detail.transaction_date = moment(detailInvoice.transaction_date).format('DD/MM/YYYY');
+    detail.balance = detail.unpaid_amount - parseFloat(datatotal_amount);
 
     tampungDetail.push({ ...detail });
 
@@ -138,9 +146,9 @@ $(document).ready(function () {
       showwarning('Transaction Date Cannot Be Empty');
       return false;
     }
-    if (supplierCode.val() == '') {
-      supplierCode.focus();
-      showwarning('Supplier Code Cannot Be Empty');
+    if (customerCode.val() == '') {
+      customerCode.focus();
+      showwarning('Customer Code Cannot Be Empty');
       return false;
     }
 
@@ -151,15 +159,19 @@ $(document).ready(function () {
     }
 
     const lengthData = tampungDetail.length;
-    let paidAmountEmpty = 0;
+    let cashamountpaid = 0;
+    let depositamountpaid = 0;
     for (let x of tampungDetail) {
-      if (parseFloat(x.paid_amount) == 0) {
-        paidAmountEmpty += 1;
+      if (parseFloat(x.cash_amount) == 0) {
+        cashamountpaid += 1;
+      }
+      if (parseFloat(x.deposit_amount) == 0) {
+        depositamountpaid += 1;
       }
     }
 
-    if (lengthData == paidAmountEmpty) {
-      showwarning('Please Input Paid Amount !');
+    if (lengthData == cashamountpaid && lengthData == depositamountpaid) {
+      showwarning('Pelase Input Cash Amount Or Deposit Amount!');
       return false;
     }
 
@@ -176,38 +188,39 @@ $(document).ready(function () {
       showwarning('No Data Invoice Found !');
       return;
     }
+    inputdepositamount.val(formatRupiah1(transAmount.deposit_balance));
     tampungDetail.forEach((item) => {
       html += `
 
       <tr>
-        <td style="font-size: 10px; width:10%">${item.ref_no}</td>
-        <td style="font-size: 10px; width:10%">${item.transaction_date}
+        <td style="font-size: 12px; width:10%">${item.ref_no}</td>
+        <td style="font-size: 12px; width:10%">${item.transaction_date}
         </td>
-        <td style="font-size: 10px;width:10%">${item.due_date}</td>
-        <td style="font-size: 10px;width:15%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
+        <td style="font-size: 12px;width:10%">${item.due_date}</td>
+        <td style="font-size: 12px;width:15%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
+        <td style="font-size: 12px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
             data-code="${item.ref_no}" class="custom-input inputpaidamount" value="${formatRupiah1(item.cash_amount)}">
         </td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
-            data-code="${item.ref_no}" class="custom-input inputpaidamount" value="${formatRupiah1(item.deposit_amount)}">
+        <td style="font-size: 12px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
+            data-code="${item.ref_no}" class="custom-input inputdepositamount" value="${formatRupiah1(item.deposit_amount)}">
         </td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
+        <td style="font-size: 12px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
       </tr>
       `;
 
       totalUnpaid += parseFloat(item.unpaid_amount);
-      totalPaid += parseFloat(item.paid_amount);
+      totalPaid += parseFloat(item.cash_amount);
       totalDepo += parseFloat(item.deposit_amount);
       totalBalance += parseFloat(item.balance);
     });
     if (tampungDetail.length > 0) {
       html += `
         <tr>
-          <td colspan="3" style="text-align:center"><b>Total</b></td>
-          <td><b>${formatRupiah1(totalUnpaid)}</b></td>
-          <td><b>${formatRupiah1(totalPaid)}</b></td>
-          <td><b>${formatRupiah1(totalDepo)}</b></td>
-          <td><b>${formatRupiah1(totalBalance)}</b></td>
+          <td colspan="3" style="text-align:center;font-size: 12px;width:15%;white-space:nowrap"><b>Total</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalUnpaid)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalPaid)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalDepo)}</b></td>
+          <td style="font-size: 12px;width:15%;white-spac   e:nowrap"><b>${formatRupiah1(totalBalance)}</b></td>
         </tr>
       `;
     }
@@ -220,8 +233,6 @@ $(document).ready(function () {
     customerCode.val('Loading....');
     customerName.val('Loading....');
     const dataDetail = await getData(custCode);
-    const balanceAdvancedReceipt = await getData2(custCode);
-    console.log(balanceAdvancedReceipt);
     customerCode.val(custCode);
     customerName.val(custName);
     tampungDetail = [];
@@ -231,47 +242,92 @@ $(document).ready(function () {
       detail.transaction_date = moment(x.transaction_date, 'YYYY-MM-DD').format('DD/MM/YYYY');
       detail.cash_amount = 0.0;
       detail.deposit_amount = 0.0;
-      detail.paid_amount = 0.0;
+      detail.cash_amount = 0.0;
       detail.ref_no = x.invoice_no;
       detail.unpaid_amount = parseFloat(x.balance);
-
       tampungDetail.push({ ...detail });
     });
-
+    const balanceAdvancedReceipt = await getData2(custCode);
+    transAmount.deposit_balance = parseFloat(balanceAdvancedReceipt);
+    transAmount.deposit_amount = parseFloat(balanceAdvancedReceipt);
     createHtmTBodyItem();
   }
 
-  function calcPurchase(code, amount) {
-    const editedDetail = tampungDetail.map((item) => {
-      if (item.ref_no === code) {
-        let paid_amountNew = parseFloat(amount);
+  function calcInvoice(code, amount, state = 'cash_amount') {
+    switch (state) {
+      case 'cash_amount':
+        const editedDetail = tampungDetail.map((item) => {
+          if (item.ref_no === code) {
+            let cash_amountNew = parseFloat(amount);
 
-        let balanceNew = parseFloat(item.unpaid_amount) - paid_amountNew;
-        return { ...item, paid_amount: paid_amountNew, balance: balanceNew };
-      } else {
-        return item;
-      }
+            if (cash_amountNew + parseFloat(item.deposit_amount) > parseFloat(item.unpaid_amount)) {
+              cash_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.deposit_amount);
+              showwarning(`Balance Unpaid Cannot Be Minus !, Set To ${formatRupiah1(cash_amountNew)}`);
+            }
+            let balanceNew = parseFloat(item.unpaid_amount) - cash_amountNew - parseFloat(item.deposit_amount);
+            return { ...item, cash_amount: cash_amountNew, balance: balanceNew };
+          } else {
+            return item;
+          }
+        });
+        tampungDetail = [...editedDetail];
+        createHtmTBodyItem();
+        break;
+      case 'deposit_amount':
+        const editedDetail1 = tampungDetail.map((item) => {
+          if (item.ref_no === code) {
+            let deposit_amountNew = parseFloat(amount);
+
+            if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
+              deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+            }
+            let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
+            return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
+          } else {
+            return item;
+          }
+        });
+        tampungDetail = [...editedDetail1];
+        checkDepositAmount(code);
+        break;
+    }
+  }
+
+  function checkDepositAmount(code) {
+    let totalDepo = 0;
+    tampungDetail.forEach((x) => {
+      totalDepo += parseFloat(x.deposit_amount);
     });
-    tampungDetail = [...editedDetail];
 
-    createHtmTBodyItem();
+    if (totalDepo > transAmount.deposit_amount) {
+      //   const filtereddeposit = tampungDetail.filter((x) => {
+      //     return x.ref_no == code;
+      //   });
+      showwarning(`Exceed Deposit Amount ! Set To ${parseFloat(transAmount.deposit_balance)}`);
+
+      calcInvoice(code, transAmount.deposit_balance, 'deposit_amount');
+    } else {
+      transAmount.deposit_balance = transAmount.deposit_amount - totalDepo;
+      createHtmTBodyItem();
+    }
   }
 
   function populatePostData() {
-    PostData.bkk_no = '';
+    PostData.bkm_no = '';
     PostData.coa_cash_code = inputcoaforcashbank.val();
     PostData.description = inputdescription.val();
-    PostData.payment_method = inputpaymentmethod.val();
-    PostData.supplier_code = supplierCode.val();
+    PostData.received_via = inputreceivedvia.val();
+    PostData.customer_code = customerCode.val();
     PostData.transaction_date = inputtransdate.val();
     PostData.detail = [];
     tampungDetail.forEach((item) => {
       detail.balance = item.balance;
       detail.due_date = item.due_date;
-      detail.paid_amount = item.paid_amount;
-      detail.ref_no = item.ref_no;
+      detail.deposit_amount = item.deposit_amount;
+      detail.cash_amount = item.cash_amount;
       detail.transaction_date = item.transaction_date;
       detail.unpaid_amount = item.unpaid_amount;
+      detail.ref_no = item.ref_no;
 
       PostData.detail.push({ ...detail });
     });
@@ -281,10 +337,10 @@ $(document).ready(function () {
     let urlRequest = '';
 
     if (updateMode) {
-      let code = inputbkkno.val();
-      urlRequest = route('admin.editpayment', code);
+      let code = inputbkmno.val();
+      urlRequest = route('admin.editreceipt', code);
     } else {
-      urlRequest = route('admin.addpayment');
+      urlRequest = route('admin.addreceipt');
     }
     const method = 'POST';
     let response = '';
@@ -303,11 +359,11 @@ $(document).ready(function () {
   function createFormData() {
     var formData = new FormData();
 
-    formData.append('bkk_no', PostData.bkk_no);
+    formData.append('bkm_no', PostData.bkm_no);
     formData.append('coa_cash_code', PostData.coa_cash_code.trim());
     formData.append('description', PostData.description.trim());
-    formData.append('payment_method', PostData.payment_method);
-    formData.append('supplier_code', PostData.supplier_code);
+    formData.append('received_via', PostData.received_via);
+    formData.append('customer_code', PostData.customer_code);
     formData.append('transaction_date', PostData.transaction_date);
     formData.append('detail', JSON.stringify(PostData.detail));
 
@@ -347,13 +403,11 @@ $(document).ready(function () {
 
   // Ubah paid amount Dalam List Item
   $(document).on('blur', '.inputpaidamount', function () {
-    let unpaid_amount = parseFloat($(this).data('unpaid_amount'));
-    if ($(this).val() > unpaid_amount || $(this).val() == '') {
-      $(this).val(unpaid_amount);
+    if ($(this).val() == '') {
+      $(this).val(0);
     }
     let code = $(this).data('code');
-
-    calcPurchase(code, parseFloat($(this).val()));
+    calcInvoice(code, parseFloat($(this).val()), 'cash_amount');
   });
 
   // Input Pada Paid Amount ketika pertama kali disorot
@@ -368,6 +422,27 @@ $(document).ready(function () {
     inputOnlyNumber(object);
   });
 
+  // Ubah paid amount Dalam List Item
+  $(document).on('blur', '.inputdepositamount', function () {
+    if ($(this).val() == '') {
+      $(this).val(0);
+    }
+    let code = $(this).data('code');
+    calcInvoice(code, parseFloat($(this).val()), 'deposit_amount');
+  });
+
+  // Input Pada Paid Amount ketika pertama kali disorot
+  $(document).on('focusin', '.inputdepositamount', function (e) {
+    let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val());
+    $(this).val(X);
+  });
+
+  // Ketika Mengetikkan Didalam Paid Amount
+  $(document).on('keyup', '.inputdepositamount', function (event) {
+    var object = $(this);
+    inputOnlyNumber(object);
+  });
+
   // Submit Button
   $(document).on('click', '.submitbtn', async function () {
     if (validateInput(dataInput, customValidation)) {
@@ -375,7 +450,7 @@ $(document).ready(function () {
       $(this).prop('disabled', true);
       populatePostData();
       const response = await postAjax();
-      const urlRedirect = route('admin.payment');
+      const urlRedirect = route('admin.receipt');
       if (response) {
         window.location.href = urlRedirect;
       } else {

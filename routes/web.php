@@ -472,12 +472,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // GET VIEW
         Route::get('/admin/receipt', 'getViewReceipt')->name('admin.receipt');
         Route::get('/admin/receipt/add', 'getViewReceiptManage')->name('admin.addReceiptView');
-        // Route::get('/admin/receipt/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
+        Route::get('/admin/receipt/edit/{id}', 'getViewReceiptManage')->name('admin.editReceiptView');
 
         // CRUD
         Route::post('/admin/receipt/gettable', 'getTableReceipt')->name('admin.tablereceipt');
-        // Route::post('/admin/receipt/add', 'addPayment')->name('admin.addpayment');
-        // Route::post('/admin/receipt/edit/{id}', 'editPayment')->name('admin.editpayment');
+        Route::post('/admin/receipt/add', 'addreceipt')->name('admin.addreceipt');
+        Route::post('/admin/receipt/edit/{id}', 'editreceipt')->name('admin.editreceipt');
         Route::get('/admin/receipt/delete/{id}', 'deletereceipt')->name('admin.deletereceipt');
         Route::get('/admin/receipt/approve/{id}', 'approvereceipt')->name('admin.approvereceipt');
         Route::get('/admin/receipt/getinvoice/{id}', 'getinvoiceforreceipt')->name('admin.getinvoiceforreceipt');

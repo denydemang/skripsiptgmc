@@ -42,8 +42,8 @@ $(document).ready(function () {
   const method = 'post';
   const columns = [
     { data: 'action', name: 'action', title: 'Actions', searchable: false, orderable: false },
-    { data: 'invoice_no', name: 'purchase_no', title: 'Invoice No', searchable: true },
-    { data: 'transaction_date', name: 'pr_no', title: 'Transaction Date', searchable: true },
+    { data: 'invoice_no', name: 'invoice_no', title: 'Invoice No', searchable: true },
+    { data: 'transaction_date', name: 'transaction_date', title: 'Transaction Date', searchable: true },
     { data: 'due_date', name: 'due_date', title: 'Due Date', searchable: false },
     { data: 'customer_code', name: 'customer_code', title: 'Customer Code', searchable: false },
     { data: 'customer_name', name: 'customer_name', title: 'Customer Name', searchable: false },
@@ -156,7 +156,7 @@ $(document).ready(function () {
         <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.discount)}</td>
         <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.sub_total)}</td>
       </tr>
-  
+
       `;
       grand_total += parseFloat(item.sub_total);
       counterDetailPurchase++;

@@ -654,16 +654,21 @@ class AccountingController extends AdminController
          $journal->save();
 
          //Insert Detail Journal
-        $journalDetail  = New Journal_Detail();
-        $journalDetail->voucher_no = $journal->voucher_no;
-        $journalDetail->description =  'Kas/Bank Masuk Pembayaran Piutang' ." ( $CR->bkm_no - $CR->ref_no - $CR->customer_code )";
-        $journalDetail->coa_code = $CR->coa_cash_code;
-        $journalDetail->debit = round(floatval($CR->cash_amount));
-        $journalDetail->kredit = 0;
-        $journalDetail->created_by = Auth::user()->username;
-        $journalDetail->save();
 
-        if(round(floatval($CR->deposit_amount)) > 0){
+        if(floatval($CR->cash_amount) > 0){
+
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description =  'Kas/Bank Masuk Pembayaran Piutang' ." ( $CR->bkm_no - $CR->ref_no - $CR->customer_code )";
+            $journalDetail->coa_code = $CR->coa_cash_code;
+            $journalDetail->debit = round(floatval($CR->cash_amount));
+            $journalDetail->kredit = 0;
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+
+        }
+
+        if(floatval($CR->deposit_amount) > 0){
 
             $ADR = Advanced_Receipt::where('customer_code',$CR->customer_code)->first();
 
