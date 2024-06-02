@@ -92,13 +92,13 @@ class AdvanceReceiptController extends AdminController
                     $query->whereRaw("coa.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('coa_name', function($query, $keyword) {
-                    $query->whereRaw("coa.name as coa_name LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("coa.name LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('customer_code', function($query, $keyword) {
-                    $query->whereRaw("customers.code as customer_code LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("customers.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('customer_name', function($query, $keyword) {
-                    $query->whereRaw("customers.name as customer_name LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("customers.name LIKE ?", ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($row) {
                     $html = '';
