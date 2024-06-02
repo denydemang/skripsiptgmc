@@ -8,13 +8,19 @@
 	<meta name="description" content="Start your development with a Dashboard for Bootstrap 4." />
 	<meta name="author" content="Creative Tim" />
 	<title>{{ $title }}</title>
-	<!-- Favicon -->
-	<link rel="icon" href="https://www.aragon.cm38.de/assets/img/brand/favicon.png" type="image/png" />
+	<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/') }}assets/favicon_gmj/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('/') }}assets/favicon_gmj/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('/') }}assets/favicon_gmj/favicon-16x16.png">
+	<link rel="manifest" href="{{ asset('/') }}assets/favicon_gmj/site.webmanifest">
+	<link rel="mask-icon" href="{{ asset('/') }}assets/favicon_gmj/safari-pinned-tab.svg" color="#5bbad5">
+	<meta name="msapplication-TileColor" content="#da532c">
+	<meta name="theme-color" content="#ffffff">
 	<!-- Fonts -->
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" />
 	<!-- Icons -->
 	<link rel="stylesheet" href="{{ asset('/') }}assets/vendor/nucleo/css/nucleo.css" type="text/css" />
-	<link rel="stylesheet" href="{{ asset('/') }}assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"
+	<link rel="stylesheet"
+		href="{{ asset('/') }}assets/vendor/@fortawesome/fontawesome-free/css/all.min.css"
 		type="text/css" />
 	<!-- Page plugins -->
 	<!-- Argon CSS -->
@@ -37,7 +43,7 @@
         @php
             $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index', 'r_upah.index']
         @endphp
-        @if(in_array($sessionRoute, $allmaster))
+        @if (in_array($sessionRoute, $allmaster))
         <style>
             body {
                 background: #f0f0f0;
@@ -178,8 +184,7 @@
             .select2-container .select2-dropdown .select2-results ul .select2-results__option--highlighted[aria-selected] {
                 background-color: #3498db;
             }
-        </style>
-        @endif
+        </style> @endif
 
 
 	<!-- Core -->
@@ -260,28 +265,29 @@
 <body>
 	@include('layout.sidenav')
 	<!-- Main content -->
-	<div class="main-content" id="panel">
-		@include('layout.topnav')
-		{{-- @include('layout.header') --}}
-		@yield('content')
+	<div class="main-content"
+		id="panel">
+	@include('layout.topnav')
+	{{-- @include('layout.header') --}}
+	@yield('content')
 	</div>
 
-</body>
+	</body>
 
-<!-- Argon Scripts -->
+	<!-- Argon Scripts -->
 
-<script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.min.js"></script>
-<script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
-<script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
-<script src="{{ asset('/') }}assets/fontawesome/js/fontawesome.min.js"></script>
-<script src="{{ asset('/') }}assets/izitoast/js/iziToast.min.js"></script>
-<script src="{{ asset('/') }}assets/jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
-<script src="{{ asset('/') }}assets/daterangepicker-master/moment.min.js"></script>
-<script src="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.min.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
+	<script src="{{ asset('/') }}assets/vendor/chart.js/dist/Chart.extension.js"></script>
+	<script src="{{ asset('/') }}assets/fontawesome/js/fontawesome.min.js"></script>
+	<script src="{{ asset('/') }}assets/izitoast/js/iziToast.min.js"></script>
+	<script src="{{ asset('/') }}assets/jquery-confirm-v3.3.4/js/jquery-confirm.js"></script>
+	<script src="{{ asset('/') }}assets/daterangepicker-master/moment.min.js"></script>
+	<script src="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.js"></script>
 
-<!-- Argon JS -->
-<script src="{{ asset('/') }}assets/js/argon.js?v=1.0.0"></script>
-<!-- Demo JS - remove this in your project -->
+	<!-- Argon JS -->
+	<script src="{{ asset('/') }}assets/js/argon.js?v=1.0.0"></script>
+	<!-- Demo JS - remove this in your project -->
 
 
 </html>
