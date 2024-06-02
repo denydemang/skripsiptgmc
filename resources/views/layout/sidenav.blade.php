@@ -154,6 +154,8 @@
 						    'admin.addCashbookView',
 						    'admin.advancedreceipt',
 						    'admin.addAdvancedReceiptView',
+						    'admin.receipt',
+						    'admin.addReceiptView',
 						];
 					@endphp
 					<li class="nav-item">
@@ -168,8 +170,9 @@
 									class="nav-item {{ $sessionRoute == 'admin.payment' || $sessionRoute == 'admin.addPaymentView' || $sessionRoute == 'admin.editPaymentView' ? 'active' : '' }}">
 									<a href="{{ route('admin.payment') }}" class="nav-link">Payment</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/components/cards.html" class="nav-link">Receipt</a>
+								<li
+									class="nav-item {{ $sessionRoute == 'admin.receipt' || $sessionRoute == 'admin.addReceiptView' ? 'active' : '' }}">
+									<a href="{{ route('admin.receipt') }}" class="nav-link">Receipt</a>
 								</li>
 								<li
 									class="nav-item {{ $sessionRoute == 'admin.cashbook' || $sessionRoute == 'admin.addCashbookView' || $sessionRoute == 'admin.editCashbookView' ? 'active' : '' }}">

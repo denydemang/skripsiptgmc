@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Advanced_Receipt;
+use App\Models\Cash_Receive;
 use App\Models\CashBook;
 use App\Models\CashBook_Detail;
 use App\Models\CashBook_DetailB;
@@ -107,7 +108,7 @@ class AccountingController extends AdminController
         //     $journalDetail->save();
         // }
 
- 
+
          $totalutanggajitkl = 0;
         foreach ($Variation_COA_ProjectDetailB as $coa){
             $totalutanggajitkl+= floatval($coa->totalcogs);
@@ -153,7 +154,7 @@ class AccountingController extends AdminController
 
         $cogsMaterial = Stocks_Out::where("ref_no", $ref_no)->selectRaw('SUM(qty * cogs) as total')->first();
         $cogsMaterial = floatval($cogsMaterial->total);
-        
+
         // Insert Beban Material Jurnal Detail
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
@@ -223,7 +224,7 @@ class AccountingController extends AdminController
         $getTotalCogsExpense = Stock::where("ref_no", $codeProyek.'-Realisation')->selectRaw('IFNULL(SUM(actual_stock * cogs), 0) as totalcogs')->first();
         $getTotalCogsExpense = floatval($getTotalCogsExpense->totalcogs);
         if ($getTotalCogsExpense > 0 ){
-            
+
         $Variation_COA_Detail_Realisations_IN = Project_Detail_Realisations::join("items",'project_detail_realisations.item_code', '=', 'items.code')
         ->join("categories", "items.category_code", "=", 'categories.code')
         ->join("stocks" , "stocks.item_code", "=", "items.code")
@@ -351,8 +352,8 @@ class AccountingController extends AdminController
                         $journalDetail->save();
                     }
                 }
-            } 
-            
+            }
+
 
         // ==============================================================
 
@@ -379,7 +380,7 @@ class AccountingController extends AdminController
         ->get();
         $supplyModel = Journal::where("voucher_no", 'like', "%JPEM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
         $AutomaticCode = $this->automaticCode("JPEM", $supplyModel,true,"voucher_no");
-        
+
         // Insert Header Journal
         $journal = New Journal();
         $journal->voucher_no = $AutomaticCode;
@@ -421,9 +422,9 @@ class AccountingController extends AdminController
         }
 
          // UTANG  USAHA
-    
+
         $journalDetail  = New Journal_Detail();
-        $journalDetail->voucher_no = $journal->voucher_no; 
+        $journalDetail->voucher_no = $journal->voucher_no;
         $journalDetail->description = "Utang Usaha Pada Supplier : $purchase->supplier_name($purchase->supplier_code), Pembelian :  $purchase->purchase_no "  ;
         $journalDetail->coa_code = '20.01.01.01';
         $journalDetail->debit = 0;
@@ -440,12 +441,12 @@ class AccountingController extends AdminController
         ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
         ->where('bkk_no', $code)
         ->first();
-    
+
 
 
         $supplyModel = Journal::where("voucher_no", 'like', "%JKK%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
         $AutomaticCode = $this->automaticCode("JKK", $supplyModel,true,"voucher_no");
-        
+
         // Insert Header Journal
         $journal = New Journal();
         $journal->voucher_no = $AutomaticCode;
@@ -492,9 +493,9 @@ class AccountingController extends AdminController
             $AutomaticCode = $this->automaticCode("JKM", $supplyModel,true,"voucher_no");
         }
 
-    
 
-        
+
+
         // Insert Header Journal
         $journal = New Journal();
         $journal->voucher_no = $AutomaticCode;
@@ -505,8 +506,8 @@ class AccountingController extends AdminController
         $journal->created_by =Auth::user()->username;
         $journal->save();
 
-        
-        //Insert Detail Journal 
+
+        //Insert Detail Journal
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
         $journalDetail->description =  $Cashbook->CbpType == "P" ? "$Cashbook_detail->description $Cashbook->cash_no" : "$Cashbook->description $Cashbook->cash_no" ;
@@ -547,7 +548,7 @@ class AccountingController extends AdminController
         $supplyModel = Journal::where("voucher_no", 'like', "%JKM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
         $AutomaticCode = $this->automaticCode("JKM", $supplyModel,true,"voucher_no");
 
-        
+
         // Insert Header Journal
         $journal = New Journal();
         $journal->voucher_no = $AutomaticCode;
@@ -558,8 +559,8 @@ class AccountingController extends AdminController
         $journal->created_by =Auth::user()->username;
         $journal->save();
 
-        
-        //Insert Detail Journal 
+
+        //Insert Detail Journal
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
         $journalDetail->description =  $AR->description ." ( $AR->adr_no - $AR->customer_code )";
@@ -582,7 +583,7 @@ class AccountingController extends AdminController
     }
 
     public function journalInvoices($code){
-        
+
         $invoice = Invoice::join("customers", "customers.code", "=", "invoices.customer_code")
                     ->join("coa", "coa.code", "=", "customers.coa_code")
                     ->select("invoices.*","invoices.transaction_date", "customers.code as customer_code", "customers.name as customer_name", "coa.code as coa_code", "coa.name as coa_name")
@@ -592,7 +593,7 @@ class AccountingController extends AdminController
         $supplyModel = Journal::where("voucher_no", 'like', "%JPEN%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
         $AutomaticCode = $this->automaticCode("JPEN", $supplyModel,true,"voucher_no");
 
-        
+
         // Insert Header Journal
         $journal = New Journal();
         $journal->voucher_no = $AutomaticCode;
@@ -603,8 +604,8 @@ class AccountingController extends AdminController
         $journal->created_by =Auth::user()->username;
         $journal->save();
 
-        
-        //Insert Detail Journal 
+
+        //Insert Detail Journal
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
         $journalDetail->description =  $invoice->description ." $invoice->invoice_no - $invoice->customer_code ";
@@ -633,5 +634,58 @@ class AccountingController extends AdminController
         $journalDetail->kredit = round(floatval($invoice->total));
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
+    }
+
+    public function journalReceipt($code){
+        $CR = Cash_Receive::where('bkm_no', $code)->join("customers", "customers.code", "=", "cash_receives.customer_code")
+        ->select("cash_receives.*", "customers.name as customer_name", "customers.coa_code as coa_piutang")->first();
+
+        $supplyModel = Journal::where("voucher_no", 'like', "%JKM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode("JKM", $supplyModel,true,"voucher_no");
+
+         // Insert Header Journal
+         $journal = New Journal();
+         $journal->voucher_no = $AutomaticCode;
+         $journal->transaction_date = $CR->transaction_date;
+         $journal->ref_no = $CR->bkm_no;
+         $journal->journal_type_code = "JKM";
+         $journal->posting_status = 0;
+         $journal->created_by =Auth::user()->username;
+         $journal->save();
+
+         //Insert Detail Journal
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  'Kas/Bank Masuk Pembayaran Piutang' ." ( $CR->bkm_no - $CR->ref_no - $CR->customer_code )";
+        $journalDetail->coa_code = $CR->coa_cash_code;
+        $journalDetail->debit = round(floatval($CR->cash_amount));
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+        if(round(floatval($CR->deposit_amount)) > 0){
+
+            $ADR = Advanced_Receipt::where('customer_code',$CR->customer_code)->first();
+
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description =  'Alokasi Dp Pembayaran' ." ( $CR->bkm_no - $CR->ref_no - $CR->customer_code )";
+            $journalDetail->coa_code = $ADR->coa_kredit;
+            $journalDetail->debit = round(floatval($CR->deposit_amount));
+            $journalDetail->kredit = 0;
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description =  'Pembayaran Piutang' ." ( $CR->bkm_no - $CR->ref_no - $CR->customer_code )";
+        $journalDetail->coa_code = $CR->coa_piutang;
+        $journalDetail->debit =  0 ;
+        $journalDetail->kredit = round(floatval($CR->total_amount));
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+
     }
 }

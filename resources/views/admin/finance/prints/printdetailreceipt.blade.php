@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Kwitansi</title>
+	<title>Kwitansi Pembayaran Invoice {{ $receives['bkm_no'] }} </title>
 	<style>
 		body {
 			font-family: Arial, sans-serif;
@@ -102,37 +102,39 @@
 				@include('layout.logoimage')
 			</div>
 			<div class="receipt-info">
-				<h2>CASH OUT/ BKK</h2>
-				<p>No.: <span>{{ $payment->bkk_no }}</span></p>
+				<h2>KUITANSI</h2>
+				<p>No.: <span>{{ $receives->bkm_no }}</span></p>
 			</div>
 		</div>
 		<div class="content">
 			<table border="1">
 				<tr>
-					<td style="width:150px"><b>Telah Dibayarkan Kepada</b></td>
-					<td>{{ $payment->supplier_name }}</td>
+					<td style="width:150px"><b>Telah Diterima Dari</b></td>
+					<td>{{ $receives->customer_name }}</td>
 				</tr>
 				<tr>
 					<td><b>Banyaknya Uang</b></td>
-					<td>{{ $payment->terbilang }} Rupiah</td>
+					<td>{{ $receives->terbilang }} Rupiah</td>
 				</tr>
 				<tr>
-					<td><b>Untuk Pembelian No</b></td>
-					<td>{{ $payment->ref_no }}</td>
+					<td><b>Guna Pembayaran</b></td>
+					<td>INVOICE : {{ $receives->invoice_no }} - ProjectRealisasi No : {{ $receives->project_realisation_code }} -
+						{{ $receives->project_name }}</td>
 				</tr>
 				<tr>
 					<td><b>Metode Pembayaran</b></td>
-					<td>{{ $payment->payment_method }}</td>
+					<td>{{ $receives->received_via }}</td>
 				</tr>
 			</table>
-			<h3>Description: </h3><span>{{ $payment->description }}</span>
+
+			<h3>Description: </h3><span>{{ $receives->description }}</span>
 			<div class="amount">
-				<p>Rp. <span>{{ number_format($payment->total_amount, 2, ',', '.') }}</span></p>
+				<p>Rp. <span>{{ number_format($receives->total_amount, 2, ',', '.') }}</span></p>
 			</div>
 		</div>
 		<div class="footer">
 			<p style="margin-bottom:68px">Semarang,
-				{{ \Carbon\Carbon::parse($payment['transaction_date'])->isoFormat('DD MMMM YYYY') }}</p>
+				{{ \Carbon\Carbon::parse($receives['transaction_date'])->isoFormat('DD MMMM YYYY') }}</p>
 
 			<p style="padding-right: 60px">(<span style="display:inline-block;padding-right:120px"></span>)</p>
 		</div>

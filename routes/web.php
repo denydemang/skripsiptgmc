@@ -15,6 +15,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseRequestController;
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
@@ -300,14 +301,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // -----------------------------------------
     Route::controller(PurchaseRequestController::class)->group(function(){
 
-        
+
         // GET VIEW
         Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
         Route::get("admin/purchaserequest/getForModal", 'getDataPRForModal')->name('admin.PRGetForModal');
         Route::get('/admin/purchaserequest/add' ,'getViewPRManage')->name('admin.addprview');
         Route::get('/admin/purchaserequest/edit/{code}' ,'getViewPRManage')->name('admin.editprview');
-        
-        
+
+
         // CRUD
         Route::post('/admin/purchaserequest/add' ,'addPR')->name('admin.addpr');
         Route::post('/admin/purchaserequest/edit/{id}' ,'editPR')->name('admin.editpr');
@@ -335,7 +336,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
         Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
         Route::post('/admin/stockcard/gettable', 'getTableStockCard')->name('admin.tablestockcard');
-        
+
         // Print
         Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
         Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
@@ -373,7 +374,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/payment', 'getViewPayment')->name('admin.payment');
         Route::get('/admin/payment/add', 'getViewPaymentManage')->name('admin.addPaymentView');
         Route::get('/admin/payment/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
-        
+
         // CRUD
         Route::post('/admin/payment/gettable', 'getTablePayment')->name('admin.tablepayment');
         Route::post('/admin/payment/add', 'addPayment')->name('admin.addpayment');
@@ -396,7 +397,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/cashbook', 'getViewCashBook')->name('admin.cashbook');
         Route::get('/admin/cashbook/add', 'getViewCashbookManage')->name('admin.addCashbookView');
         Route::get('/admin/cashbook/edit/{id}', 'getViewCashbookManage')->name('admin.editCashbookView');
-        
+
         // CRUD
         Route::post('/admin/cashbook/gettable', 'getTableCashBook')->name('admin.tablecashbook');
         Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -421,7 +422,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/advancedreceipt', 'getViewAdvancedReceipt')->name('admin.advancedreceipt');
         Route::get('/admin/advancedreceipt/add', 'getViewAdvancedReceiptManage')->name('admin.addAdvancedReceiptView');
         Route::get('/admin/advancedreceipt/edit/{id}', 'getViewAdvancedReceiptManage')->name('admin.editAdvancedReceiptView');
-        
+
         // // CRUD
         Route::post('/admin/advancedreceipt/gettable', 'getTableAR')->name('admin.tablear');
         // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -439,7 +440,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/advancedreceipt/recap/print', 'printrecapar')->name('admin.printrecapar');
 
     });
-    
+
 
     Route::controller(InvoiceController::class)->group(function(){
 
@@ -447,7 +448,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/invoice', 'getViewInvoice')->name('admin.invoice');
         Route::get('/admin/invoice/add', 'getViewInvoiceManage')->name('admin.addInvoiceView');
         Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
-        
+
         // // // CRUD
         Route::post('/admin/invoice/gettable', 'getTableInvoice')->name('admin.tableinvoice');
         // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -466,7 +467,29 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     });
 
+    Route::controller(ReceiptController::class)->group(function(){
 
+        // GET VIEW
+        Route::get('/admin/receipt', 'getViewReceipt')->name('admin.receipt');
+        Route::get('/admin/receipt/add', 'getViewReceiptManage')->name('admin.addReceiptView');
+        // Route::get('/admin/receipt/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
+
+        // CRUD
+        Route::post('/admin/receipt/gettable', 'getTableReceipt')->name('admin.tablereceipt');
+        // Route::post('/admin/receipt/add', 'addPayment')->name('admin.addpayment');
+        // Route::post('/admin/receipt/edit/{id}', 'editPayment')->name('admin.editpayment');
+        Route::get('/admin/receipt/delete/{id}', 'deletereceipt')->name('admin.deletereceipt');
+        Route::get('/admin/receipt/approve/{id}', 'approvereceipt')->name('admin.approvereceipt');
+        Route::get('/admin/receipt/getinvoice/{id}', 'getinvoiceforreceipt')->name('admin.getinvoiceforreceipt');
+        Route::get('/admin/receipt/getbalancear/{id}', 'getbalancear')->name('admin.getbalancear');
+
+
+        // // Print
+        Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
+        Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
+        Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
+
+    });
 
     // ------------------------------------------
 
