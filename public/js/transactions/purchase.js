@@ -143,15 +143,15 @@ $(document).ready(function () {
     DetailPurchase.forEach((item) => {
       htmlDetailPurchase += `
       <tr>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${counterDetailPurchase}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${item.item_code}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${item.name}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${parseFloat(item.qty)}</td>
-        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(142, 237, 175);">${item.unit_code}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.price)}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.total)}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.discount)}</td>
-        <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);">${formatRupiah1(item.sub_total)}</td>
+        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(22, 28, 24);padding:5px">${counterDetailPurchase}</td>
+        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(22, 28, 24); padding:5px">${item.item_code}</td>
+        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(22, 28, 24); padding:5px">${item.name}</td>
+        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(22, 28, 24);padding:5px">${parseFloat(item.qty)}</td>
+        <td style="white-space:normal;word-wrap: break-word;border-color: rgb(22, 28, 24);padding:5px">${item.unit_code}</td>
+        <td style="white-space:no-wrap;border-color: rgb(22, 28, 24);padding:5px">${formatRupiah1(item.price)}</td>
+        <td style="white-space:no-wrap;border-color: rgb(22, 28, 24);padding:5px">${formatRupiah1(item.total)}</td>
+        <td style="white-space:no-wrap;border-color: rgb(22, 28, 24);padding:5px">${formatRupiah1(item.discount)}</td>
+        <td style="white-space:no-wrap;border-color: rgb(22, 28, 24);padding:5px">${formatRupiah1(item.sub_total)}</td>
       </tr>
   
       `;
@@ -160,8 +160,8 @@ $(document).ready(function () {
     });
     htmlDetailPurchase += `
     <tr>
-      <td colspan="8" style="white-space:no-wrap;border-color: rgb(142, 237, 175);text-align:right;padding-right: 6px"><b>Grand Total</b></td>
-      <td style="white-space:no-wrap;border-color: rgb(142, 237, 175);"><b>${formatRupiah1(grand_total)}</b></td>
+      <td colspan="8" style="white-space:no-wrap;border-color: rgb(22, 28, 24);text-align:right;padding-right: 6px"><b>Grand Total</b></td>
+      <td style="white-space:no-wrap;border-color: rgb(22, 28, 24);"><b>${formatRupiah1(grand_total)}</b></td>
     </tr>
     `;
 

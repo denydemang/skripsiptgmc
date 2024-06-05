@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
@@ -489,6 +490,31 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
         Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
 
+    });
+
+    Route::controller(JournalController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/journal', 'getViewJournal')->name('admin.journal');
+
+        Route::get('/admin/journal/add', 'getViewJournalManage')->name('admin.addJournalView');
+        Route::get('/admin/journal/edit/{id}', 'getViewJournalManage')->name('admin.editJournalView');
+
+        // // CRUD
+        Route::post('/admin/journal/gettable', 'getTableJournal')->name('admin.tablejournal');
+        Route::post('/admin/journal/detail/{id}', 'detailjournal')->name('admin.detailjournal');
+        Route::post('/admin/journal/add', 'addjournal')->name('admin.addjournal');
+        Route::post('/admin/journal/edit/{id}', 'editJournal')->name('admin.editJournal');
+        Route::get('/admin/journal/delete/{id}', 'deletejournal')->name('admin.deletejournal');
+        Route::get('/admin/receipt/posting/{id}', 'postingjournal')->name('admin.postingjournal');
+        // Route::get('/admin/receipt/getinvoice/{id}', 'getinvoiceforreceipt')->name('admin.getinvoiceforreceipt');
+        // Route::get('/admin/receipt/getbalancear/{id}', 'getbalancear')->name('admin.getbalancear');
+
+
+        // // // Print
+        Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
+        Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
+        Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
     });
 
     // ------------------------------------------

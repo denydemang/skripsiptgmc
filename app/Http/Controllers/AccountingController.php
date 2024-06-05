@@ -643,6 +643,7 @@ class AccountingController extends AdminController
         $supplyModel = Journal::where("voucher_no", 'like', "%JKM%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
         $AutomaticCode = $this->automaticCode("JKM", $supplyModel,true,"voucher_no");
 
+        
          // Insert Header Journal
          $journal = New Journal();
          $journal->voucher_no = $AutomaticCode;
@@ -691,6 +692,60 @@ class AccountingController extends AdminController
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
 
+
+    }
+    
+    public function JournalUmum($data = []){
+    
+        $supplyModel = Journal::where("voucher_no", 'like', "%JU%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode("JU", $supplyModel,true,"voucher_no");
+
+         // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date =  Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+        $journal->ref_no = $data['ref_no'];
+        $journal->journal_type_code = $data['journal_type_code'];
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        foreach($data['detail'] as $item){
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description =  $data['description'];
+            $journalDetail->coa_code = $item->coa_code;
+            $journalDetail->debit =  floatval($item->debit) ;
+            $journalDetail->kredit = floatval($item->credit);
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+
+        return $AutomaticCode;
+
+    }
+
+    public function JournalEdit($data = [], $code){
+    
+       
+
+         // Insert Header Journal
+        $journal = Journal::where("voucher_no",$code)->first();
+        $journal->transaction_date =  Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
+        $journal->updated_by =Auth::user()->username;
+        $journal->update();
+
+        $journalDetail  = Journal_Detail::where('voucher_no' , $code)->delete();
+        foreach($data['detail'] as $item){
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description =  $item->description;
+            $journalDetail->coa_code = $item->coa_code;
+            $journalDetail->debit =  floatval($item->debit) ;
+            $journalDetail->kredit = floatval($item->credit);
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
 
     }
 }

@@ -143,34 +143,34 @@
 	{{-- MODAL FORM --}}
 	<div class="modal fade" id="modal-detailpurchase" tabindex="-1" role="dialog"
 		aria-labelledby="exampleModalLabel">
-		<div class="modal-dialog modal-lg modal-success" role="document">
-			<div class="modal-content">
+		<div class="modal-dialog modal-lg text-dark" style="background: red !important" role="document">
+			<div class="modal-content" style="background: rgb(246, 248, 248)">
 				<div class="modal-header">
 					<h5 class="modal-title titleview"></h5>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<div class="modal-body">
+				<div class="modal-body" >
 					<div class="row">
 
-						<h3 class="title-detail text-white"></h3>
+						<h3 class="title-detail text-dark"></h3>
 					</div>
 					<div class="row">
-						<h3 class="mt-1 text-white">Detail Purchase Item :</h3>
-						<div class="w-100" style="max-height:200px ;overflow-y: scroll">
-							<table class="listbb w-100" border="1" style="border-collapse: collapse;font-style:12px">
-								<thead>
+						<h3 class="mt-1 text-dark">Detail Purchase Item :</h3>
+						<div class="w-100" style="max-height:300px ;overflow-y: scroll">
+							<table class="listbb w-100" border="1" style="border-collapse: collapse;font-style:12px;background-color:rgb(244, 246, 244)">
+								<thead style="background: rgb(194, 227, 240)">
 									<tr>
-										<th style="border-color: rgb(142, 237, 175);padding-left:10px"> No</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Item Code</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Item Name</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Qty</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Unit</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Price</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Sub Total</th>
-										<th style="border-color: rgb(142, 237, 175); padding-left:10px">Discount</th>
-										<th style="border-color: rgb(142, 237, 175);padding-left:10px">Total</th>
+										<th style="border-color: rgb(22, 28, 24);padding-left:10px"> No</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Item Code</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Item Name</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Qty</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Unit</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Price</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Sub Total</th>
+										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Discount</th>
+										<th style="border-color: rgb(22, 28, 24);padding-left:10px">Total</th>
 									</tr>
 								<tbody>
 

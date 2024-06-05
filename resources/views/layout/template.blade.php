@@ -108,7 +108,7 @@
                 border-radius: 0 3px 0 0;
             }
 
-            .select2.select2-container.select2-container--open .select2-selection.select2-selection--multiple {
+            .select2.select2-container.select2-container--open~ .select2-selection.select2-selection--multiple {
                 border: 1px solid #34495e;
             }
 

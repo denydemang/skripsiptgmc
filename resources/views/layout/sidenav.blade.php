@@ -187,16 +187,32 @@
 							</ul>
 						</div>
 					</li>
+
+					@php
+						$allaccounting = [
+						    'admin.journal',
+						    // 'admin.addPaymentView',
+						    // 'admin.editPaymentView',
+						    // 'admin.cashbook',
+						    // 'admin.addCashbookView',
+						    // 'admin.advancedreceipt',
+						    // 'admin.addAdvancedReceiptView',
+						    // 'admin.editAdvancedReceiptView',
+						    // 'admin.receipt',
+						    // 'admin.addReceiptView',
+						    // 'admin.editReceiptView',
+						];
+					@endphp
 					<li class="nav-item">
-						<a class="nav-link" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="false"
+						<a class="nav-link" href="#navbar-forms" data-toggle="collapse" role="button" aria-expanded="{{ in_array($sessionRoute, $allaccounting) ? 'true' : 'false' }}"
 							aria-controls="navbar-forms">
 							<i class="ni ni-single-copy-04 text-pink"></i>
 							<span class="nav-link-text">Accounting</span>
 						</a>
-						<div class="collapse" id="navbar-forms">
+						<div class="collapse {{ in_array($sessionRoute, $allaccounting) ? 'show' : '' }}" id="navbar-forms">
 							<ul class="nav nav-sm flex-column">
-								<li class="nav-item">
-									<a href="./pages/forms/elements.html" class="nav-link">Journal</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.journal' ? 'active' : '' }}">
+									<a href="{{route('admin.journal')}}" class="nav-link">Journal</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/forms/components.html" class="nav-link">Ledger Report</a>
