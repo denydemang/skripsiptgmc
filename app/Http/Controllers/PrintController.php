@@ -589,37 +589,37 @@ class PrintController extends AdminController
 
     public function printrecappayment($suppliercode ,$startDate, $endDate, $is_approve){
 
-    try {
+        try {
 
-        //code...
-        $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
-        ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
-        ->whereBetween('transaction_date', [$startDate,$endDate])
-        ->when($is_approve !== null , function($query) use($is_approve){
-            $query->where('is_approve', $is_approve);
-        })
-        ->when($suppliercode !== null , function($query) use($suppliercode){
-            $query->where('supplier_code', $suppliercode);
-        })->get();
+            //code...
+            $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
+            ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
+            ->whereBetween('transaction_date', [$startDate,$endDate])
+            ->when($is_approve !== null , function($query) use($is_approve){
+                $query->where('is_approve', $is_approve);
+            })
+            ->when($suppliercode !== null , function($query) use($suppliercode){
+                $query->where('supplier_code', $suppliercode);
+            })->get();
 
-        $data = [
-            "payments" => $payment,
-            "is_approve"=> $is_approve,
-            "startDate" => $startDate,
-            "endDate" => $endDate,
-            'suppliercode'=> $suppliercode
-        ];
+            $data = [
+                "payments" => $payment,
+                "is_approve"=> $is_approve,
+                "startDate" => $startDate,
+                "endDate" => $endDate,
+                'suppliercode'=> $suppliercode
+            ];
 
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape');
-        $pdf->loadview("admin.finance.prints.printrecappayment", $data);
-        return $pdf->stream("PaymentRecap($startDate-$endDate).pdf", array("Attachment" => false));
-    } catch (\Throwable $th) {
-        throw new \Exception($th->getMessage());
-        // abort(404);
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->loadview("admin.finance.prints.printrecappayment", $data);
+            return $pdf->stream("PaymentRecap($startDate-$endDate).pdf", array("Attachment" => false));
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+            // abort(404);
+        }
+
     }
-
-}
 
     public function printcashbookjournal($id){
         try {
@@ -994,6 +994,142 @@ class PrintController extends AdminController
             throw new \Exception($th->getMessage());
             // abort(404);
         }
+
+    }
+
+    public function printledgerreport(string $startDate, string $endDate, array $listCOACODE){
+
+            try {
+                //code...
+
+                $coaString = "(". "'" . implode("', '", $listCOACODE) . "'" . ")";
+
+                $result = DB::select(
+                    "
+                    SELECT
+                        coalist.coa_code,
+                        coalist.coa_name,
+                        coalist.default_dk,
+                        transaksi.voucher_no,
+                        transaksi.transaction_date,
+                        transaksi.ref_no,
+                        transaksi.description,
+                        transaksi.debit,
+                        transaksi.kredit,
+                        coalist.beginning_balance + IFNULL( qrybeginningbalance.BalanceAmount, 0 ) AS BeginBalance 
+                    FROM
+
+                    (
+                    SELECT
+                        coa.code as coa_code,
+                        coa.name as coa_name,
+                        coa.default_dk,
+                        ifnull(coa.beginning_balance, 0) as beginning_balance
+                    from coa
+
+                    where coa.code IN $coaString
+
+
+                    ) as coalist
+
+                    LEFT JOIN
+                        (
+                        SELECT
+                            j.voucher_no,
+                            j.transaction_date,
+                            j.ref_no,
+                            j.journal_type_code,
+                            jd.coa_code,
+                            coa.`name` AS coa_name,
+                            jd.description,
+                            jd.debit,
+                            jd.kredit 
+                        FROM
+                            journals j
+                            INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                            INNER JOIN coa ON coa.`code` = jd.coa_code 
+                        WHERE
+                            j.posting_status = 1 AND
+                            CAST(j.transaction_date as DATE) between ? AND ?
+                        ) transaksi
+                        
+                        ON coalist.coa_code = transaksi.coa_code
+                        LEFT JOIN 
+                        (
+                        SELECT
+                            qry.coa_code,
+                            qry.coa_name,
+                        CASE
+                                default_dk 
+                                WHEN 'D' THEN
+                                IFNULL( SUM( qry.debit - qry.kredit ), 0 ) ELSE IFNULL( SUM(qry.kredit - qry.debit ), 0 ) 
+                            END AS BalanceAmount 
+                        FROM
+                            (
+                            SELECT
+                                j.voucher_no,
+                                j.transaction_date,
+                                j.ref_no,
+                                j.journal_type_code,
+                                jd.coa_code,
+                                coa.`name` AS coa_name,
+                                jd.description,
+                                jd.debit,
+                                jd.kredit,
+                                coa.beginning_balance,
+                                coa.default_dk 
+                            FROM
+                                journals j
+                                INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                                INNER JOIN coa ON coa.`code` = jd.coa_code 
+                            WHERE
+                                j.posting_status = 1 
+                            ) qry 
+                        WHERE
+                            CAST(qry.transaction_date as DATE) < ?
+                        GROUP BY
+                            qry.coa_code,
+                        qry.coa_name 
+                        ) qrybeginningbalance 
+                        
+                        ON coalist.coa_code = qrybeginningbalance.coa_code
+
+
+                        GROUP BY coalist.coa_code, transaksi.voucher_no, qrybeginningbalance.BalanceAmount
+                        
+                        ORDER BY coalist.coa_code , transaksi.transaction_date 
+
+	
+                    
+        
+                    
+                    " , [$startDate,$endDate, $startDate]
+                
+                    );
+
+                    
+      
+                    
+                    
+                    $groupedData = collect($result)->groupBy('coa_code');
+                    
+            
+                    $data = [
+                        'coaData' => $groupedData,
+                        'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                        'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                    ];
+
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->setPaper('A4', 'landscape');
+                    $pdf->loadview("admin.accounting.prints.printledgerreport",$data);
+                    return $pdf->stream("BukuBesar($startDate-$endDate).pdf", array("Attachment" => false));
+    
+            } catch (\Throwable $th) {
+                throw new \Exception($th->getMessage());
+            }
+
+            
 
     }
 

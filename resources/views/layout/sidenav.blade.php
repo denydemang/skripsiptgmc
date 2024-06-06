@@ -191,6 +191,7 @@
 					@php
 						$allaccounting = [
 						    'admin.journal',
+							'admin.ledger'
 						    // 'admin.addPaymentView',
 						    // 'admin.editPaymentView',
 						    // 'admin.cashbook',
@@ -214,8 +215,8 @@
 								<li class="nav-item {{ $sessionRoute == 'admin.journal' ? 'active' : '' }}">
 									<a href="{{route('admin.journal')}}" class="nav-link">Journal</a>
 								</li>
-								<li class="nav-item">
-									<a href="./pages/forms/components.html" class="nav-link">Ledger Report</a>
+								<li class="nav-item {{ $sessionRoute == 'admin.ledger' ? 'active' : ''}}">
+									<a href="{{route('admin.ledger')}}" class="nav-link">Ledger Report</a>
 								</li>
 								<li class="nav-item">
 									<a href="./pages/forms/validation.html" class="nav-link">Trial Balance Report</a>

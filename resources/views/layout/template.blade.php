@@ -41,7 +41,7 @@
         {{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.2/dist/css/select2.min.css"> --}}
         <link rel="stylesheet" href="{{ asset('/') }}assets/select2/select2.min.css" type="text/css" />
         @php
-            $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index', 'r_upah.index']
+            $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index', 'r_upah.index', 'admin.ledger']
         @endphp
         @if (in_array($sessionRoute, $allmaster))
         <style>

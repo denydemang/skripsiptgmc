@@ -11,6 +11,7 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\JournalController;
+use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
@@ -264,6 +265,19 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             <?php }
         }
     })->name('admin.JSONcoa');
+
+    Route::get('/admin/JSONcoa1', function () {
+        if (request()->ajax()) {
+            $coaAll = COA::where('description', 'detail')->get(['code', 'name', 'description']);
+            // return json_encode($coaAll);
+            ?>
+            <option></option>
+            <?php
+            foreach ($coaAll as $ca) { ?>
+                <option value="<?php echo $ca->code.'-'.$ca->name?>"><?php echo $ca->code.' - '.$ca->name?></option>
+            <?php }
+        }
+    })->name('admin.JSONcoa1');
     Route::get('/admin/JSONunit', function () {
         if (request()->ajax()) {
             $unitAll = Unit::all(['code', 'name']);
@@ -516,6 +530,15 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
         Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
     });
+
+    Route::controller(LedgerController::class)->group(function(){
+        //Get View
+        Route::get('/admin/ledger', 'getViewLedger')->name('admin.ledger');
+
+        // Print
+        Route::get('/admin/ledger/print', 'printLedger')->name('admin.PrintLedger');
+    });
+
 
     // ------------------------------------------
 
