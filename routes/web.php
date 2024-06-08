@@ -23,6 +23,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\TrialBalanceConttroller;
 use App\Http\Controllers\UpahController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
@@ -537,6 +538,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // Print
         Route::get('/admin/ledger/print', 'printLedger')->name('admin.PrintLedger');
+    });
+
+    Route::controller(TrialBalanceConttroller::class)->group(function(){
+        //Get View
+        Route::get('/admin/trialbalance', 'getViewTrialBalance')->name('admin.trialbalance');
+
+        // Print
+        Route::get('/admin/trialbalance/print', 'printtrialbalance')->name('admin.printtrialbalance');
     });
 
 

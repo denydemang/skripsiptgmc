@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LedgerController extends Controller
+class LedgerController extends AdminController
 {
     public function getViewLedger(Request $request){
 

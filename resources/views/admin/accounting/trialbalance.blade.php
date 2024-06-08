@@ -11,7 +11,8 @@
                                     <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
                                 </li>
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('admin.ledger') }}">Ledger</a></li>
+                                <li class="breadcrumb-item"><a href="{{ route('admin.trialbalance') }}">Trial Balance</a>
+                                </li>
                             </ol>
                         </nav>
                     </div>
@@ -28,7 +29,7 @@
                         <div class="card" style="min-height: 800px">
                             <!-- Card header -->
                             <div class="card-header border-0">
-                                <h3 class="mb-0">LEDGER REPORT</h3>
+                                <h3 class="mb-0">TRIAL BALANCE REPORT</h3>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-7">
@@ -63,48 +64,6 @@
                                         </div>
                                     </div>
                                     <div class="row mt-4">
-                                        <div class="col-lg-5">
-                                            <div class="form-group">
-                                                <h4 for="role">COA</h4>
-                                                <select class="form-control coa_code" name="coa_code" id="coa_code"
-                                                    style="height:45px">
-                                                </select>
-                                                <button class="btn btn-sm btn-primary btnaddcoa">Add Coa</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <small>List COA</small>
-                                            <div
-                                                style="width: 100%; 
-											height: 200px; 
-											overflow-y: auto; 
-											overflow-x: auto; 
-											border: 1px solid;position:relative; ">
-                                                <table border="1"
-                                                    style="width: 100%; border: 1px solid #000;border-radius: 8px;border-collapse:collapse; background-color: #f9f9f9"
-                                                    class="table-sm tablelistcoa">
-                                                    <thead class="text-white" style="background-color:#808283">
-                                                        <tr>
-                                                            <th class="text-left" style="font-size: 10px">
-                                                                No</th>
-                                                            <th class="text-left" style="font-size: 10px">
-                                                                CODE</th>
-                                                            <th class="text-left" style="font-size: 10px;">
-                                                                NAME</th>
-                                                            <th class="text-left" style="font-size: 10px">
-                                                                ...</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row mt-4">
                                         <div class="col-lg-6">
                                             <button class="btn btn-primary btn-sm btnprint"><i
                                                     class="fas fa-print btnprint mr-2"></i>Print</button>
@@ -129,5 +88,5 @@
     @include('searchModal.customerSearch')
     {{-- Notif Flash Message --}}
 
-    <script src="{{ asset('/') }}js/accounting/ledgerreport.js" type="module"></script>
+    <script src="{{ asset('/') }}js/accounting/trialbalancereport.js" type="module"></script>
 @endsection

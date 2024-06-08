@@ -1128,9 +1128,107 @@ class PrintController extends AdminController
             } catch (\Throwable $th) {
                 throw new \Exception($th->getMessage());
             }
+    }
 
+    public function printtrialbalancereport(string $startDate, string $endDate){
+
+        try {
+            //code...
+
+            $result = DB::select(
+                "
+                SELECT
+                coa.code,
+                coa.name,
+                IFNULL(coa.beginning_balance + IFNULL(BeginBalanceQuery.beginningBalance, 0), 0) As beginning_balance,
+                IFNULL(qrycurrenttransaction.debit, 0) as debit,
+                IFNULL(qrycurrenttransaction.kredit, 0) as kredit,
+                CASE coa.default_dk
+                    WHEN 'D' THEN
+                        IFNULL(coa.beginning_balance + IFNULL(BeginBalanceQuery.beginningBalance, 0), 0) + IFNULL(qrycurrenttransaction.debit ,0) - IFNULL(qrycurrenttransaction.kredit, 0)
+                    ELSE
+                            IFNULL(coa.beginning_balance + IFNULL(BeginBalanceQuery.beginningBalance, 0), 0) - IFNULL(qrycurrenttransaction.debit ,0) + IFNULL(qrycurrenttransaction.kredit, 0)
+                END AS total
+                
+                FROM
+                coa
+                LEFT JOIN
+                (
+                Select 
+                jd.coa_code,
+                SUM(IFNULL(jd.debit, 0)) as debit,
+                SUM(IFNULL(jd.kredit, 0 )) as kredit
+                from 
+                journals j INNER JOIN journal_details jd 
+                on j.voucher_no = jd.voucher_no
+                where j.posting_status = 1 AND
+                j.transaction_date BETWEEN ? AND ?
+                GROUP BY jd.coa_code
+                ) qrycurrenttransaction
+                
+                ON coa.code = qrycurrenttransaction.coa_code
+                LEFT JOIN
+                (
+                SELECT 
+                qry.coa_code,
+                CASE 
+                WHEN (qry.default_dk = 'D') THEN
+                SUM(IFNULL(qry.debit,0)- IFNULL(qry.kredit, 0))
+                ELSE
+                SUM(IFNULL(qry.kredit, 0) - IFNULL(qry.debit,0))
+                
+                END AS beginningBalance
+                
+                FROM
+                (
+                
+                SELECT j.voucher_no , 
+                j.transaction_date, 
+                j.ref_no, 
+                j.posting_status , 
+                jd.coa_code,
+                jd.description,
+                jd.debit,
+                jd.kredit,
+                coa.default_dk
+                from 
+                journals j INNER JOIN journal_details jd 
+                on j.voucher_no = jd.voucher_no
+                INNER JOIN coa 
+                on jd.coa_code = coa.`code`
+                where j.posting_status = 1 AND
+                j.transaction_date < ?
+                ) qry
+                GROUP BY qry.coa_code 
+                ) BeginBalanceQuery
+                
+                ON coa.code = BeginBalanceQuery.coa_code
+                where coa.description = 'Detail'
+                
+                GROUP BY coa.code, coa.name, qrycurrenttransaction.debit,qrycurrenttransaction.kredit,coa.beginning_balance,BeginBalanceQuery.beginningBalance,coa.default_dk
+                order by coa.code
+                                
+                
+                " , [$startDate,$endDate, $startDate]
             
+                );
 
+                
+        
+                $data = [
+                    'coaData' => $result,
+                    'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A4', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printtrialbalancereport",$data);
+                return $pdf->stream("TrialBalance($startDate-$endDate).pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        }
     }
 
 }
