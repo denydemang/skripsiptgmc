@@ -1286,8 +1286,48 @@ class PrintController extends AdminController
                 return $pdf->stream("LabaRugi($startDate-$endDate).pdf", array("Attachment" => false));
 
         } catch (\Throwable $th) {
-            throw new \Exception($th->getMessage());
+            abort(400);
         }
+    }
+
+    public function journalrecap(string $startDate, string $endDate, $isposting = null, $journaltype= null){
+
+       
+        try {
+            
+            $journal = Journal::join('journal_details as jd', 'journals.voucher_no', '=', 'jd.voucher_no')
+            ->join("coa", "coa.code", "=", "jd.coa_code")
+            ->select("journals.voucher_no", "journals.transaction_date", "coa.code", "coa.name", 'jd.debit', "jd.kredit" ,"jd.description")
+            ->whereBetween('journals.transaction_date', [$startDate,$endDate])
+            ->when($isposting !== null , function($query) use($isposting){
+                $query->where("posting_status" , intval($isposting));
+            })
+            ->when($journaltype !== null , function($query) use($journaltype){
+                $query->where("journal_type_code" , $journaltype);
+            })
+            ->groupBy("journals.voucher_no" ,"journals.transaction_date", "coa.code", "coa.name", 'jd.debit', "jd.kredit", "jd.description")
+            ->orderBy("journals.transaction_date", "asc")->orderBy("journals.voucher_no", "asc")->get();
+
+            $groupedData = collect($journal)->groupBy('voucher_no');
+            $data = [
+                'statusposting' => $isposting,
+                'journaltype' => $journaltype,
+                'coaData' => $groupedData,
+                'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'potrait');
+            $pdf->loadview("admin.accounting.prints.printjournalrecap",$data);
+            return $pdf->stream("JournalRecap($startDate-$endDate).pdf", array("Attachment" => false));
+                
+            
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+
     }
 
 }

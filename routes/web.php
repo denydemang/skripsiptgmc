@@ -522,15 +522,15 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/admin/journal/add', 'addjournal')->name('admin.addjournal');
         Route::post('/admin/journal/edit/{id}', 'editJournal')->name('admin.editJournal');
         Route::get('/admin/journal/delete/{id}', 'deletejournal')->name('admin.deletejournal');
-        Route::get('/admin/receipt/posting/{id}', 'postingjournal')->name('admin.postingjournal');
+        Route::get('/admin/journal/posting/{id}', 'postingjournal')->name('admin.postingjournal');
         // Route::get('/admin/receipt/getinvoice/{id}', 'getinvoiceforreceipt')->name('admin.getinvoiceforreceipt');
         // Route::get('/admin/receipt/getbalancear/{id}', 'getbalancear')->name('admin.getbalancear');
 
 
         // // // Print
-        Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
-        Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
-        Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
+        // Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
+        // Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
+        Route::get('/admin/journal/recap/print', 'printjournalrecap')->name('admin.printjournalrecap');
     });
 
     Route::controller(LedgerController::class)->group(function(){

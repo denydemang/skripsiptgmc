@@ -55,6 +55,11 @@
                                                         <option value="JU">JU - Jurnal Umum</option>
                                                     </select>
                                                 </div>
+                                                <div class="d-flex align-items-center">
+                                                    <button class="btn btn-sm btn-success btnprintrecap ml-3 mt-3"><i
+                                                            class="fas fa-print"></i>
+                                                        Print Recap</button>
+                                                </div>
                                             </div>
                                         </div>
                                         <div>
@@ -141,24 +146,40 @@
                         <div class="col-lg-6" border="0">
                             <table class="text-dark">
                                 <tr>
-                                    <td><h4 class="text-dark">Voucher No </h4></td>
-                                    <td><h4 class="text-dark voucherno">: -</h4></td>
+                                    <td>
+                                        <h4 class="text-dark">Voucher No </h4>
+                                    </td>
+                                    <td>
+                                        <h4 class="text-dark voucherno">: -</h4>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><h4 class="text-dark">Ref Trans No </h4></td>
-                                    <td><h4 class="text-dark reftransno">: -</h4></td>
+                                    <td>
+                                        <h4 class="text-dark">Ref Trans No </h4>
+                                    </td>
+                                    <td>
+                                        <h4 class="text-dark reftransno">: -</h4>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
                         <div class="col-lg-4 offset-lg-2">
                             <table class="text-dark">
                                 <tr>
-                                    <td><h4 class="text-dark ">Trans Date </h4></td>
-                                    <td><h4 class="text-dark transdatejurnal">: -</h4></td>
+                                    <td>
+                                        <h4 class="text-dark">Trans Date </h4>
+                                    </td>
+                                    <td>
+                                        <h4 class="text-dark transdatejurnal">: -</h4>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><h4 class="text-dark">Journal Type </h4></td>
-                                    <td><h4 class="text-dark typejurnal">: -</h4></td>
+                                    <td>
+                                        <h4 class="text-dark">Journal Type </h4>
+                                    </td>
+                                    <td>
+                                        <h4 class="text-dark typejurnal">: -</h4>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -172,7 +193,8 @@
                                     <tr>
                                         <th class="text-left" style="font-size: 14px;width:10%;padding:5px">Coa Code</th>
                                         <th class="text-left" style="font-size: 14px;width:20%;padding:5px">Coa Name</th>
-                                        <th class="text-left" style="font-size: 14px; width:30%;padding:5px">Description</th>
+                                        <th class="text-left" style="font-size: 14px; width:30%;padding:5px">Description
+                                        </th>
                                         <th class="text-left" style="font-size: 14px;width:20%;padding:5px">Debit</th>
                                         <th class="text-left" style="font-size: 14px;width:20%;padding:5px">Kredit</th>
                                     </tr>

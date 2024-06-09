@@ -268,4 +268,16 @@ class JournalController extends AdminController
             abort(404);
         }
     }
+    public function printjournalrecap(Request $request){
+  
+        $posting_status = intval($request->posting_status) >= 0 ? $request->posting_status : null;
+        $journal_type_code = $request->journaltype ? $request->journaltype : null;
+        $startDate = $request->startDate;
+        $endDate =  $request->endDate;
+        $endDate =  $request->endDate;
+
+        $printcontroller = new PrintController();
+        return $printcontroller->journalrecap($startDate,$endDate, $posting_status, $journal_type_code);
+        
+    }
 }

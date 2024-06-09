@@ -31,8 +31,8 @@ $(document).ready(function () {
   const lastMONTH = Date.getLastMonth();
 
   let supplyData = {
-    posting_status :'',
-    journal_type_code : '',
+    posting_status: '',
+    journal_type_code: '',
     startDate: startMONTH,
     endDate: lastMONTH
   };
@@ -133,12 +133,11 @@ $(document).ready(function () {
   }
 
   function populateData(DetailJournal = []) {
-
     let htmldetailjurnal = '';
-    voucherno.html(`: ${DetailJournal[0].voucher_no}`)
-    reftransno.html(`: ${DetailJournal[0].ref_no}`)
-    transdatejurnal.html(`: ${moment(DetailJournal[0].transaction_date).format("DD/MM/YYYY")}`)
-    typejurnal.html(`:  ${DetailJournal[0].journal_type_code}`)
+    voucherno.html(`: ${DetailJournal[0].voucher_no}`);
+    reftransno.html(`: ${DetailJournal[0].ref_no}`);
+    transdatejurnal.html(`: ${moment(DetailJournal[0].transaction_date).format('DD/MM/YYYY')}`);
+    typejurnal.html(`:  ${DetailJournal[0].journal_type_code}`);
 
     let totalDebit = 0;
     let totalKredit = 0;
@@ -149,23 +148,38 @@ $(document).ready(function () {
         <td style="font-size:14px;width:20%;white-space:nowrap; padding:5px"  class="text-dark">${item.coa_name}</td>
         <td style="font-size:14px; width:30%; padding:5px"  class="text-dark">${item.description}</td>
         <td style="font-size:14px;width:20%; padding:5px;white-space:nowrap" class="text-dark">${formatRupiah1(parseFloat(item.debit))}</td>
-        <td style="font-size:14px;width:20%;padding:5px; white-space:nowrap"  class="text-dark">${formatRupiah1(parseFloat(item.kredit))}</td>
+        <td style="font-size:14px;width:20%;padding:5px; white-space:nowrap"  class="text-dark">${formatRupiah1(
+          parseFloat(item.kredit)
+        )}</td>
       </tr>
   
       `;
 
-      totalDebit += parseFloat(item.debit)
-      totalKredit += parseFloat(item.kredit)
+      totalDebit += parseFloat(item.debit);
+      totalKredit += parseFloat(item.kredit);
     });
     htmldetailjurnal += `
     <tr>
       <td colspan="3" class="text-dark" style="text-align: center;font-weight:bold">Total</td>
       <td class="text-dark" style="font-weight:bold;white-space:nowrap;padding:5px">${formatRupiah1(parseFloat(totalDebit))}</td>
-      <td class="text-dark" style="font-weight:bold;white-space:nowrap;;padding:5px">${formatRupiah1(parseFloat(totalKredit ))}</td>
+      <td class="text-dark" style="font-weight:bold;white-space:nowrap;;padding:5px">${formatRupiah1(parseFloat(totalKredit))}</td>
     </tr>
     `;
 
     tablelistdetailjurnal.html(htmldetailjurnal);
+  }
+
+  function printRecap() {
+    let urlRoute = route('admin.printjournalrecap');
+
+    urlRoute =
+      urlRoute +
+      `?startDate=${moment(supplyData.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}&endDate=${moment(
+        supplyData.endDate,
+        'DD/MM/YYYY'
+      ).format('YYYY-MM-DD')}&posting_status=${supplyData.posting_status}&journaltype=${supplyData.journal_type_code}`;
+
+    window.open(urlRoute, '_blank');
   }
 
   // =============================================================
@@ -178,24 +192,27 @@ $(document).ready(function () {
     updateDTPTransDateValue();
   });
 
-   // View Button
-   $(document).on('click', '.viewbtn', async function () {
+  // click print recap
+  $(document).on('click', '.btnprintrecap', function () {
+    printRecap();
+  });
+
+  // View Button
+  $(document).on('click', '.viewbtn', async function () {
     let code = $(this).data('code');
 
     modalTitle.html('Detail Journal');
     modalDetailPurchase.modal('show');
 
-
-
-    voucherno.html(": Fetching Data...")
-    reftransno.html(": Fetching Data...")
-    transdatejurnal.html(": Fetching Data...")
-    typejurnal.html(": Fetching Data...")
+    voucherno.html(': Fetching Data...');
+    reftransno.html(': Fetching Data...');
+    transdatejurnal.html(': Fetching Data...');
+    typejurnal.html(': Fetching Data...');
     tablelistdetailjurnal.html(`
     <tr>
       <td colspan="6" class="text-dark" style="text-align: center;font-weight:bold">Fetching Data.....</td>
     </tr>
-    `)
+    `);
     const dataDetail = await getData(code);
     populateData(dataDetail);
   });
