@@ -11,7 +11,7 @@
                                     <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
                                 </li>
                                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-                                <li class="breadcrumb-item"><a href="{{ route('admin.trialbalance') }}">Trial Balance</a>
+                                <li class="breadcrumb-item"><a href="{{ route('admin.profitloss') }}">Profit Loss</a>
                                 </li>
                             </ol>
                         </nav>
@@ -29,12 +29,12 @@
                         <div class="card" style="min-height: 800px">
                             <!-- Card header -->
                             <div class="card-header border-0">
-                                <h3 class="mb-0">TRIAL BALANCE REPORT</h3>
+                                <h3 class="mb-0">PROFIT & LOSS REPORT</h3>
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-lg-7">
                                             <div class="mr-1 mt-5">
-                                                <h4>Transaction Date</h4>
+                                                <h4>Transaction Month</h4>
                                                 <div class="d-flex">
                                                     <div class="input-group date mr-2" id="dtpstarttrans"
                                                         data-target-input="nearest">
@@ -87,5 +87,5 @@
 
     {{-- Notif Flash Message --}}
 
-    <script src="{{ asset('/') }}js/accounting/trialbalancereport.js" type="module"></script>
+    <script src="{{ asset('/') }}js/accounting/profitlossreport.js" type="module"></script>
 @endsection

@@ -13,6 +13,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfitLossController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
 use App\Http\Controllers\PurchaseController;
@@ -546,6 +547,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // Print
         Route::get('/admin/trialbalance/print', 'printtrialbalance')->name('admin.printtrialbalance');
+    });
+
+    Route::controller(ProfitLossController::class)->group(function(){
+        //Get View
+        Route::get('/admin/profitloss', 'getViewProfitLoss')->name('admin.profitloss');
+
+        // Print
+        Route::get('/admin/profitloss/print', 'printprofitloss')->name('admin.printprofitloss');
     });
 
 

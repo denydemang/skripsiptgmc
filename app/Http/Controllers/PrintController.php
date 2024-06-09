@@ -1126,7 +1126,7 @@ class PrintController extends AdminController
                     return $pdf->stream("BukuBesar($startDate-$endDate).pdf", array("Attachment" => false));
     
             } catch (\Throwable $th) {
-                throw new \Exception($th->getMessage());
+                abort(404);
             }
     }
 
@@ -1225,6 +1225,65 @@ class PrintController extends AdminController
                 $pdf->setPaper('A4', 'potrait');
                 $pdf->loadview("admin.accounting.prints.printtrialbalancereport",$data);
                 return $pdf->stream("TrialBalance($startDate-$endDate).pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+    }
+    
+    public function printtriallrreport(string $startDate, string $endDate){
+
+        try {
+            //code...
+
+            $result = DB::select(
+                "
+
+                SELECT 
+                    coa.type as Tipe,
+                    coa.code ,
+                    coa.name ,
+                    coa.description,
+                    sum(jd.debit) as debit,
+                    sum(jd.kredit) as kredit,
+                    sum(jd.kredit) - sum(jd.debit) as Total 
+
+                FROM
+                coa
+                    INNER JOIN journal_details jd
+                    ON coa.`code` = jd.coa_code
+                    INNER JOIN journals j 
+                    ON jd.voucher_no = j.voucher_no
+                where SUBSTR(coa.`code`,1,1) NOT IN (1,2,3) AND
+                coa.description ='Detail' AND
+                j.transaction_date between ? AND ? AND
+                j.posting_status = 1
+
+                GROUP BY 
+                coa.code,
+                coa.name,
+                coa.description,
+                coa.type
+
+                ORDER BY
+                coa.code
+                
+                " , [$startDate,$endDate]
+            
+                );
+
+                $groupedData = collect($result)->groupBy('Tipe');
+        
+                $data = [
+                    'coaData' => $groupedData,
+                    'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A4', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printlabarugi",$data);
+                return $pdf->stream("LabaRugi($startDate-$endDate).pdf", array("Attachment" => false));
 
         } catch (\Throwable $th) {
             throw new \Exception($th->getMessage());

@@ -12,4 +12,15 @@ export default class managedate {
     const now = moment().format(format);
     return now;
   }
+
+  getFirstDateMonthFromDate(date) {
+    const monthYear = moment(date, 'MMMM/YYYY');
+    var firstDate = monthYear.startOf('month').format('DD/MM/YYYY');
+    return firstDate;
+  }
+  getLastDateMonthFromDate(date) {
+    const monthYear = moment(date, 'MMMM/YYYY');
+    var firstDate = monthYear.endOf('month').format('DD/MM/YYYY');
+    return firstDate;
+  }
 }

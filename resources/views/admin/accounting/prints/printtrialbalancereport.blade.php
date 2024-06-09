@@ -106,6 +106,7 @@
     </header>
 
     <section class="transaction">
+        <p style="text-align:right">Dalam Satuan Rupiah</p>
         <table id="detail">
             <thead>
                 <tr>
@@ -119,7 +120,15 @@
             </thead>
             <tbody>
                 @if (count($coaData) > 0)
+                    @php
+                        $totalDebit = 0;
+                        $totalKredit = 0;
+                    @endphp
                     @foreach ($coaData as $item)
+                        @php
+                            $totalDebit += floatval($item->debit);
+                            $totalKredit += floatval($item->kredit);
+                        @endphp
                         <tr>
                             <td class="no-wrap">{{ $item->code }}</td>
                             <td class="no-wrap">{{ $item->name }}</td>
@@ -133,6 +142,14 @@
                             </td>
                         </tr>
                     @endforeach
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><b>TOTAL</b></td>
+                        <td><b> {{ number_format($totalDebit, 2, ',', '.') }}</b></td>
+                        <td><b>{{ number_format($totalKredit, 2, ',', '.') }}</b></td>
+                        <td></td>
+                    </tr>
                 @endif
             </tbody>
         </table>
