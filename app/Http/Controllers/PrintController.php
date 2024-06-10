@@ -997,42 +997,78 @@ class PrintController extends AdminController
 
     }
 
-    public function printledgerreport(string $startDate, string $endDate, array $listCOACODE){
+    public function printledgerreport(string $startDate, string $endDate, array $listCOACODE = []){
 
-            try {
+
+        try {
                 //code...
+             
 
-                $coaString = "(". "'" . implode("', '", $listCOACODE) . "'" . ")";
-
-                $result = DB::select(
-                    "
-                    SELECT
-                        coalist.coa_code,
-                        coalist.coa_name,
-                        coalist.default_dk,
-                        transaksi.voucher_no,
-                        transaksi.transaction_date,
-                        transaksi.ref_no,
-                        transaksi.description,
-                        transaksi.debit,
-                        transaksi.kredit,
-                        coalist.beginning_balance + IFNULL( qrybeginningbalance.BalanceAmount, 0 ) AS BeginBalance 
-                    FROM
-
+              
+        $result= "";
+        if (count($listCOACODE) >0){
+            
+            $coaString = "(". "'" . implode("', '", $listCOACODE) . "'" . ")";
+            $result = DB::select(
+                "
+                SELECT
+                    coalist.coa_code,
+                    coalist.coa_name,
+                    coalist.default_dk,
+                    transaksi.voucher_no,
+                    transaksi.transaction_date,
+                    transaksi.ref_no,
+                    transaksi.description,
+                    transaksi.debit,
+                    transaksi.kredit,
+                    coalist.beginning_balance + IFNULL( qrybeginningbalance.BalanceAmount, 0 ) AS BeginBalance 
+                FROM
+    
+                (
+                SELECT
+                    coa.code as coa_code,
+                    coa.name as coa_name,
+                    coa.default_dk,
+                    ifnull(coa.beginning_balance, 0) as beginning_balance
+                from coa
+                where coa.code IN $coaString
+    
+    
+                ) as coalist
+    
+                LEFT JOIN
                     (
                     SELECT
-                        coa.code as coa_code,
-                        coa.name as coa_name,
-                        coa.default_dk,
-                        ifnull(coa.beginning_balance, 0) as beginning_balance
-                    from coa
-
-                    where coa.code IN $coaString
-
-
-                    ) as coalist
-
-                    LEFT JOIN
+                        j.voucher_no,
+                        j.transaction_date,
+                        j.ref_no,
+                        j.journal_type_code,
+                        jd.coa_code,
+                        coa.`name` AS coa_name,
+                        jd.description,
+                        jd.debit,
+                        jd.kredit 
+                    FROM
+                        journals j
+                        INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                        INNER JOIN coa ON coa.`code` = jd.coa_code 
+                    WHERE
+                        j.posting_status = 1 AND
+                        CAST(j.transaction_date as DATE) between ? AND ?
+                    ) transaksi
+                    
+                    ON coalist.coa_code = transaksi.coa_code
+                    LEFT JOIN 
+                    (
+                    SELECT
+                        qry.coa_code,
+                        qry.coa_name,
+                    CASE
+                            default_dk 
+                            WHEN 'D' THEN
+                            IFNULL( SUM( qry.debit - qry.kredit ), 0 ) ELSE IFNULL( SUM(qry.kredit - qry.debit ), 0 ) 
+                        END AS BalanceAmount 
+                    FROM
                         (
                         SELECT
                             j.voucher_no,
@@ -1043,69 +1079,140 @@ class PrintController extends AdminController
                             coa.`name` AS coa_name,
                             jd.description,
                             jd.debit,
-                            jd.kredit 
+                            jd.kredit,
+                            coa.beginning_balance,
+                            coa.default_dk 
                         FROM
                             journals j
                             INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
                             INNER JOIN coa ON coa.`code` = jd.coa_code 
                         WHERE
-                            j.posting_status = 1 AND
-                            CAST(j.transaction_date as DATE) between ? AND ?
-                        ) transaksi
-                        
-                        ON coalist.coa_code = transaksi.coa_code
-                        LEFT JOIN 
+                            j.posting_status = 1 
+                        ) qry 
+                    WHERE
+                        CAST(qry.transaction_date as DATE) < ?
+                    GROUP BY
+                        qry.coa_code,
+                    qry.coa_name 
+                    ) qrybeginningbalance 
+                    
+                    ON coalist.coa_code = qrybeginningbalance.coa_code
+    
+    
+                    GROUP BY coalist.coa_code, transaksi.voucher_no, qrybeginningbalance.BalanceAmount
+                    
+                    ORDER BY coalist.coa_code , transaksi.transaction_date 
+    
+    
+                
+    
+                
+                " , [$startDate,$endDate, $startDate]
+            
+                );
+        } else {
+                
+            $coaString = "(". "'" . implode("', '", $listCOACODE) . "'" . ")";
+            $result = DB::select(
+                "
+                SELECT
+                    coalist.coa_code,
+                    coalist.coa_name,
+                    coalist.default_dk,
+                    transaksi.voucher_no,
+                    transaksi.transaction_date,
+                    transaksi.ref_no,
+                    transaksi.description,
+                    transaksi.debit,
+                    transaksi.kredit,
+                    coalist.beginning_balance + IFNULL( qrybeginningbalance.BalanceAmount, 0 ) AS BeginBalance 
+                FROM
+    
+                (
+                SELECT
+                    coa.code as coa_code,
+                    coa.name as coa_name,
+                    coa.default_dk,
+                    ifnull(coa.beginning_balance, 0) as beginning_balance
+                from coa
+    
+                ) as coalist
+    
+                LEFT JOIN
+                    (
+                    SELECT
+                        j.voucher_no,
+                        j.transaction_date,
+                        j.ref_no,
+                        j.journal_type_code,
+                        jd.coa_code,
+                        coa.`name` AS coa_name,
+                        jd.description,
+                        jd.debit,
+                        jd.kredit 
+                    FROM
+                        journals j
+                        INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                        INNER JOIN coa ON coa.`code` = jd.coa_code 
+                    WHERE
+                        j.posting_status = 1 AND
+                        CAST(j.transaction_date as DATE) between ? AND ?
+                    ) transaksi
+                    
+                    ON coalist.coa_code = transaksi.coa_code
+                    LEFT JOIN 
+                    (
+                    SELECT
+                        qry.coa_code,
+                        qry.coa_name,
+                    CASE
+                            default_dk 
+                            WHEN 'D' THEN
+                            IFNULL( SUM( qry.debit - qry.kredit ), 0 ) ELSE IFNULL( SUM(qry.kredit - qry.debit ), 0 ) 
+                        END AS BalanceAmount 
+                    FROM
                         (
                         SELECT
-                            qry.coa_code,
-                            qry.coa_name,
-                        CASE
-                                default_dk 
-                                WHEN 'D' THEN
-                                IFNULL( SUM( qry.debit - qry.kredit ), 0 ) ELSE IFNULL( SUM(qry.kredit - qry.debit ), 0 ) 
-                            END AS BalanceAmount 
+                            j.voucher_no,
+                            j.transaction_date,
+                            j.ref_no,
+                            j.journal_type_code,
+                            jd.coa_code,
+                            coa.`name` AS coa_name,
+                            jd.description,
+                            jd.debit,
+                            jd.kredit,
+                            coa.beginning_balance,
+                            coa.default_dk 
                         FROM
-                            (
-                            SELECT
-                                j.voucher_no,
-                                j.transaction_date,
-                                j.ref_no,
-                                j.journal_type_code,
-                                jd.coa_code,
-                                coa.`name` AS coa_name,
-                                jd.description,
-                                jd.debit,
-                                jd.kredit,
-                                coa.beginning_balance,
-                                coa.default_dk 
-                            FROM
-                                journals j
-                                INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
-                                INNER JOIN coa ON coa.`code` = jd.coa_code 
-                            WHERE
-                                j.posting_status = 1 
-                            ) qry 
+                            journals j
+                            INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                            INNER JOIN coa ON coa.`code` = jd.coa_code 
                         WHERE
-                            CAST(qry.transaction_date as DATE) < ?
-                        GROUP BY
-                            qry.coa_code,
-                        qry.coa_name 
-                        ) qrybeginningbalance 
-                        
-                        ON coalist.coa_code = qrybeginningbalance.coa_code
-
-
-                        GROUP BY coalist.coa_code, transaksi.voucher_no, qrybeginningbalance.BalanceAmount
-                        
-                        ORDER BY coalist.coa_code , transaksi.transaction_date 
-
-	
+                            j.posting_status = 1 
+                        ) qry 
+                    WHERE
+                        CAST(qry.transaction_date as DATE) < ?
+                    GROUP BY
+                        qry.coa_code,
+                    qry.coa_name 
+                    ) qrybeginningbalance 
                     
-        
+                    ON coalist.coa_code = qrybeginningbalance.coa_code
+    
+    
+                    GROUP BY coalist.coa_code, transaksi.voucher_no, qrybeginningbalance.BalanceAmount
                     
-                    " , [$startDate,$endDate, $startDate]
+                    ORDER BY coalist.coa_code , transaksi.transaction_date 
+    
+    
                 
-                    );
+    
+                
+                " , [$startDate,$endDate, $startDate]
+            
+                );
+        }
 
                     
       
@@ -1330,4 +1437,199 @@ class PrintController extends AdminController
 
     }
 
+    public function printbalancesheetreport(string $endDate){
+
+        try {
+            //code...
+            $result = DB::select(
+                "
+                    -- aktiva
+                                    
+                    SELECT 
+                    coa.type ,
+                    CASE SUBSTR(coa.`code` ,1,5)
+                    WHEN  '10.01' THEN
+                            'AKTIVA LANCAR'
+                    WHEN '10.02' THEN
+                            'AKTIVA TETAP' END AS header,
+                    queryaktiva.`code`,
+                    coa.name ,
+                    queryaktiva.beginning_balance + queryaktiva.balance as balance
+                    from
+                    (
+                            SELECT
+                            coa.`code`,
+                            coa.beginning_balance,
+                            SUM(IFNULL(qry1.balance_amount, 0)) as balance
+                            from coa
+                            LEFT JOIN
+                            (
+                                SELECT 
+                                        jd.coa_code,
+                                        (jd.debit - jd.kredit) as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date <= ? AND
+                                        SUBSTRING(coa.code,1,1) = 1 
+                                        
+                                        GROUP BY jd.coa_code , jd.debit - jd.kredit
+                                        
+                                ) qry1
+                            on coa.`code` =  qry1.coa_code
+    
+                            Where coa.code like '1%' AND coa.description = 'Detail'
+                            GROUP BY coa.`code`, coa.beginning_balance
+                                                    
+                    ) queryaktiva							
+                    INNER JOIN 
+                    coa ON coa.code = queryaktiva.code
+    
+                    UNION ALL
+    
+                    -- Utang
+                    SELECT 
+                    coa.type ,
+                    CASE SUBSTR(coa.`code` ,1,5)
+                    WHEN  '20.01' THEN
+                            'UTANG LANCAR'
+                    WHEN '20.02' THEN
+                            'UTANG JK.PANJANG' END AS header,
+                    queryutang.`code`,
+                    coa.name ,
+                    queryutang.beginning_balance + queryutang.balance as balance
+                    from
+                    (
+                            SELECT
+                            coa.`code`,
+                            coa.beginning_balance,
+                            SUM(IFNULL(qry2.balance_amount, 0)) as balance
+                            from coa
+                            LEFT JOIN
+                            (
+                                SELECT 
+                                        jd.coa_code,
+                                        (jd.kredit - jd.debit) as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date <= ? AND
+                                        SUBSTRING(coa.code,1,1) = 2
+                                        
+                                        GROUP BY jd.coa_code , jd.kredit - jd.debit
+                                        
+                                ) qry2
+                            on coa.`code` =  qry2.coa_code
+    
+                            Where coa.code like '2%' AND coa.description = 'Detail'
+                            GROUP BY coa.`code`, coa.beginning_balance
+                                                    
+                    ) queryutang							
+                    INNER JOIN 
+                    coa ON coa.code = queryutang.code
+    
+                    UNION ALL
+    
+                    -- modal
+                    SELECT 
+                    'Passiva' as type ,	
+                    'EKUITAS' as header,
+                    queryekuitas.`code`,
+                    coa.name ,
+                    queryekuitas.beginning_balance + queryekuitas.balance as balance
+                    from
+                    (
+                            SELECT
+                            coa.`code`,
+                            coa.beginning_balance,
+                            SUM(IFNULL(qry3.balance_amount, 0)) as balance
+                            from coa
+                            LEFT JOIN
+                            (
+                                SELECT 
+                                        jd.coa_code,
+                                        (jd.kredit - jd.debit) as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date <= ? AND
+                                        SUBSTRING(coa.code,1,1) = 3
+                                        
+                                        GROUP BY jd.coa_code , jd.kredit - jd.debit
+                                        
+                                ) qry3
+                            on coa.`code` =  qry3.coa_code
+    
+                            Where coa.code like '3%' AND coa.code NOT IN ('30.02.02' , '30.02.03') AND coa.description = 'Detail'
+                            GROUP BY coa.`code`, coa.beginning_balance
+                                                    
+                    ) queryekuitas
+                                                    
+                    INNER JOIN 
+                    coa ON coa.code = queryekuitas.code
+    
+                    UNION ALL
+    
+                    -- laba rugi s/d bulan ini
+                    SELECT 
+                    'Passiva' as type ,	
+                    'EKUITAS' as header,
+                    '30.02.02' as code,
+                    'Laba s/d Bulan Ini' as name,
+                    IFNULL(sum(qry4.Total),0) as balance
+                    from 
+                    (SELECT 
+                            coa.code ,
+                            sum(jd.kredit) - sum(jd.debit) as Total 
+                    FROM
+                    coa
+                                    INNER JOIN journal_details jd
+                                    ON coa.`code` = jd.coa_code
+                                    INNER JOIN journals j 
+                                    ON jd.voucher_no = j.voucher_no
+                    where SUBSTR(coa.`code`,1,1) NOT IN (1,2,3) AND
+                    coa.description ='Detail' AND
+                    j.transaction_date <= ? AND
+                    j.posting_status = 1
+    
+                    GROUP BY 
+                    coa.code
+                    ) qry4
+                
+                " , [$endDate, $endDate, $endDate, $endDate]
+            
+                );
+    
+                $grouped = [];
+    
+                foreach ($result as $account) {
+                    $grouped[$account->type][$account->header][] = $account;
+                }
+
+                $data = [
+                    'dataCoa' => $grouped,
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A3', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printbalancesheet", $data);
+                return $pdf->stream("BalanceSheet(S.d$endDate).pdf", array("Attachment" => false));
+    
+        } catch (\Throwable $th) {
+            abort(400);
+        }
+    }
 }

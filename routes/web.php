@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdvanceReceiptController;
+use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\CashBookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\COAController;
@@ -555,6 +556,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // Print
         Route::get('/admin/profitloss/print', 'printprofitloss')->name('admin.printprofitloss');
+    });
+
+    Route::controller(BalanceSheetController::class)->group(function(){
+        //Get View
+        Route::get('/admin/balancesheet', 'getViewBalanceSheet')->name('admin.balancesheet');
+
+        // Print
+        Route::get('/admin/balancesheet/print', 'printbalancesheet')->name('admin.printbalancesheet');
     });
 
 

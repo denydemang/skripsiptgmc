@@ -33,9 +33,9 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-12 d-lg-flex justify-content-between">
-                                        <div>
+                                        <div class="row">
                                             <div class="d-lg-flex justify-content-beetwen">
-                                                <div class="mb-2 mr-2" style="width: 200px">
+                                                <div class="mb-2 ml-2 mr-2" style="width:150px">
                                                     <h4>Status Posting</h4>
                                                     <select class="form-control" id="statusSelectPosting">
                                                         <option selected value="">All</option>
@@ -43,7 +43,7 @@
                                                         <option value="1">Posted</option>
                                                     </select>
                                                 </div>
-                                                <div class="mb-2" style="width: 200px">
+                                                <div class="mb-2" style="width: 150px">
                                                     <h4>Journal Type</h4>
                                                     <select class="form-control" id="statusSelectJournalType">
                                                         <option selected value="">All</option>

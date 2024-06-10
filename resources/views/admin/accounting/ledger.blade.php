@@ -108,6 +108,8 @@
                                         <div class="col-lg-6">
                                             <button class="btn btn-primary btn-sm btnprint"><i
                                                     class="fas fa-print btnprint mr-2"></i>Print</button>
+                                            <button class="btn btn-warning btn-sm btnprint2"><i
+                                                    class="fas fa-print btnprint2 mr-2"></i>Print All COA</button>
                                         </div>
                                     </div>
                                 </div>

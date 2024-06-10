@@ -22,7 +22,7 @@ $(document).ready(function () {
   const dtptransdate = $('#dtptransdate');
   const inputtransdate = $('.inputtransdate');
   const inputdescription = $('.inputdescription');
-  const lbldescription = $('.lbldescription')
+  const lbldescription = $('.lbldescription');
   // End Html Input
 
   // Property Data when in update mode
@@ -38,7 +38,7 @@ $(document).ready(function () {
   const updateMode = route().current() == 'admin.editJournalView';
 
   //Validation Input
-  let dataInput = ['.inputref_no','.inputdescription'];
+  let dataInput = ['.inputref_no', '.inputdescription'];
 
   // Data For Send TO Controller
   let PostData = {
@@ -65,7 +65,7 @@ $(document).ready(function () {
   // ======================================
   initiatedtp(dtptransdate);
 
-	inputamount.val(formatRupiah1(0))
+  inputamount.val(formatRupiah1(0));
   if (updateMode) {
     prepareEdit();
   } else {
@@ -82,22 +82,21 @@ $(document).ready(function () {
   function prepareEdit() {
     inputtransdate.val(moment(datatransadate).format('DD/MM/YYYY'));
     inputjournaltype.val(datajournaltype);
-    inputjournaltype.attr("disabled", true);
+    inputjournaltype.attr('disabled', true);
 
-    inputref_no.attr('readonly', true)
-    inputdescription.attr("hidden" , true)
-    inputdescription.val('-')
-    lbldescription.attr("hidden", true)
-    
-    datadetail.forEach((x)=> {
-      detail.coa_code = x.coa_code
-      detail.coa_name = x.coa_name
-      detail.debit = parseFloat(x.debit)
-      detail.credit = parseFloat(x.kredit)
-      detail.description = x.description
+    inputref_no.attr('readonly', true);
+    inputdescription.attr('hidden', true);
+    inputdescription.val('-');
+    lbldescription.attr('hidden', true);
+
+    datadetail.forEach((x) => {
+      detail.coa_code = x.coa_code;
+      detail.coa_name = x.coa_name;
+      detail.debit = parseFloat(x.debit);
+      detail.credit = parseFloat(x.kredit);
+      detail.description = x.description;
       tampungDetail.push({ ...detail });
-    })
-
+    });
 
     createHtmTBodyItem();
   }
@@ -109,45 +108,42 @@ $(document).ready(function () {
       return false;
     }
 
-		if(tampungDetail.length == 0){
-			showwarning('Please Insert COA !');
-			return false;
-		}
+    if (tampungDetail.length == 0) {
+      showwarning('Please Insert COA !');
+      return false;
+    }
 
-		let invalid = 0;
-		let totalDebit = 0;
-		let totalCredit = 0;
+    let invalid = 0;
+    let totalDebit = 0;
+    let totalCredit = 0;
     for (let x of tampungDetail) {
-
-			totalDebit += parseFloat(x.debit);
-			totalCredit += parseFloat(x.credit);
-      if (parseFloat(x.debit) == 0 && (parseFloat(x.credit) == 0)) {
+      totalDebit += parseFloat(x.debit);
+      totalCredit += parseFloat(x.credit);
+      if (parseFloat(x.debit) == 0 && parseFloat(x.credit) == 0) {
         invalid += 1;
       }
     }
-		if (invalid > 0){
-			showwarning("Amount Debit Or Credit Cannot Be Zero In Coa List !")
-			return false;
-		}
+    if (invalid > 0) {
+      showwarning('Amount Debit Or Credit Cannot Be Zero In Coa List !');
+      return false;
+    }
 
-		if ( totalDebit != totalCredit){
-			showwarning("Amount Debit Or Credit Not Balance !")
-			return false;
-		}
-
-
+    if (totalDebit != totalCredit) {
+      showwarning('Amount Debit Or Credit Not Balance !');
+      return false;
+    }
 
     return true;
   }
 
   function createHtmTBodyItem() {
     let html = ``;
-  
-		let totalDebit  = 0;
-		let totalKredit = 0;
-    tampungDetail.forEach((item) => {
 
-      if (updateMode){
+    let totalDebit = 0;
+    let totalKredit = 0;
+    console.log(tampungDetail);
+    tampungDetail.forEach((item) => {
+      if (updateMode) {
         html += `
         <tr>
           <td style="font-size: 12px; width:10%">${item.coa_code}</td>
@@ -156,27 +152,34 @@ $(document).ready(function () {
           <td style="font-size: 12px;width:20%"><input class="custom-input inputdescriptiondetail" data-code="${item.coa_code}" type="text"
             style="width: 100%" value="${item.description}">
           </td>
-          <td style="font-size: 12px;width:20%;white-space:nowrap"><input class="custom-input inputdebit" data-code="${item.coa_code}" type="text"
+          <td style="font-size: 12px;width:20%;white-space:nowrap"><input class="custom-input inputdebit" data-code="${
+            item.coa_code
+          }" type="text"
                   style="width: 100%" value="${formatRupiah1(item.debit)}">
           </td>
-          <td style="font-size: 12px;width:20%;white-space:nowrap"><input class="custom-input inputkredit"  data-code="${item.coa_code}" type="text"
+          <td style="font-size: 12px;width:20%;white-space:nowrap"><input class="custom-input inputkredit"  data-code="${
+            item.coa_code
+          }" type="text"
                   style="width: 100%"  value="${formatRupiah1(item.credit)}">
           </td>
           <td style="white-space:normal;word-wrap"><button data-code="${item.coa_code}"
               class="btn btn-danger btndeletecoa btn-sm">X</button></td>
         </tr>
         `;
-
       } else {
         html += `
         <tr>
           <td style="font-size: 12px; width:15%">${item.coa_code}</td>
           <td style="font-size: 12px; width:20%;white-space:nowrap">${item.coa_name}
           </td>
-          <td style="font-size: 12px;width:30%;white-space:nowrap"><input class="custom-input inputdebit" data-code="${item.coa_code}" type="text"
+          <td style="font-size: 12px;width:30%;white-space:nowrap"><input class="custom-input inputdebit" data-code="${
+            item.coa_code
+          }" type="text"
                   style="width: 100%" value="${formatRupiah1(item.debit)}">
           </td>
-          <td style="font-size: 12px;width:30%;white-space:nowrap"><input class="custom-input inputkredit"  data-code="${item.coa_code}" type="text"
+          <td style="font-size: 12px;width:30%;white-space:nowrap"><input class="custom-input inputkredit"  data-code="${
+            item.coa_code
+          }" type="text"
                   style="width: 100%"  value="${formatRupiah1(item.credit)}">
           </td>
           <td style="white-space:normal;word-wrap"><button data-code="${item.coa_code}"
@@ -184,9 +187,9 @@ $(document).ready(function () {
         </tr>
         `;
       }
-  
-			totalDebit += item.debit;
-			totalKredit += item.credit;
+
+      totalDebit += item.debit;
+      totalKredit += item.credit;
     });
     if (tampungDetail.length > 0) {
       if (updateMode) {
@@ -196,9 +199,8 @@ $(document).ready(function () {
           <td style="font-size: 12px;font-weight:bold">${formatRupiah1(totalDebit)}</td>
           <td style="font-size: 12px;font-weight:bold">${formatRupiah1(totalKredit)}</td>
         </tr>
-        `
+        `;
       } else {
-        
         html += `
         <tr>
             <td colspan="2" style="font-size: 12px;font-weight:bold;text-align:right">TOTAL</td>
@@ -212,42 +214,41 @@ $(document).ready(function () {
     tbodytablelistcoa.html(html);
   }
 
-	function checkCOA(coa_code){
-		if (tampungDetail.length > 0) {
-			return tampungDetail.some( item => item.coa_code == coa_code )
-		}
-		return false
-	}
+  function checkCOA(coa_code) {
+    if (tampungDetail.length > 0) {
+      return tampungDetail.some((item) => item.coa_code == coa_code);
+    }
+    return false;
+  }
 
   function populateCOA() {
-    
-		if (inputcoacode.val() == ''){
-			inputcoacode.focus();
-			showwarning("Please Select COA !")
-			return;
-		}
+    if (inputcoacode.val() == '') {
+      inputcoacode.focus();
+      showwarning('Please Select COA !');
+      return;
+    }
 
-		detail.coa_code = inputcoacode.val()
-		detail.coa_name = inputcoaname.val()
-		detail.debit = inputdebitkredit.val() == 'd' ? parseToNominal(inputamount.val()) : 0.00;
-		detail.credit= inputdebitkredit.val() == 'k' ? parseToNominal(inputamount.val()) : 0.00;
+    detail.coa_code = inputcoacode.val();
+    detail.coa_name = inputcoaname.val();
+    detail.debit = inputdebitkredit.val() == 'd' ? parseToNominal(inputamount.val()) : 0.0;
+    detail.credit = inputdebitkredit.val() == 'k' ? parseToNominal(inputamount.val()) : 0.0;
     detail.description = '';
-		if (checkCOA(detail.coa_code)){
-			showwarning(`COA Code : ${detail.coa_code} Already In The List`)
-			return;
-		}
-		tampungDetail.push({...detail})
-		inputcoacode.val("")
-		inputcoaname.val("")
-		inputamount.val(formatRupiah1(0))
+    if (checkCOA(detail.coa_code)) {
+      showwarning(`COA Code : ${detail.coa_code} Already In The List`);
+      return;
+    }
+    tampungDetail.push({ ...detail });
+    inputcoacode.val('');
+    inputcoaname.val('');
+    inputamount.val(formatRupiah1(0));
     createHtmTBodyItem();
   }
 
-  function calcCOA(code, amount, state = 'debit', desc='') {
+  function calcCOA(code, amount, state = 'debit', desc = '') {
     switch (state) {
       case 'debit':
         const editedDetail = tampungDetail.map((item) => {
-          if (item.coa_code === code) {
+          if (item.coa_code == code) {
             let debit_amountNew = parseFloat(amount);
 
             return { ...item, debit: debit_amountNew, credit: 0 };
@@ -260,7 +261,7 @@ $(document).ready(function () {
         break;
       case 'kredit':
         const editedDetail1 = tampungDetail.map((item) => {
-          if (item.coa_code === code) {
+          if (item.coa_code == code) {
             let credit_amountNew = parseFloat(amount);
             return { ...item, credit: credit_amountNew, debit: 0 };
           } else {
@@ -268,26 +269,23 @@ $(document).ready(function () {
           }
         });
         tampungDetail = [...editedDetail1];
-				createHtmTBodyItem();
+        createHtmTBodyItem();
         break;
 
-        case 'description':
-          const editedDetail2 = tampungDetail.map((item) => {
-            if (item.coa_code === code) {
-              let description = desc;
-              return { ...item, description :description};
-            } else {
-              return item;
-            }
-          });
-          tampungDetail = [...editedDetail2];
-          createHtmTBodyItem();
-          break;
+      case 'description':
+        const editedDetail2 = tampungDetail.map((item) => {
+          if (item.coa_code === code) {
+            let description = desc;
+            return { ...item, description: description };
+          } else {
+            return item;
+          }
+        });
+        tampungDetail = [...editedDetail2];
+        createHtmTBodyItem();
+        break;
     }
-
-    
   }
-
 
   function populatePostData() {
     PostData.voucher_no = '';
@@ -297,23 +295,23 @@ $(document).ready(function () {
     PostData.transaction_date = inputtransdate.val();
     PostData.detail = [];
     tampungDetail.forEach((item) => {
-      detail.coa_code = item.coa_code; 
-      detail.coa_name = item.coa_name; 
-      detail.debit = item.debit; 
+      detail.coa_code = item.coa_code;
+      detail.coa_name = item.coa_name;
+      detail.debit = item.debit;
       detail.credit = item.credit;
-      detail.description = item.description
+      detail.description = item.description;
       PostData.detail.push({ ...detail });
     });
   }
 
-	function deleteCOA(code){
-		const updatedListCOA = tampungDetail.filter((x) => {
-			return x.coa_code !== code;
-		});
+  function deleteCOA(code) {
+    const updatedListCOA = tampungDetail.filter((x) => {
+      return x.coa_code != code;
+    });
 
-		tampungDetail = [...updatedListCOA];
-		createHtmTBodyItem();
-	}
+    tampungDetail = [...updatedListCOA];
+    createHtmTBodyItem();
+  }
 
   async function postAjax() {
     let urlRequest = '';
@@ -378,7 +376,6 @@ $(document).ready(function () {
     }
   }
 
-
   // ====================================
 
   // Event And Crud
@@ -402,7 +399,6 @@ $(document).ready(function () {
     inputOnlyNumber(object);
   });
 
-	
   $(document).on('blur', '.inputkredit', function () {
     if ($(this).val() == '') {
       $(this).val(0);
@@ -412,9 +408,8 @@ $(document).ready(function () {
   });
 
   $(document).on('blur', '.inputdescriptiondetail', function () {
-
     let code = $(this).data('code');
-    calcCOA(code, 0, 'description' ,$(this).val());
+    calcCOA(code, 0, 'description', $(this).val());
   });
 
   $(document).on('focusin', '.inputkredit', function (e) {
@@ -431,10 +426,8 @@ $(document).ready(function () {
     if ($(this).val() == '') {
       $(this).val(formatRupiah1(0));
     }
-		$(this).val(formatRupiah1($(this).val()))
+    $(this).val(formatRupiah1($(this).val()));
   });
-
-
 
   $(document).on('focusin', '.inputamount', function (e) {
     let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val());
@@ -446,15 +439,14 @@ $(document).ready(function () {
     inputOnlyNumber(object);
   });
 
-
   $(document).on('click', '.btnaddcoa', function (event) {
-		populateCOA()
-	});
+    populateCOA();
+  });
 
   $(document).on('click', '.btndeletecoa', function (event) {
-		let code =  $(this).data("code");
-		deleteCOA(code)
-	});
+    let code = $(this).data('code');
+    deleteCOA(code);
+  });
 
   // Submit Button
   $(document).on('click', '.submitbtn', async function () {

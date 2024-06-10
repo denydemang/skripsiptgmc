@@ -23,12 +23,16 @@ class LedgerController extends AdminController
 
             $data = $request->all();
 
-            $coaCODELIST =  $data['coa'];
+            $coaCODELIST = [];
 
+            if($data['coa']){
+                
+                $coaCODELIST =  $data['coa'];
+            }
 
 
             $print = new PrintController();
-           return $print->printledgerreport($data['startDate'], $data['endDate'],  $coaCODELIST);
+           return $print->printledgerreport($data['startDate'], $data['endDate'] ,$coaCODELIST);
 
     }
 }

@@ -149,6 +149,19 @@ $(document).ready(async function () {
     window.open(urlRoute, '_blank');
   }
 
+  function printCOA2() {
+    let urlRoute = route('admin.PrintLedger');
+
+    urlRoute =
+      urlRoute +
+      `?coa=&startDate=${moment(supplyData.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}&endDate=${moment(
+        supplyData.endDate,
+        'DD/MM/YYYY'
+      ).format('YYYY-MM-DD')}`;
+
+    window.open(urlRoute, '_blank');
+  }
+
   // FN VALIDATE
   function validate() {
     if (listCOA.length == 0) {
@@ -182,6 +195,10 @@ $(document).ready(async function () {
     if (validate()) {
       printCOA();
     }
+  });
+
+  $(document).on('click', '.btnprint2', function () {
+    printCOA2();
   });
 
   $(document).on('change', '.inputstartdatetrans', function () {

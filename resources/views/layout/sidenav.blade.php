@@ -203,6 +203,7 @@
                             'admin.ledger',
                             'admin.trialbalance',
                             'admin.profitloss',
+                            'admin.balancesheet',
                             // 'admin.addPaymentView',
                             // 'admin.editPaymentView',
                             // 'admin.cashbook',
@@ -239,8 +240,9 @@
                                     <a href="{{ route('admin.profitloss') }}" class="nav-link">Profit & Loss
                                         Report</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a href="./pages/forms/validation.html" class="nav-link">Balance Sheet Report</a>
+                                <li class="nav-item {{ $sessionRoute == 'admin.balancesheet' ? 'active' : '' }}">
+                                    <a href="{{ route('admin.balancesheet') }}" class="nav-link">Balance Sheet
+                                        Report</a>
                                 </li>
                             </ul>
                         </div>
