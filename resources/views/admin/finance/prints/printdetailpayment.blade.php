@@ -125,7 +125,7 @@
 					<td>{{ $payment->payment_method }}</td>
 				</tr>
 			</table>
-			<h3>Description: </h3><span>asdsadasd</span>
+			<h3>Description: </h3><span>{{ $payment->description }}</span>
 			<div class="amount">
 				<p>Rp. <span>{{ number_format($payment->total_amount, 2, ',', '.') }}</span></p>
 			</div>

@@ -10,7 +10,7 @@ $(document).ready(function () {
   const tableCOAName = '.COASearchtable';
   const methodGetCOA = 'get';
   const columnCOA = [
-    { data: 'action', name: 'actions', title: 'Action', searchable: false, orderable: false, width: '10%' },
+    { data: 'action', name: 'actions', title: 'Action', searchable: false, orderable: false },
     { data: 'code', name: 'Code', title: 'COA CODE', searchable: true },
     { data: 'name', name: 'Name', title: 'COA Name', searchable: true },
     { data: 'type', name: 'type', title: 'COA Type', searchable: true },
@@ -18,11 +18,11 @@ $(document).ready(function () {
   ];
 
   function SHowTableCOA(method, tableName, columns, url, data = {}) {
-    const Table = new tableInitiator(method, tableName, columns, url, data);
+    const Table = new tableInitiator(method, tableName, columns, url, data, 0);
     Table.showTable();
   }
   function DestroyTableCOA(method, tableName, columns, url, data = {}) {
-    const Table = new tableInitiator(method, tableName, columns, url, data);
+    const Table = new tableInitiator(method, tableName, columns, url, data, 0);
     Table.destroyTable();
   }
 
@@ -39,6 +39,7 @@ $(document).ready(function () {
     modalCOASearch.modal('show');
     currentButton = $(this);
     reloadTableSearchCOA(methodGetCOA, tableCOAName, columnCOA, getDataCOA);
+    SHowTableCOA(methodGetCOA, tableCOAName, columnCOA, getDataCOA);
   });
 
   // Select COA
@@ -51,5 +52,6 @@ $(document).ready(function () {
     inputElement.val(COACODE);
     inputElementName.val(coaName);
     modalCOASearch.modal('hide');
+    DestroyTableCOA(methodGetCOA, tableCOAName, columnCOA, getDataCOA);
   });
 });

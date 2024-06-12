@@ -55,6 +55,25 @@ export const showconfirmapprove = (id, name, funcapprove = null, menuname) => {
   });
 };
 
+export const showconfirmposting = (id, name, funcposting = null, menuname) => {
+  $.confirm({
+    buttons: {
+      POST: function () {
+        funcposting(id, name);
+      },
+      CANCEL: {
+        action: function () {}
+      }
+    },
+    title: `Confirm Posting ?`,
+    content: `${menuname} : ${name} Will Be Posted On Ledger & Cannot Be Undone`,
+    icon: 'fa fa-question-circle-o',
+    theme: 'supervan',
+    animation: 'scale',
+    type: 'blue'
+  });
+};
+
 export const showconfirmstart = (id, name, funcstart = null, menuname) => {
   $.confirm({
     buttons: {

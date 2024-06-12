@@ -1,5 +1,14 @@
 export default class tableInitiator {
-  constructor(method = 'get', tableName = '', columns = [], url, data = function () {}, funcCell = function () {}, searchable = true) {
+  constructor(
+    method = 'get',
+    tableName = '',
+    columns = [],
+    url,
+    data = function () {},
+    fixedColumnsCount = 1,
+    funcCell = function () {},
+    searchable = true
+  ) {
     this.method = method;
     this.tableName = tableName;
     this.columns = columns;
@@ -7,6 +16,7 @@ export default class tableInitiator {
     this.data = data;
     this.funcCell = funcCell;
     this.searchable = searchable;
+    this.fixedColumnsCount = fixedColumnsCount;
     this.table = $(this.tableName).DataTable({
       fixedHeader: true,
       retrieve: true,
@@ -14,7 +24,7 @@ export default class tableInitiator {
       serverSide: true,
       searching: this.searchable,
       fixedColumns: {
-        start: 1
+        start: this.fixedColumnsCount
       },
       paging: true,
       scrollCollapse: true,

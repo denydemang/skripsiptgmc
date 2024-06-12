@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Advanced_Receipt;
+use App\Models\Cash_Receive;
 use App\Models\CashBook;
 use App\Models\Invoice;
 use App\Models\Item;
@@ -86,7 +87,7 @@ class PrintController extends AdminController
             "totalKreditRealisasi" => $totalKreditRealisasi ,
         ];
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->setPaper('A4', 'landscape');
         $pdf->loadview("admin.project.print.printjournalproject", $data);
         return $pdf->stream("JournalPorject-$id.pdf", array("Attachment" => false));
     }
@@ -95,7 +96,7 @@ class PrintController extends AdminController
 
         $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
         ->join('customers','projects.customer_code', '=', 'customers.code' )
-        ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 
+        ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description',
         'customers.name as customer_name', 'customers.address as customer_address')
         ->where("projects.code", $id)
         ->first();
@@ -103,7 +104,7 @@ class PrintController extends AdminController
         $project_detail = new ProjectDetailController();
         $project_detail = $project_detail->getDetail($id);
         $dataBahanBaku = $project_detail->get();
-        
+
 
         $project_detail_b = new ProjectDetailBController();
         $project_detail_b = $project_detail_b->getDetailB($id);
@@ -153,7 +154,7 @@ class PrintController extends AdminController
             "totalUpahrealisation" => $totalUpahrealisation
         ];
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->loadview("admin.project.print.printproject", $data);
         return $pdf->stream("ProjectReport-$id.pdf", array("Attachment" => false));
     }
@@ -161,10 +162,10 @@ class PrintController extends AdminController
     public function printprojectrecap($statuscode = null,$startdate,$lastdate, $customercode = null){
 
         try {
-             
+
         $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
         ->join('customers','projects.customer_code', '=', 'customers.code' )
-        ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 
+        ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description',
         'customers.name as customer_name', 'customers.address as customer_address')
         ->whereBetween('transaction_date' , [$startdate,$lastdate])
         ->when($statuscode !== null , function($query) use($statuscode){
@@ -189,18 +190,18 @@ class PrintController extends AdminController
 
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->setPaper('A4', 'landscape');
         $pdf->loadview("admin.project.print.printprojectrecap", $data);
         return $pdf->stream("ProjectRecapitulation($startdate-$lastdate).pdf", array("Attachment" => false));
         } catch (\Throwable $th) {
             abort(404);
         }
-      
+
 
     }
 
     public function printpurchaserequest($id){
-        
+
 
         $PurchaseRequest = Purchase_Request::join("purchase_request_details", "purchase_requests.pr_no" , "=", "purchase_request_details.pr_no")
                         ->leftJoin("items", 'items.code', "=", "purchase_request_details.item_code")
@@ -213,7 +214,7 @@ class PrintController extends AdminController
             "dataPR" =>  $PurchaseRequest
         ];
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->loadview("admin.inventory.print.printpurchaserequest" ,$data);
         return $pdf->stream("PurchaseRequest-($id).pdf", array("Attachment" => false));
     }
@@ -224,8 +225,8 @@ class PrintController extends AdminController
 
         $stock = Stock::join("items", "stocks.item_code", "=", "items.code")
         ->join('categories', "categories.code", "=", "items.category_code")
-        ->select('stocks.id', DB::raw('DATE(stocks.item_date) as item_date'), 'stocks.ref_no', 
-        'stocks.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+        ->select('stocks.id', DB::raw('DATE(stocks.item_date) as item_date'), 'stocks.ref_no',
+        'stocks.item_code' ,'items.name as item_name', 'categories.name as item_category',
         'stocks.unit_code', 'stocks.actual_stock', 'stocks.cogs', 'categories.coa_code')
         ->whereBetween('stocks.item_date', [$firstDate,$lastDate])->get();
 
@@ -238,7 +239,7 @@ class PrintController extends AdminController
         ];
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->setPaper('A4', 'landscape');
         $pdf->loadview("admin.inventory.print.printinventoryin", $data);
         return $pdf->stream("IIN-($firstDate to $lastDate).pdf", array("Attachment" => false));
     }
@@ -249,8 +250,8 @@ class PrintController extends AdminController
 
         $stock = Stocks_Out::join("items", "stocks_out.item_code", "=", "items.code")
         ->join('categories', "categories.code", "=", "items.category_code")
-        ->select('stocks_out.id', DB::raw('DATE(stocks_out.item_date) as item_date'), 'stocks_out.ref_no', 
-        'stocks_out.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+        ->select('stocks_out.id', DB::raw('DATE(stocks_out.item_date) as item_date'), 'stocks_out.ref_no',
+        'stocks_out.item_code' ,'items.name as item_name', 'categories.name as item_category',
         'stocks_out.unit_code', 'stocks_out.qty', 'stocks_out.cogs', 'categories.coa_code')
         ->whereBetween('stocks_out.item_date', [$firstDate,$lastDate])->get();
 
@@ -263,7 +264,7 @@ class PrintController extends AdminController
         ];
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->setPaper('A4', 'landscape');
         $pdf->loadview("admin.inventory.print.printinventoryout", $data);
         return $pdf->stream("IOUT-($firstDate to $lastDate).pdf", array("Attachment" => false));
     }
@@ -273,8 +274,8 @@ class PrintController extends AdminController
         $stock = Stock::Rightjoin("items", "stocks.item_code", "=", "items.code")
         ->join('categories', "categories.code", "=", "items.category_code")
         ->join('units', "units.code", "=", "items.unit_code")
-        ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 
-        'units.code as unit_code', DB::raw('sum(stocks.actual_stock) as actual_stock'), DB::raw('sum(stocks.used_stock) as used_stock'), 
+        ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category',
+        'units.code as unit_code', DB::raw('sum(stocks.actual_stock) as actual_stock'), DB::raw('sum(stocks.used_stock) as used_stock'),
         DB::raw('sum(stocks.actual_stock) - sum(stocks.used_stock) as available_stock'))
         ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code')->get();
 
@@ -283,7 +284,7 @@ class PrintController extends AdminController
         ];
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->setPaper('A4', 'landscape');
         $pdf->loadview("admin.inventory.print.printrecapstock", $data);
         return $pdf->stream("RecapStock.pdf", array("Attachment" => false));
     }
@@ -304,7 +305,7 @@ class PrintController extends AdminController
         ];
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
+        $pdf->setPaper('A4', 'landscape');
         $pdf->loadview("admin.inventory.print.printreminderstock", $data);
         return $pdf->stream("ReminderStock.pdf", array("Attachment" => false));
     }
@@ -318,7 +319,7 @@ class PrintController extends AdminController
         }
 
         $BeginningBalance = DB::select('
-        Select 
+        Select
 
         qry.item_code,
         qry.item_name,
@@ -327,27 +328,27 @@ class PrintController extends AdminController
         Round(qry.actual_stock - qry.pengurang, 2) as beginning_balance,
         qry.cogs,
         qry.cogs * (Round(qry.actual_stock - qry.pengurang, 2)) as total_cogs
-        
-        from 
-        
+
+        from
+
         (Select
             a.item_code,
             i.name as item_name,
-            a.ref_no , 
-            a.unit_code, 
+            a.ref_no ,
+            a.unit_code,
             a.actual_stock,
             (Select ifnull(sum(qty),0) from stocks_out where stocks_out.stock_id = a.id AND item_date < ?) as pengurang,
             a.cogs
-        
-        from stocks a 
+
+        from stocks a
         join items i
         on i.code = a.item_code
         where a.item_code = ? AND
         a.item_date < ?  ) as qry
-        
-        where 
+
+        where
         Round(qry.actual_stock - qry.pengurang, 2) > 0
-        ', [$startDate, $itemCode, $startDate]);    
+        ', [$startDate, $itemCode, $startDate]);
 
 
 
@@ -356,7 +357,7 @@ class PrintController extends AdminController
         'stocks.item_code' , "items.name as item_name", 'stocks.unit_code' , 'stocks.actual_stock as qty' , 'stocks.cogs',DB::raw('stocks.actual_stock * stocks.cogs as total_cogs'))
         ->where("stocks.item_code", $itemCode)
         ->whereBetween('stocks.item_date', [$startDate, $lastDate]);
-        
+
 
         $ITEMOUT = Stocks_Out::join("items", "items.code", "=", "stocks_out.item_code")
         ->select('stocks_out.item_date','stocks_out.ref_no' , DB::raw("'Pemakaian Proyek' As keterangan"),
@@ -367,7 +368,7 @@ class PrintController extends AdminController
 
         $UNIONALLRESULT = $ITEMIN->UnionALL($ITEMOUT)
                         ->orderBy('item_date', 'asc')->get();
-    
+
 
         $data = [
             'itemDesc' =>  $item ,
@@ -378,7 +379,7 @@ class PrintController extends AdminController
         ];
 
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A3', 'landscape'); 
+        $pdf->setPaper('A3', 'landscape');
         $pdf->loadview("admin.inventory.print.printstockcard" , $data);
         return $pdf->stream("StockCard.pdf", array("Attachment" => false));
     }
@@ -398,7 +399,7 @@ class PrintController extends AdminController
         "dataPurchase" => $Purchase
         ];
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->loadview("admin.transactions.prints.printPurchase" ,$data);
         return $pdf->stream("Purchase-($id).pdf", array("Attachment" => false));
     }
@@ -413,22 +414,22 @@ class PrintController extends AdminController
             ->select("coa.name", "journals.*", "journal_details.*")
             ->orderBy("journal_details.debit", 'desc')
             ->get();
-            
+
             if (count($journal) == 0){
                 throw new Exception();
             }
-    
+
             $Purchase = Purchase::join("suppliers", "purchases.supplier_code" , "=", "suppliers.code")
             ->select('purchases.*','purchases.created_by as dibuat_oleh',  DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
             ->where("purchases.purchase_no", $id)->get();
-    
+
             $data = [
                 "purchaseData" => $Purchase,
                 "journal" => $journal,
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.transactions.prints.printJurnalPurchase", $data);
             return $pdf->stream("JournalPurchase-$id.pdf", array("Attachment" => false));
 
@@ -436,7 +437,7 @@ class PrintController extends AdminController
             abort(404);
         }
 
-        
+
     }
 
     public function printrecappurchase($suppliercode ,$startDate, $endDate, $is_approve, $paidStatus){
@@ -457,45 +458,45 @@ class PrintController extends AdminController
                         case 0:
                             # Unpaid
                             $query->whereRaw("
-                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0 
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             ELSE 0
                             END = 1
-                            
+
                             ");
-    
+
                             break;
                         case 1:
                             # Fullpaid
                             $query->whereRaw("grand_total - paid_amount <= 0");
-    
+
                             break;
                         case 2:
                             # Outstanding
                             $query->whereRaw("
-                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0 
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             ELSE 0
                             END = 1
-                            
+
                             ");
-    
+
                             break;
                         case 3:
                             # Overdue
-                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0 
-                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0 
-                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0
                             ELSE 0
                             END = 1 ");
-    
+
                             break;
-                        
+
                     }
             })->get();
-    
+
             $data = [
                 "purchase" => $purchase,
                 "paidStatus" =>$paidStatus,
@@ -506,9 +507,9 @@ class PrintController extends AdminController
             ];
 
             // return $data;
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.transactions.prints.printrecappurchase", $data);
             return $pdf->stream("PurchaseRecap($startDate-$endDate).pdf", array("Attachment" => false));
         } catch (\Throwable $th) {
@@ -529,25 +530,25 @@ class PrintController extends AdminController
             ->select("coa.name", "journals.*", "journal_details.*")
             ->orderBy("journal_details.debit", 'desc')
             ->get();
-            
+
             if (count($journal) == 0){
                 throw new Exception();
             }
-    
+
             $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
             ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),
-                DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), 
+                DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'),
                 DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
             ->where("bkk_no", $id)
             ->first();
-    
+
             $data = [
                 "payment" => $payment,
                 "journal" => $journal,
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.finance.prints.printjurnalpayment", $data);
             return $pdf->stream("JournalPayment-$id.pdf", array("Attachment" => false));
 
@@ -555,7 +556,7 @@ class PrintController extends AdminController
             abort(404);
         }
 
-        
+
     }
 
     public function printdetailpayment($id){
@@ -569,14 +570,14 @@ class PrintController extends AdminController
             if (!$payment){
                 throw new Exception();
             }
-    
+
             $data = [
                 "payment" => $payment,
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
             $customPaper = array(0,0,660,460);
-            $pdf->setPaper($customPaper); 
+            $pdf->setPaper($customPaper);
             $pdf->loadview("admin.finance.prints.printdetailpayment", $data);
             return $pdf->stream("$id.pdf", array("Attachment" => false));
 
@@ -588,37 +589,37 @@ class PrintController extends AdminController
 
     public function printrecappayment($suppliercode ,$startDate, $endDate, $is_approve){
 
-    try {
+        try {
 
-        //code...
-        $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
-        ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
-        ->whereBetween('transaction_date', [$startDate,$endDate])
-        ->when($is_approve !== null , function($query) use($is_approve){
-            $query->where('is_approve', $is_approve);
-        })
-        ->when($suppliercode !== null , function($query) use($suppliercode){
-            $query->where('supplier_code', $suppliercode);
-        })->get();
+            //code...
+            $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
+            ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
+            ->whereBetween('transaction_date', [$startDate,$endDate])
+            ->when($is_approve !== null , function($query) use($is_approve){
+                $query->where('is_approve', $is_approve);
+            })
+            ->when($suppliercode !== null , function($query) use($suppliercode){
+                $query->where('supplier_code', $suppliercode);
+            })->get();
 
-        $data = [
-            "payments" => $payment,
-            "is_approve"=> $is_approve,
-            "startDate" => $startDate,
-            "endDate" => $endDate,
-            'suppliercode'=> $suppliercode
-        ];
+            $data = [
+                "payments" => $payment,
+                "is_approve"=> $is_approve,
+                "startDate" => $startDate,
+                "endDate" => $endDate,
+                'suppliercode'=> $suppliercode
+            ];
 
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape'); 
-        $pdf->loadview("admin.finance.prints.printrecappayment", $data);
-        return $pdf->stream("PaymentRecap($startDate-$endDate).pdf", array("Attachment" => false));
-    } catch (\Throwable $th) {
-        throw new \Exception($th->getMessage());
-        // abort(404);
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->loadview("admin.finance.prints.printrecappayment", $data);
+            return $pdf->stream("PaymentRecap($startDate-$endDate).pdf", array("Attachment" => false));
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+            // abort(404);
+        }
+
     }
-
-}
 
     public function printcashbookjournal($id){
         try {
@@ -629,20 +630,20 @@ class PrintController extends AdminController
             ->select("coa.name", "journals.*", "journal_details.*")
             ->orderBy("journal_details.debit", 'desc')
             ->get();
-            
+
             if (count($journal) == 0){
                 throw new Exception();
             }
-    
+
             $cashbook = CashBook::where("cash_no", $id)->first();
-    
+
             $data = [
                 "cashbook" => $cashbook,
                 "journal" => $journal,
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.finance.prints.printjurnalcashbook", $data);
             return $pdf->stream("JournalCashBook-$id.pdf", array("Attachment" => false));
 
@@ -660,23 +661,23 @@ class PrintController extends AdminController
             ->select("coa.name", "journals.*", "journal_details.*")
             ->orderBy("journal_details.debit", 'desc')
             ->get();
-            
+
             if (count($journal) == 0){
                 throw new Exception();
             }
-    
+
             $advancedreceipt = Advanced_Receipt::where("adr_no", $id)
                                 ->join("customers", "advanced_receipts.customer_code", "=", "customers.code")
                                 ->select("advanced_receipts.*", 'customers.code as customer_code', "customers.name as customer_name")
                                 ->first();
-    
+
             $data = [
                 "advancedreceipt" => $advancedreceipt,
                 "journal" => $journal,
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.finance.prints.printjurnaladvancedreceipt", $data);
             return $pdf->stream("Journaladvancedreceipt-$id.pdf", array("Attachment" => false));
 
@@ -684,7 +685,7 @@ class PrintController extends AdminController
             abort(404);
         }
     }
-    
+
     public function printdetailadr($id){
         try {
             //code...
@@ -695,15 +696,15 @@ class PrintController extends AdminController
             if (!$AdvancedReceipt){
                 throw new Exception();
             }
-    
+
             $data = [
                 "AdvancedReceipt" => $AdvancedReceipt,
                 "Terbilang" => $this->terbilang(floatval($AdvancedReceipt->deposit_amount))
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
             $customPaper = array(0,0,660,460);
-            $pdf->setPaper($customPaper); 
+            $pdf->setPaper($customPaper);
             $pdf->loadview("admin.finance.prints.printdetailAdvancedReceipt", $data);
             return $pdf->stream("AdvancedReceipt($id).pdf", array("Attachment" => false));
 
@@ -716,7 +717,7 @@ class PrintController extends AdminController
     public function printrecapar($customercode ,$startDate, $endDate, $is_approve){
 
         try {
-    
+
             //code...
             $AR = Advanced_Receipt::join("customers", "advanced_receipts.customer_code" , "=", "customers.code")
             ->select('advanced_receipts.*', DB::raw('ifnull(customers.name ,"-" ) as customer_name'),  DB::raw('ifnull(customers.address ,"-" ) as customer_address'), DB::raw('ifnull(customers.phone,"-" ) as customer_phone'))
@@ -727,7 +728,7 @@ class PrintController extends AdminController
             ->when($customercode !== null , function($query) use($customercode){
                 $query->where('customer_code', $customercode);
             })->get();
-    
+
             $data = [
                 "AR" => $AR,
                 "is_approve"=> $is_approve,
@@ -735,15 +736,15 @@ class PrintController extends AdminController
                 "endDate" => $endDate,
                 'customercode'=> $customercode
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.finance.prints.printrecapar", $data);
             return $pdf->stream("AdvancedReceiptRecap($startDate-$endDate).pdf", array("Attachment" => false));
         } catch (\Throwable $th) {
             throw new \Exception($th->getMessage());
         }
-    
+
     }
 
     public function printjurnalinvoice($id){
@@ -757,23 +758,23 @@ class PrintController extends AdminController
             ->select("coa.name", "journals.*", "journal_details.*")
             ->orderBy("journal_details.debit", 'desc')
             ->get();
-            
+
             if (count($journal) == 0){
                 throw new Exception();
             }
-    
+
             $invoice = Invoice::where("invoice_no", $id)
                                 ->join("customers", "invoices.customer_code", "=", "customers.code")
                                 ->select("invoices.*", 'customers.code as customer_code', "customers.name as customer_name")
                                 ->first();
-    
+
             $data = [
                 "invoice" => $invoice,
                 "journal" => $journal,
             ];
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.transactions.prints.printjurnalinvoice", $data);
             return $pdf->stream("JournalInvoice-$id.pdf", array("Attachment" => false));
         } catch (\Throwable $th) {
@@ -790,7 +791,7 @@ class PrintController extends AdminController
         ->where("invoices.invoice_no", $id)->first();
 
         // return $invoices;
-        
+
         if (!$invoices){
         abort(404);
         };
@@ -799,7 +800,7 @@ class PrintController extends AdminController
         "terbilang" => $this->terbilang(floatval($invoices['grand_total']) - floatval($invoices['paid_amount']))
         ];
         $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'potrait'); 
+        $pdf->setPaper('A4', 'potrait');
         $pdf->loadview("admin.transactions.prints.printdetailinvoice",$data);
         return $pdf->stream("Invoice-($id).pdf", array("Attachment" => false));
 
@@ -825,46 +826,46 @@ class PrintController extends AdminController
                         case 0:
                             # Unpaid
                             $query->whereRaw("
-                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0 
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount = 0
                             ELSE 0
                             END = 1
-                            
+
                             ");
-    
+
                             break;
                         case 1:
                             # Fullpaid
                             $query->whereRaw("grand_total - paid_amount <= 0");
-    
+
                             break;
                         case 2:
                             # Outstanding
                             $query->whereRaw("
-                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0 
+                            CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) <= 0 AND grand_total - paid_amount > 0 AND paid_amount > 0
                             ELSE 0
                             END = 1
-                            
+
                             ");
-    
+
                             break;
                         case 3:
                             # Overdue
-                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0 
-                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0 
-                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0 
+                            $query->whereRaw("CASE WHEN payment_term_code LIKE 'n/30' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 30 DAY)) > 0 AND grand_total - paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/60' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 60 DAY)) > 0 AND grand_total - paid_amount > 0
+                            WHEN payment_term_code LIKE 'n/90' THEN DATEDIFF(CURDATE() , DATE_ADD(transaction_date, INTERVAL 90 DAY)) > 0 AND grand_total - paid_amount > 0
                             ELSE 0
                             END = 1 ");
-    
+
                             break;
-                        
+
                     }
             })->get();
 
-    
+
             $data = [
                 "invoice" => $invoice,
                 "paidStatus" =>$paidStatus,
@@ -875,14 +876,760 @@ class PrintController extends AdminController
             ];
 
             // return $data;
-    
+
             $pdf = App::make('dompdf.wrapper');
-            $pdf->setPaper('A4', 'landscape'); 
+            $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.transactions.prints.printrecapinvoice", $data);
             return $pdf->stream("PurchaseRecap($startDate-$endDate).pdf", array("Attachment" => false));
         } catch (\Throwable $th) {
             throw new \Exception($th->getMessage());
             // abort(404);
+        }
+    }
+
+    public function printjurnalreceipt($id){
+
+        try {
+            //code...
+            $journal = Journal::join('journal_details', "journals.voucher_no", "=", "journal_details.voucher_no")
+            ->join("coa", "journal_details.coa_code", "=", "coa.code")
+            ->where("journals.ref_no", $id)
+            ->select("coa.name", "journals.*", "journal_details.*")
+            ->orderBy("journal_details.debit", 'desc')
+            ->get();
+
+            if (count($journal) == 0){
+                throw new Exception();
+            }
+
+            $receipt = Cash_Receive::join("customers", "cash_receives.customer_code" , "=", "customers.code")
+            ->select('cash_receives.*', DB::raw('ifnull(customers.name ,"-" ) as customer_name'),
+                DB::raw('ifnull(customers.address ,"-" ) as customer_address'),
+                DB::raw('ifnull(customers.phone,"-" ) as customer_phone'))
+            ->where("bkm_no", $id)
+            ->first();
+
+            $data = [
+                "receipt" => $receipt,
+                "journal" => $journal,
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->loadview("admin.finance.prints.printjurnalreceipt", $data);
+            return $pdf->stream("JournalReceipt-$id.pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+
+    }
+
+    public function printdetailreceipt($id){
+        try {
+            //code...
+            $receives = Cash_Receive::join("customers", "cash_receives.customer_code" , "=", "customers.code")
+            ->join('invoices', 'cash_receives.ref_no', '=', 'invoices.invoice_no')
+            ->join('project_realisations', 'project_realisations.code', '=', 'invoices.project_realisation_code')
+            ->join('projects', 'project_realisations.project_code', '=', 'projects.code')
+            ->select('cash_receives.*','cash_receives.ref_no as invoice_no',  'project_realisations.code as project_realisation_code','projects.code as project_code', 'projects.name as project_name',
+            DB::raw('ifnull(customers.name ,"-" ) as customer_name'),
+            DB::raw('ifnull(customers.address ,"-" ) as customer_address'),
+            DB::raw('ifnull(customers.phone,"-" ) as customer_phone'))
+            ->where("cash_receives.bkm_no" , $id)->first();
+
+            $receives->terbilang = $this->terbilang(floatval($receives->total_amount));
+
+
+            if (!$receives){
+                throw new Exception();
+            }
+
+            $data = [
+                "receives" => $receives,
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $customPaper = array(0,0,660,460);
+            $pdf->setPaper($customPaper);
+            $pdf->loadview("admin.finance.prints.printdetailreceipt", $data);
+            return $pdf->stream("BKM-Invoice$receives->invoice_no.pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+        //    return $th->getMes!;
+        }
+    }
+
+    public function printrecapreceipt($customercode,$startDate, $endDate, $is_approve){
+
+        try {
+
+            //code...
+            $receipt = Cash_Receive::join("customers", "cash_receives.customer_code" , "=", "customers.code")
+            ->select('cash_receives.*', DB::raw('ifnull(customers.name ,"-" ) as customer_name'),  DB::raw('ifnull(customers.address ,"-" ) as customer_address'), DB::raw('ifnull(customers.phone,"-" ) as customer_phone'))
+            ->whereBetween('transaction_date', [$startDate,$endDate])
+            ->when($is_approve !== null , function($query) use($is_approve){
+                $query->where('is_approve', $is_approve);
+            })
+            ->when($customercode !== null , function($query) use($customercode){
+                $query->where('cash_receives.customer_code', $customercode);
+            })->get();
+
+            $data = [
+                "receipts" => $receipt,
+                "is_approve"=> $is_approve,
+                "startDate" => $startDate,
+                "endDate" => $endDate,
+                'customercode'=> $customercode
+            ];
+
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->loadview("admin.finance.prints.printrecapreceipt", $data);
+            return $pdf->stream("ReceiptRecap($startDate-$endDate).pdf", array("Attachment" => false));
+        } catch (\Throwable $th) {
+            throw new \Exception($th->getMessage());
+            // abort(404);
+        }
+
+    }
+
+    public function printledgerreport(string $startDate, string $endDate, array $listCOACODE = []){
+
+
+        try {
+                //code...
+             
+
+              
+        $result= "";
+        if (count($listCOACODE) >0){
+            
+            $coaString = "(". "'" . implode("', '", $listCOACODE) . "'" . ")";
+            $result = DB::select(
+                "
+                SELECT
+                    coalist.coa_code,
+                    coalist.coa_name,
+                    coalist.default_dk,
+                    transaksi.voucher_no,
+                    transaksi.transaction_date,
+                    transaksi.ref_no,
+                    transaksi.description,
+                    transaksi.debit,
+                    transaksi.kredit,
+                    coalist.beginning_balance + IFNULL( qrybeginningbalance.BalanceAmount, 0 ) AS BeginBalance 
+                FROM
+    
+                (
+                SELECT
+                    coa.code as coa_code,
+                    coa.name as coa_name,
+                    coa.default_dk,
+                    ifnull(coa.beginning_balance, 0) as beginning_balance
+                from coa
+                where coa.code IN $coaString
+    
+    
+                ) as coalist
+    
+                LEFT JOIN
+                    (
+                    SELECT
+                        j.voucher_no,
+                        j.transaction_date,
+                        j.ref_no,
+                        j.journal_type_code,
+                        jd.coa_code,
+                        coa.`name` AS coa_name,
+                        jd.description,
+                        jd.debit,
+                        jd.kredit 
+                    FROM
+                        journals j
+                        INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                        INNER JOIN coa ON coa.`code` = jd.coa_code 
+                    WHERE
+                        j.posting_status = 1 AND
+                        CAST(j.transaction_date as DATE) between ? AND ?
+                    ) transaksi
+                    
+                    ON coalist.coa_code = transaksi.coa_code
+                    LEFT JOIN 
+                    (
+                    SELECT
+                        qry.coa_code,
+                        qry.coa_name,
+                    CASE
+                            default_dk 
+                            WHEN 'D' THEN
+                            IFNULL( SUM( qry.debit - qry.kredit ), 0 ) ELSE IFNULL( SUM(qry.kredit - qry.debit ), 0 ) 
+                        END AS BalanceAmount 
+                    FROM
+                        (
+                        SELECT
+                            j.voucher_no,
+                            j.transaction_date,
+                            j.ref_no,
+                            j.journal_type_code,
+                            jd.coa_code,
+                            coa.`name` AS coa_name,
+                            jd.description,
+                            jd.debit,
+                            jd.kredit,
+                            coa.beginning_balance,
+                            coa.default_dk 
+                        FROM
+                            journals j
+                            INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                            INNER JOIN coa ON coa.`code` = jd.coa_code 
+                        WHERE
+                            j.posting_status = 1 
+                        ) qry 
+                    WHERE
+                        CAST(qry.transaction_date as DATE) < ?
+                    GROUP BY
+                        qry.coa_code,
+                    qry.coa_name 
+                    ) qrybeginningbalance 
+                    
+                    ON coalist.coa_code = qrybeginningbalance.coa_code
+    
+    
+                    GROUP BY coalist.coa_code, transaksi.voucher_no, qrybeginningbalance.BalanceAmount
+                    
+                    ORDER BY coalist.coa_code , transaksi.transaction_date 
+    
+    
+                
+    
+                
+                " , [$startDate,$endDate, $startDate]
+            
+                );
+        } else {
+                
+            $coaString = "(". "'" . implode("', '", $listCOACODE) . "'" . ")";
+            $result = DB::select(
+                "
+                SELECT
+                    coalist.coa_code,
+                    coalist.coa_name,
+                    coalist.default_dk,
+                    transaksi.voucher_no,
+                    transaksi.transaction_date,
+                    transaksi.ref_no,
+                    transaksi.description,
+                    transaksi.debit,
+                    transaksi.kredit,
+                    coalist.beginning_balance + IFNULL( qrybeginningbalance.BalanceAmount, 0 ) AS BeginBalance 
+                FROM
+    
+                (
+                SELECT
+                    coa.code as coa_code,
+                    coa.name as coa_name,
+                    coa.default_dk,
+                    ifnull(coa.beginning_balance, 0) as beginning_balance
+                from coa
+    
+                ) as coalist
+    
+                LEFT JOIN
+                    (
+                    SELECT
+                        j.voucher_no,
+                        j.transaction_date,
+                        j.ref_no,
+                        j.journal_type_code,
+                        jd.coa_code,
+                        coa.`name` AS coa_name,
+                        jd.description,
+                        jd.debit,
+                        jd.kredit 
+                    FROM
+                        journals j
+                        INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                        INNER JOIN coa ON coa.`code` = jd.coa_code 
+                    WHERE
+                        j.posting_status = 1 AND
+                        CAST(j.transaction_date as DATE) between ? AND ?
+                    ) transaksi
+                    
+                    ON coalist.coa_code = transaksi.coa_code
+                    LEFT JOIN 
+                    (
+                    SELECT
+                        qry.coa_code,
+                        qry.coa_name,
+                    CASE
+                            default_dk 
+                            WHEN 'D' THEN
+                            IFNULL( SUM( qry.debit - qry.kredit ), 0 ) ELSE IFNULL( SUM(qry.kredit - qry.debit ), 0 ) 
+                        END AS BalanceAmount 
+                    FROM
+                        (
+                        SELECT
+                            j.voucher_no,
+                            j.transaction_date,
+                            j.ref_no,
+                            j.journal_type_code,
+                            jd.coa_code,
+                            coa.`name` AS coa_name,
+                            jd.description,
+                            jd.debit,
+                            jd.kredit,
+                            coa.beginning_balance,
+                            coa.default_dk 
+                        FROM
+                            journals j
+                            INNER JOIN journal_details jd ON j.voucher_no = jd.voucher_no
+                            INNER JOIN coa ON coa.`code` = jd.coa_code 
+                        WHERE
+                            j.posting_status = 1 
+                        ) qry 
+                    WHERE
+                        CAST(qry.transaction_date as DATE) < ?
+                    GROUP BY
+                        qry.coa_code,
+                    qry.coa_name 
+                    ) qrybeginningbalance 
+                    
+                    ON coalist.coa_code = qrybeginningbalance.coa_code
+    
+    
+                    GROUP BY coalist.coa_code, transaksi.voucher_no, qrybeginningbalance.BalanceAmount
+                    
+                    ORDER BY coalist.coa_code , transaksi.transaction_date 
+    
+    
+                
+    
+                
+                " , [$startDate,$endDate, $startDate]
+            
+                );
+        }
+
+                    
+      
+                    
+                    
+                    $groupedData = collect($result)->groupBy('coa_code');
+                    
+            
+                    $data = [
+                        'coaData' => $groupedData,
+                        'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                        'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                    ];
+
+                    $pdf = App::make('dompdf.wrapper');
+                    $pdf->setPaper('A4', 'landscape');
+                    $pdf->loadview("admin.accounting.prints.printledgerreport",$data);
+                    return $pdf->stream("BukuBesar($startDate-$endDate).pdf", array("Attachment" => false));
+    
+            } catch (\Throwable $th) {
+                abort(404);
+            }
+    }
+
+    public function printtrialbalancereport(string $startDate, string $endDate){
+
+        try {
+            //code...
+
+            $result = DB::select(
+                "
+                SELECT
+                coa.code,
+                coa.name,
+                IFNULL(coa.beginning_balance + IFNULL(BeginBalanceQuery.beginningBalance, 0), 0) As beginning_balance,
+                IFNULL(qrycurrenttransaction.debit, 0) as debit,
+                IFNULL(qrycurrenttransaction.kredit, 0) as kredit,
+                CASE coa.default_dk
+                    WHEN 'D' THEN
+                        IFNULL(coa.beginning_balance + IFNULL(BeginBalanceQuery.beginningBalance, 0), 0) + IFNULL(qrycurrenttransaction.debit ,0) - IFNULL(qrycurrenttransaction.kredit, 0)
+                    ELSE
+                            IFNULL(coa.beginning_balance + IFNULL(BeginBalanceQuery.beginningBalance, 0), 0) - IFNULL(qrycurrenttransaction.debit ,0) + IFNULL(qrycurrenttransaction.kredit, 0)
+                END AS total
+                
+                FROM
+                coa
+                LEFT JOIN
+                (
+                Select 
+                jd.coa_code,
+                SUM(IFNULL(jd.debit, 0)) as debit,
+                SUM(IFNULL(jd.kredit, 0 )) as kredit
+                from 
+                journals j INNER JOIN journal_details jd 
+                on j.voucher_no = jd.voucher_no
+                where j.posting_status = 1 AND
+                j.transaction_date BETWEEN ? AND ?
+                GROUP BY jd.coa_code
+                ) qrycurrenttransaction
+                
+                ON coa.code = qrycurrenttransaction.coa_code
+                LEFT JOIN
+                (
+                SELECT 
+                qry.coa_code,
+                CASE 
+                WHEN (qry.default_dk = 'D') THEN
+                SUM(IFNULL(qry.debit,0)- IFNULL(qry.kredit, 0))
+                ELSE
+                SUM(IFNULL(qry.kredit, 0) - IFNULL(qry.debit,0))
+                
+                END AS beginningBalance
+                
+                FROM
+                (
+                
+                SELECT j.voucher_no , 
+                j.transaction_date, 
+                j.ref_no, 
+                j.posting_status , 
+                jd.coa_code,
+                jd.description,
+                jd.debit,
+                jd.kredit,
+                coa.default_dk
+                from 
+                journals j INNER JOIN journal_details jd 
+                on j.voucher_no = jd.voucher_no
+                INNER JOIN coa 
+                on jd.coa_code = coa.`code`
+                where j.posting_status = 1 AND
+                j.transaction_date < ?
+                ) qry
+                GROUP BY qry.coa_code 
+                ) BeginBalanceQuery
+                
+                ON coa.code = BeginBalanceQuery.coa_code
+                where coa.description = 'Detail'
+                
+                GROUP BY coa.code, coa.name, qrycurrenttransaction.debit,qrycurrenttransaction.kredit,coa.beginning_balance,BeginBalanceQuery.beginningBalance,coa.default_dk
+                order by coa.code
+                                
+                
+                " , [$startDate,$endDate, $startDate]
+            
+                );
+
+                
+        
+                $data = [
+                    'coaData' => $result,
+                    'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A4', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printtrialbalancereport",$data);
+                return $pdf->stream("TrialBalance($startDate-$endDate).pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+    }
+    
+    public function printtriallrreport(string $startDate, string $endDate){
+
+        try {
+            //code...
+
+            $result = DB::select(
+                "
+
+                SELECT 
+                    coa.type as Tipe,
+                    coa.code ,
+                    coa.name ,
+                    coa.description,
+                    sum(jd.debit) as debit,
+                    sum(jd.kredit) as kredit,
+                    sum(jd.kredit) - sum(jd.debit) as Total 
+
+                FROM
+                coa
+                    INNER JOIN journal_details jd
+                    ON coa.`code` = jd.coa_code
+                    INNER JOIN journals j 
+                    ON jd.voucher_no = j.voucher_no
+                where SUBSTR(coa.`code`,1,1) NOT IN (1,2,3) AND
+                coa.description ='Detail' AND
+                j.transaction_date between ? AND ? AND
+                j.posting_status = 1
+
+                GROUP BY 
+                coa.code,
+                coa.name,
+                coa.description,
+                coa.type
+
+                ORDER BY
+                coa.code
+                
+                " , [$startDate,$endDate]
+            
+                );
+
+                $groupedData = collect($result)->groupBy('Tipe');
+        
+                $data = [
+                    'coaData' => $groupedData,
+                    'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A4', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printlabarugi",$data);
+                return $pdf->stream("LabaRugi($startDate-$endDate).pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(400);
+        }
+    }
+
+    public function journalrecap(string $startDate, string $endDate, $isposting = null, $journaltype= null){
+
+       
+        try {
+            
+            $journal = Journal::join('journal_details as jd', 'journals.voucher_no', '=', 'jd.voucher_no')
+            ->join("coa", "coa.code", "=", "jd.coa_code")
+            ->select("journals.voucher_no", "journals.transaction_date", "coa.code", "coa.name", 'jd.debit', "jd.kredit" ,"jd.description")
+            ->whereBetween('journals.transaction_date', [$startDate,$endDate])
+            ->when($isposting !== null , function($query) use($isposting){
+                $query->where("posting_status" , intval($isposting));
+            })
+            ->when($journaltype !== null , function($query) use($journaltype){
+                $query->where("journal_type_code" , $journaltype);
+            })
+            ->groupBy("journals.voucher_no" ,"journals.transaction_date", "coa.code", "coa.name", 'jd.debit', "jd.kredit", "jd.description")
+            ->orderBy("journals.transaction_date", "asc")->orderBy("journals.voucher_no", "asc")->get();
+
+            $groupedData = collect($journal)->groupBy('voucher_no');
+            $data = [
+                'statusposting' => $isposting,
+                'journaltype' => $journaltype,
+                'coaData' => $groupedData,
+                'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'potrait');
+            $pdf->loadview("admin.accounting.prints.printjournalrecap",$data);
+            return $pdf->stream("JournalRecap($startDate-$endDate).pdf", array("Attachment" => false));
+                
+            
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+
+    }
+
+    public function printbalancesheetreport(string $endDate){
+
+        try {
+            //code...
+            $result = DB::select(
+                "
+                    -- aktiva
+                                    
+                    SELECT 
+                    coa.type ,
+                    CASE SUBSTR(coa.`code` ,1,5)
+                    WHEN  '10.01' THEN
+                            'AKTIVA LANCAR'
+                    WHEN '10.02' THEN
+                            'AKTIVA TETAP' END AS header,
+                    queryaktiva.`code`,
+                    coa.name ,
+                    queryaktiva.beginning_balance + queryaktiva.balance as balance
+                    from
+                    (
+                            SELECT
+                            coa.`code`,
+                            coa.beginning_balance,
+                            SUM(IFNULL(qry1.balance_amount, 0)) as balance
+                            from coa
+                            LEFT JOIN
+                            (
+                                SELECT 
+                                        jd.coa_code,
+                                        (jd.debit - jd.kredit) as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date <= ? AND
+                                        SUBSTRING(coa.code,1,1) = 1 
+                                        
+                                        GROUP BY jd.coa_code , jd.debit - jd.kredit
+                                        
+                                ) qry1
+                            on coa.`code` =  qry1.coa_code
+    
+                            Where coa.code like '1%' AND coa.description = 'Detail'
+                            GROUP BY coa.`code`, coa.beginning_balance
+                                                    
+                    ) queryaktiva							
+                    INNER JOIN 
+                    coa ON coa.code = queryaktiva.code
+    
+                    UNION ALL
+    
+                    -- Utang
+                    SELECT 
+                    coa.type ,
+                    CASE SUBSTR(coa.`code` ,1,5)
+                    WHEN  '20.01' THEN
+                            'UTANG LANCAR'
+                    WHEN '20.02' THEN
+                            'UTANG JK.PANJANG' END AS header,
+                    queryutang.`code`,
+                    coa.name ,
+                    queryutang.beginning_balance + queryutang.balance as balance
+                    from
+                    (
+                            SELECT
+                            coa.`code`,
+                            coa.beginning_balance,
+                            SUM(IFNULL(qry2.balance_amount, 0)) as balance
+                            from coa
+                            LEFT JOIN
+                            (
+                                SELECT 
+                                        jd.coa_code,
+                                        (jd.kredit - jd.debit) as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date <= ? AND
+                                        SUBSTRING(coa.code,1,1) = 2
+                                        
+                                        GROUP BY jd.coa_code , jd.kredit - jd.debit
+                                        
+                                ) qry2
+                            on coa.`code` =  qry2.coa_code
+    
+                            Where coa.code like '2%' AND coa.description = 'Detail'
+                            GROUP BY coa.`code`, coa.beginning_balance
+                                                    
+                    ) queryutang							
+                    INNER JOIN 
+                    coa ON coa.code = queryutang.code
+    
+                    UNION ALL
+    
+                    -- modal
+                    SELECT 
+                    'Passiva' as type ,	
+                    'EKUITAS' as header,
+                    queryekuitas.`code`,
+                    coa.name ,
+                    queryekuitas.beginning_balance + queryekuitas.balance as balance
+                    from
+                    (
+                            SELECT
+                            coa.`code`,
+                            coa.beginning_balance,
+                            SUM(IFNULL(qry3.balance_amount, 0)) as balance
+                            from coa
+                            LEFT JOIN
+                            (
+                                SELECT 
+                                        jd.coa_code,
+                                        (jd.kredit - jd.debit) as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date <= ? AND
+                                        SUBSTRING(coa.code,1,1) = 3
+                                        
+                                        GROUP BY jd.coa_code , jd.kredit - jd.debit
+                                        
+                                ) qry3
+                            on coa.`code` =  qry3.coa_code
+    
+                            Where coa.code like '3%' AND coa.code NOT IN ('30.02.02' , '30.02.03') AND coa.description = 'Detail'
+                            GROUP BY coa.`code`, coa.beginning_balance
+                                                    
+                    ) queryekuitas
+                                                    
+                    INNER JOIN 
+                    coa ON coa.code = queryekuitas.code
+    
+                    UNION ALL
+    
+                    -- laba rugi s/d bulan ini
+                    SELECT 
+                    'Passiva' as type ,	
+                    'EKUITAS' as header,
+                    '30.02.02' as code,
+                    'Laba s/d Bulan Ini' as name,
+                    IFNULL(sum(qry4.Total),0) as balance
+                    from 
+                    (SELECT 
+                            coa.code ,
+                            sum(jd.kredit) - sum(jd.debit) as Total 
+                    FROM
+                    coa
+                                    INNER JOIN journal_details jd
+                                    ON coa.`code` = jd.coa_code
+                                    INNER JOIN journals j 
+                                    ON jd.voucher_no = j.voucher_no
+                    where SUBSTR(coa.`code`,1,1) NOT IN (1,2,3) AND
+                    coa.description ='Detail' AND
+                    j.transaction_date <= ? AND
+                    j.posting_status = 1
+    
+                    GROUP BY 
+                    coa.code
+                    ) qry4
+                
+                " , [$endDate, $endDate, $endDate, $endDate]
+            
+                );
+    
+                $grouped = [];
+    
+                foreach ($result as $account) {
+                    $grouped[$account->type][$account->header][] = $account;
+                }
+
+                $data = [
+                    'dataCoa' => $grouped,
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A3', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printbalancesheet", $data);
+                return $pdf->stream("BalanceSheet(S.d$endDate).pdf", array("Attachment" => false));
+    
+        } catch (\Throwable $th) {
+            abort(400);
         }
     }
 }

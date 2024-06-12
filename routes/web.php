@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdvanceReceiptController;
+use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\CashBookController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\COAController;
@@ -10,16 +11,21 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\JournalController;
+use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfitLossController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseRequestController;
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\TrialBalanceConttroller;
 use App\Http\Controllers\UpahController;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
@@ -262,6 +268,19 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             <?php }
         }
     })->name('admin.JSONcoa');
+
+    Route::get('/admin/JSONcoa1', function () {
+        if (request()->ajax()) {
+            $coaAll = COA::where('description', 'detail')->get(['code', 'name', 'description']);
+            // return json_encode($coaAll);
+            ?>
+            <option></option>
+            <?php
+            foreach ($coaAll as $ca) { ?>
+                <option value="<?php echo $ca->code.'-'.$ca->name?>"><?php echo $ca->code.' - '.$ca->name?></option>
+            <?php }
+        }
+    })->name('admin.JSONcoa1');
     Route::get('/admin/JSONunit', function () {
         if (request()->ajax()) {
             $unitAll = Unit::all(['code', 'name']);
@@ -300,14 +319,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // -----------------------------------------
     Route::controller(PurchaseRequestController::class)->group(function(){
 
-        
+
         // GET VIEW
         Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
         Route::get("admin/purchaserequest/getForModal", 'getDataPRForModal')->name('admin.PRGetForModal');
         Route::get('/admin/purchaserequest/add' ,'getViewPRManage')->name('admin.addprview');
         Route::get('/admin/purchaserequest/edit/{code}' ,'getViewPRManage')->name('admin.editprview');
-        
-        
+
+
         // CRUD
         Route::post('/admin/purchaserequest/add' ,'addPR')->name('admin.addpr');
         Route::post('/admin/purchaserequest/edit/{id}' ,'editPR')->name('admin.editpr');
@@ -335,7 +354,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
         Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
         Route::post('/admin/stockcard/gettable', 'getTableStockCard')->name('admin.tablestockcard');
-        
+
         // Print
         Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
         Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
@@ -373,7 +392,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/payment', 'getViewPayment')->name('admin.payment');
         Route::get('/admin/payment/add', 'getViewPaymentManage')->name('admin.addPaymentView');
         Route::get('/admin/payment/edit/{id}', 'getViewPaymentManage')->name('admin.editPaymentView');
-        
+
         // CRUD
         Route::post('/admin/payment/gettable', 'getTablePayment')->name('admin.tablepayment');
         Route::post('/admin/payment/add', 'addPayment')->name('admin.addpayment');
@@ -396,7 +415,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/cashbook', 'getViewCashBook')->name('admin.cashbook');
         Route::get('/admin/cashbook/add', 'getViewCashbookManage')->name('admin.addCashbookView');
         Route::get('/admin/cashbook/edit/{id}', 'getViewCashbookManage')->name('admin.editCashbookView');
-        
+
         // CRUD
         Route::post('/admin/cashbook/gettable', 'getTableCashBook')->name('admin.tablecashbook');
         Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -421,7 +440,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/advancedreceipt', 'getViewAdvancedReceipt')->name('admin.advancedreceipt');
         Route::get('/admin/advancedreceipt/add', 'getViewAdvancedReceiptManage')->name('admin.addAdvancedReceiptView');
         Route::get('/admin/advancedreceipt/edit/{id}', 'getViewAdvancedReceiptManage')->name('admin.editAdvancedReceiptView');
-        
+
         // // CRUD
         Route::post('/admin/advancedreceipt/gettable', 'getTableAR')->name('admin.tablear');
         // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -439,7 +458,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/advancedreceipt/recap/print', 'printrecapar')->name('admin.printrecapar');
 
     });
-    
+
 
     Route::controller(InvoiceController::class)->group(function(){
 
@@ -447,7 +466,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/invoice', 'getViewInvoice')->name('admin.invoice');
         Route::get('/admin/invoice/add', 'getViewInvoiceManage')->name('admin.addInvoiceView');
         Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
-        
+
         // // // CRUD
         Route::post('/admin/invoice/gettable', 'getTableInvoice')->name('admin.tableinvoice');
         // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -466,6 +485,86 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     });
 
+    Route::controller(ReceiptController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/receipt', 'getViewReceipt')->name('admin.receipt');
+        Route::get('/admin/receipt/add', 'getViewReceiptManage')->name('admin.addReceiptView');
+        Route::get('/admin/receipt/edit/{id}', 'getViewReceiptManage')->name('admin.editReceiptView');
+
+        // CRUD
+        Route::post('/admin/receipt/gettable', 'getTableReceipt')->name('admin.tablereceipt');
+        Route::post('/admin/receipt/add', 'addreceipt')->name('admin.addreceipt');
+        Route::post('/admin/receipt/edit/{id}', 'editreceipt')->name('admin.editreceipt');
+        Route::get('/admin/receipt/delete/{id}', 'deletereceipt')->name('admin.deletereceipt');
+        Route::get('/admin/receipt/approve/{id}', 'approvereceipt')->name('admin.approvereceipt');
+        Route::get('/admin/receipt/getinvoice/{id}', 'getinvoiceforreceipt')->name('admin.getinvoiceforreceipt');
+        Route::get('/admin/receipt/getbalancear/{id}', 'getbalancear')->name('admin.getbalancear');
+
+
+        // // Print
+        Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
+        Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
+        Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
+
+    });
+
+    Route::controller(JournalController::class)->group(function(){
+
+        // GET VIEW
+        Route::get('/admin/journal', 'getViewJournal')->name('admin.journal');
+
+        Route::get('/admin/journal/add', 'getViewJournalManage')->name('admin.addJournalView');
+        Route::get('/admin/journal/edit/{id}', 'getViewJournalManage')->name('admin.editJournalView');
+
+        // // CRUD
+        Route::post('/admin/journal/gettable', 'getTableJournal')->name('admin.tablejournal');
+        Route::post('/admin/journal/detail/{id}', 'detailjournal')->name('admin.detailjournal');
+        Route::post('/admin/journal/add', 'addjournal')->name('admin.addjournal');
+        Route::post('/admin/journal/edit/{id}', 'editJournal')->name('admin.editJournal');
+        Route::get('/admin/journal/delete/{id}', 'deletejournal')->name('admin.deletejournal');
+        Route::get('/admin/journal/posting/{id}', 'postingjournal')->name('admin.postingjournal');
+        // Route::get('/admin/receipt/getinvoice/{id}', 'getinvoiceforreceipt')->name('admin.getinvoiceforreceipt');
+        // Route::get('/admin/receipt/getbalancear/{id}', 'getbalancear')->name('admin.getbalancear');
+
+
+        // // // Print
+        // Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
+        // Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
+        Route::get('/admin/journal/recap/print', 'printjournalrecap')->name('admin.printjournalrecap');
+    });
+
+    Route::controller(LedgerController::class)->group(function(){
+        //Get View
+        Route::get('/admin/ledger', 'getViewLedger')->name('admin.ledger');
+
+        // Print
+        Route::get('/admin/ledger/print', 'printLedger')->name('admin.PrintLedger');
+    });
+
+    Route::controller(TrialBalanceConttroller::class)->group(function(){
+        //Get View
+        Route::get('/admin/trialbalance', 'getViewTrialBalance')->name('admin.trialbalance');
+
+        // Print
+        Route::get('/admin/trialbalance/print', 'printtrialbalance')->name('admin.printtrialbalance');
+    });
+
+    Route::controller(ProfitLossController::class)->group(function(){
+        //Get View
+        Route::get('/admin/profitloss', 'getViewProfitLoss')->name('admin.profitloss');
+
+        // Print
+        Route::get('/admin/profitloss/print', 'printprofitloss')->name('admin.printprofitloss');
+    });
+
+    Route::controller(BalanceSheetController::class)->group(function(){
+        //Get View
+        Route::get('/admin/balancesheet', 'getViewBalanceSheet')->name('admin.balancesheet');
+
+        // Print
+        Route::get('/admin/balancesheet/print', 'printbalancesheet')->name('admin.printbalancesheet');
+    });
 
 
     // ------------------------------------------

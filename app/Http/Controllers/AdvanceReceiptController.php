@@ -27,14 +27,14 @@ class AdvanceReceiptController extends AdminController
         $data= [];
         if ($code){ //If In Update Mode
 
-       
+
             $AR = Advanced_Receipt::join("customers", "advanced_receipts.customer_code", "=", "customers.code")
             ->join("coa", "advanced_receipts.coa_debit", "=", "coa.code")
             ->select("advanced_receipts.*","coa.code as coa_code","coa.name as coa_name" , "customers.code as customer_code","customers.name as customer_name")
             ->where("adr_no", $code)
             ->where("is_approve" , 0)
             ->first();
-        
+
             if (!$AR){
                 abort(404);
             }
@@ -53,12 +53,12 @@ class AdvanceReceiptController extends AdminController
 
     public function getTableAR(Request $request, DataTables $dataTables ){
         if ($request->ajax()){
-        
+
             $is_approve = intval($request->is_approve) >=  0  ? $request->is_approve : null ;
             $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
             $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
-            
-            
+
+
             $AR = Advanced_Receipt::join("customers", "advanced_receipts.customer_code", "=", "customers.code")
             ->whereBetween('transaction_date', [$startDate,$endDate])
             ->select("advanced_receipts.*", "customers.code as customer_code","customers.name as customer_name")
@@ -92,13 +92,13 @@ class AdvanceReceiptController extends AdminController
                     $query->whereRaw("coa.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('coa_name', function($query, $keyword) {
-                    $query->whereRaw("coa.name as coa_name LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("coa.name LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('customer_code', function($query, $keyword) {
-                    $query->whereRaw("customers.code as customer_code LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("customers.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('customer_name', function($query, $keyword) {
-                    $query->whereRaw("customers.name as customer_name LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("customers.name LIKE ?", ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($row) {
                     $html = '';
@@ -111,7 +111,7 @@ class AdvanceReceiptController extends AdminController
                             <button class="btn btn-sm btn-warning approvebtn" data-code="'.$row->adr_no.'" title="Approve"><i class="fa fa-check"></i></button>
                             <a href="'.route('admin.printdetailar',['id' => $row->adr_no]).'" target="_blank"><button class="btn btn-sm btn-success printbtn" data-code="'.$row->cash_no.'" title="Print Detail"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             # code...
                             break;
                             case 1: //Approved
@@ -120,20 +120,20 @@ class AdvanceReceiptController extends AdminController
                             <a class="mr-2" href="'.route('admin.printdetailar',['id' => $row->adr_no]).'" target="_blank"><button class="btn btn-sm btn-success printbtn" data-code="'.$row->cash_no.'" title="Print Detail"><i class="fa fa-print"></i></button></a>
                             <a href="'.route('admin.printjurnalar',['id' => $row->adr_no]).'" target="_blank"><button class="btn btn-sm btn-warning printbtn" data-code="'.$row->cash_no.'" title="Print Jurnal"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             break;
-                        
+
                         default:
                             # code...
                             break;
                     }
-    
+
                     return $html;
                 })
                 ->rawColumns(['action','is_approve'])
                 ->addIndexColumn()
                 ->make(true);
-                
+
         } else {
             abort(404);
         }
@@ -142,7 +142,7 @@ class AdvanceReceiptController extends AdminController
 
     public function deletear($id){
         try {
-            
+
             Advanced_Receipt::where("adr_no", $id)->delete();
             return response()->redirectToRoute("admin.advancedreceipt")->with("success", "Data AdvancedReceipt $id Successfully Deleted");
 
@@ -156,9 +156,9 @@ class AdvanceReceiptController extends AdminController
 
             DB::beginTransaction();
 
-            Advanced_Receipt::where("adr_no", $id)->update(   
+            Advanced_Receipt::where("adr_no", $id)->update(
                 [
-                    
+
                     'is_approve' => 1,
                     'approved_by' => Auth::user()->name
                 ]
@@ -166,7 +166,7 @@ class AdvanceReceiptController extends AdminController
 
             $journal = new AccountingController();
             $journal->journalAdvancedReceipt($id);
-    
+
             DB::commit();
             return response()->redirectToRoute("admin.advancedreceipt")->with("success", "Data Advanced Receipt $id Successfully Approved");
         } catch (\Throwable $th) {
@@ -178,7 +178,7 @@ class AdvanceReceiptController extends AdminController
 
     public function addAR(Request $request){
         if($request->ajax()){
-    
+
             try {
                 //code...
                 DB::beginTransaction();
@@ -200,25 +200,25 @@ class AdvanceReceiptController extends AdminController
                 $AR->is_approve = 0;
                 $AR->created_by = Auth::user()->username;
                 $AR->save();
-                
+
                 DB::commit();
                 Session::flash('success',  "New AdvancedReceive : $AR->adr_no Succesfully Created");
                 return json_encode(true);
-                
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
-            
+
             }
 
         } else {
             abort(404);
         }
-    
+
     }
     public function editAR($code,Request $request){
         if($request->ajax()){
-    
+
             try {
                 //code...
                 DB::beginTransaction();
@@ -236,21 +236,21 @@ class AdvanceReceiptController extends AdminController
                 $AR->is_approve = 0;
                 $AR->updated_by = Auth::user()->username;
                 $AR->update();
-                
+
                 DB::commit();
                 Session::flash('success',  "AdvancedReceive : $AR->adr_no Succesfully Updated");
                 return json_encode(true);
-                
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
-            
+
             }
 
         } else {
             abort(404);
         }
-    
+
     }
 
     public function printjurnalar($id){
@@ -272,5 +272,48 @@ class AdvanceReceiptController extends AdminController
 
         $printcontroller = new PrintController();
         return $printcontroller->printrecapar($customercode,$startDate, $endDate, $is_approve);
+    }
+
+    public function decreaseDeposit(float $amount , string $customer_code){
+
+        $depo_amount = $amount;
+        $ADR = Advanced_Receipt::where('customer_code',$customer_code)->where("deposit_allocation" , ">" , 0)->orderBy("transaction_date", "desc")->orderBy("adr_no", "desc")->get();
+
+        foreach($ADR as $x){
+            if ($depo_amount > 0){
+                if($x->deposit_allocation >= $depo_amount){
+                    $x->deposit_allocation = floatval($x->deposit_allocation) - $depo_amount;
+                    $depo_amount -= $depo_amount;
+                    $x->update();
+                } else {
+                    $x->deposit_allocation = floatval($x->deposit_allocation) - floatval($x->deposit_allocation) ;
+                    $depo_amount -= floatval($x->deposit_allocation);
+                    $x->update();
+                }
+            }
+        }
+    }
+
+    public function increaseDeposit(float $amount , string $customer_code){
+        $depo_amount = $amount;
+        $ADR = Advanced_Receipt::where('customer_code', $customer_code)->whereColumn("deposit_amount", ">" ,"deposit_allocation")->orderBy("transaction_date", "desc")->orderBy("adr_no", "desc")->get();
+
+        foreach($ADR as $x){
+            if ($depo_amount > 0){
+                $balance_amount = floatval($x->deposit_amount) - floatval($x->deposit_allocation);
+
+                if ($balance_amount >= $depo_amount ){
+
+                    $x->deposit_allocation = floatval($x->deposit_allocation) + $depo_amount;
+                    $x->update();
+                    $depo_amount -= $depo_amount;
+
+                } else {
+                    $x->deposit_allocation = floatval($x->deposit_allocation) + $balance_amount ;
+                    $x->update();
+                    $depo_amount -=  $balance_amount;
+                }
+            }
+        }
     }
 }

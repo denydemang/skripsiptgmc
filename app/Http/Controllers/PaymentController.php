@@ -33,7 +33,7 @@ class PaymentController extends AdminController
             ->join("suppliers", "payments.supplier_code", "=", "suppliers.code")
             ->select('payments.*', 'suppliers.code as supplier_code', 'suppliers.name as supplier_name')
             ->first();
-        
+
             if (!$payment){
                 abort(404);
             }
@@ -45,7 +45,7 @@ class PaymentController extends AdminController
                 'p.supplier_code',
                 'p.is_approve',
                 DB::raw("
-                    CASE 
+                    CASE
                         WHEN p.payment_term_code LIKE 'n/30' THEN DATE_ADD(p.transaction_date, INTERVAL 30 DAY)
                         WHEN p.payment_term_code LIKE 'n/60' THEN DATE_ADD(p.transaction_date, INTERVAL 60 DAY)
                         WHEN p.payment_term_code LIKE 'n/90' THEN DATE_ADD(p.transaction_date, INTERVAL 90 DAY)
@@ -59,9 +59,9 @@ class PaymentController extends AdminController
             ->mergeBindings($subQuery)
             ->select('qry.purchase_no','qry.supplier_code', 'qry.transaction_date','qry.is_approve', 'qry.due_date', 'qry.balance')
             ->where("qry.purchase_no", "=", $payment->ref_no)
-            ->where("qry.due_date", ">=" , DB::raw("CURDATE()"))
+            // ->where("qry.due_date", ">=" , DB::raw("CURDATE()"))
             ->first();
-            
+
         $data['payment'] = $payment;
         $data['detail'] = json_encode($results);
         }
@@ -79,12 +79,12 @@ class PaymentController extends AdminController
     public function getTablePayment(Request $request, DataTables $dataTables ){
         if ($request->ajax()){
 
-        
+
             $is_approve = intval($request->is_approve) >=  0  ? $request->is_approve : null ;
             $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
             $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
-            
-            
+
+
             $payment = Payment::join("suppliers", "payments.supplier_code" , "=", "suppliers.code")
             ->select('payments.*', DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'))
             ->whereBetween('transaction_date', [$startDate,$endDate])
@@ -111,7 +111,7 @@ class PaymentController extends AdminController
                     }
                     return $html;
                 })
-                
+
                 ->filterColumn('supplier_name', function($query, $keyword) {
                     $query->whereRaw("suppliers.name LIKE ?", ["%{$keyword}%"]);
                 })
@@ -132,7 +132,7 @@ class PaymentController extends AdminController
                             <button class="btn btn-sm btn-warning approvebtn" data-code="'.$row->bkk_no.'" title="Approve"><i class="fa fa-check"></i></button>
                             <a href="'.route('admin.printdetailpayment',['id' => $row->bkk_no]).'" target="_blank"><button class="btn btn-sm btn-info printbtn" data-code="'.$row->bkk_no.'" title="Print payment"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             # code...
                             break;
                             case 1: //Approved
@@ -141,20 +141,20 @@ class PaymentController extends AdminController
                             <a href="'.route('admin.printdetailpayment',['id' => $row->bkk_no]).'" target="_blank"><button class="btn btn-sm btn-info printbtn mr-2" data-code="'.$row->bkk_no.'" title="Print payment"><i class="fa fa-print"></i></button></a>
                             <a href="'.route('admin.printjurnalpayment',['id' => $row->bkk_no]).'" target="_blank"><button class="btn btn-sm btn-warning printbtn" data-code="'.$row->bkk_no.'" title="Print Jurnal"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             break;
-                        
+
                         default:
                             # code...
                             break;
                     }
-    
+
                     return $html;
                 })
                 ->rawColumns(['action','is_approve'])
                 ->addIndexColumn()
                 ->make(true);
-                
+
         } else {
             abort(404);
         }
@@ -169,7 +169,7 @@ class PaymentController extends AdminController
             $purchase->update();
             $payment->delete();
             DB::commit();
-            
+
             return response()->redirectToRoute("admin.payment")->with("success", "Data Payment $id Successfully Deleted");
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -183,9 +183,9 @@ class PaymentController extends AdminController
 
             DB::beginTransaction();
 
-            Payment::where("bkk_no", $id)->update(   
+            Payment::where("bkk_no", $id)->update(
                 [
-                    
+
                     'is_approve' => 1,
                     'approved_by' => Auth::user()->name
                 ]
@@ -193,7 +193,7 @@ class PaymentController extends AdminController
 
             $journal = new AccountingController();
             $journal->journalPembayaran($id);
-    
+
             DB::commit();
             return response()->redirectToRoute("admin.payment")->with("success", "Data Payment $id Successfully Approved");
         } catch (\Throwable $th) {
@@ -235,7 +235,7 @@ class PaymentController extends AdminController
                 'p.supplier_code',
                 'p.is_approve',
                 DB::raw("
-                    CASE 
+                    CASE
                         WHEN p.payment_term_code LIKE 'n/30' THEN DATE_ADD(p.transaction_date, INTERVAL 30 DAY)
                         WHEN p.payment_term_code LIKE 'n/60' THEN DATE_ADD(p.transaction_date, INTERVAL 60 DAY)
                         WHEN p.payment_term_code LIKE 'n/90' THEN DATE_ADD(p.transaction_date, INTERVAL 90 DAY)
@@ -258,24 +258,24 @@ class PaymentController extends AdminController
 
         } else {
             abort(404);
-        }     
+        }
     }
 
 
     public function addPayment(Request $request ){
         if($request->ajax()){
 
-    
+
             try {
                 //code...
                 DB::beginTransaction();
                 $data = $request->all();
-             
+
                 $details= json_decode($data['detail']);
                 $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
                 $listBKKNo = [];
                 foreach ($details as $key => $value) {
-                    
+
                     if (floatval($value->paid_amount) > 0 ){
 
                         $payment = Payment::orderBy("bkk_no", "desc")->lockforUpdate()->first();
@@ -308,7 +308,7 @@ class PaymentController extends AdminController
                 DB::commit();
                 Session::flash('success',  "New Payment : $commaSeparated Succesfully Created");
                 return json_encode(true);
-                
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
@@ -325,17 +325,17 @@ class PaymentController extends AdminController
     public function editpayment($code ,Request $request ){
         if($request->ajax()){
 
-    
+
             try {
                 //code...
                 DB::beginTransaction();
                 $data = $request->all();
-             
+
                 $details= json_decode($data['detail']);
                 $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
                 $listBKKNo = [];
                 foreach ($details as $key => $value) {
-                    
+
                     if (floatval($value->paid_amount) > 0 ){
 
                         $updatePayment = Payment::where("bkk_no", $code)->first();
@@ -343,7 +343,7 @@ class PaymentController extends AdminController
                         $purchase = Purchase::where("purchase_no" , $value->ref_no)->first();
                         $purchase->paid_amount = floatval($purchase->paid_amount) - floatval($updatePayment->total_amount);
                         $purchase->update();
-                        
+
                         $updatePayment->transaction_date =  $data['transaction_date'];
                         $updatePayment->supplier_code = $data['supplier_code'];
                         $updatePayment->ref_no = $value->ref_no;
@@ -351,11 +351,11 @@ class PaymentController extends AdminController
                         $updatePayment->total_amount = floatval($value->paid_amount);
                         $updatePayment->payment_method = $data['payment_method'];
                         $updatePayment->description = $data['description'];
-                        $updatePayment->terbilang = $this->terbilang(floatval($value->paid_amount)); 
+                        $updatePayment->terbilang = $this->terbilang(floatval($value->paid_amount));
                         $updatePayment->updated_by = Auth::user()->name;
                         $updatePayment->approved_by = "";
                         $updatePayment->update();
-                        
+
                         $purchase->paid_amount = $purchase->paid_amount + floatval($updatePayment->total_amount);
                         $purchase->update();
 
@@ -365,7 +365,7 @@ class PaymentController extends AdminController
                 DB::commit();
                 Session::flash('success',  "Payment : $code Succesfully Updated");
                 return json_encode(true);
-                
+
             } catch (\Throwable $th) {
                 DB::rollBack();
                 throw new \Exception($th->getMessage());

@@ -56,7 +56,7 @@ class CashBookController extends AdminController
                 $cashbookdetailb['credit'] = 0;
                 $cashbookdetailb['description'] = "";
             }
-        
+
             if (!$cashbook){
                 abort(404);
             }
@@ -79,16 +79,16 @@ class CashBookController extends AdminController
 
     public function getTableCashBook(Request $request, DataTables $dataTables ){
         if ($request->ajax()){
-        
+
             $is_approve = intval($request->is_approve) >=  0  ? $request->is_approve : null ;
             $type =  $request->type  ;
             $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
             $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
-            
-            
+
+
             $cashbook = CashBook::join("COA", "cash_books.COA_Cash", "=", "COA.code")
             ->whereBetween('transaction_date', [$startDate,$endDate])
-            ->select("cash_books.*", "COA.code as coa_code", "COA.name as coa_name")
+            ->select("cash_books.*", "COA.name as coa_name")
             ->when($is_approve !== null , function($query) use($is_approve){
                 $query->where('is_approve', $is_approve);
             })
@@ -126,12 +126,12 @@ class CashBookController extends AdminController
                             break;
                     }
                 })
-                
+
                 ->filterColumn('coa_code', function($query, $keyword) {
                     $query->whereRaw("coa.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('coa_name', function($query, $keyword) {
-                    $query->whereRaw("coa.name as coa_name LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("Coa.name LIKE ?", ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($row) {
                     $html = '';
@@ -144,7 +144,7 @@ class CashBookController extends AdminController
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->cash_no.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             <button class="btn btn-sm btn-warning approvebtn" data-code="'.$row->cash_no.'" title="Approve"><i class="fa fa-check"></i></button>
                             </div>';
-                            
+
                             # code...
                             break;
                             case 1: //Approved
@@ -153,20 +153,20 @@ class CashBookController extends AdminController
                             <button class="btn btn-sm btn-success viewbtn" data-code="'.$row->cash_no.'" title="View Detail"><i class="fa fa-eye"></i></button>
                             <a href="'.route('admin.printjurnalcashbook',['id' => $row->cash_no]).'" target="_blank"><button class="btn btn-sm btn-warning printbtn" data-code="'.$row->cash_no.'" title="Print Jurnal"><i class="fa fa-print"></i></button></a>
                             </div>';
-                            
+
                             break;
-                        
+
                         default:
                             # code...
                             break;
                     }
-    
+
                     return $html;
                 })
                 ->rawColumns(['action','is_approve'])
                 ->addIndexColumn()
                 ->make(true);
-                
+
         } else {
             abort(404);
         }
@@ -192,7 +192,7 @@ class CashBookController extends AdminController
                 })
                 ->addIndexColumn()
                 ->make(true);
-                
+
         } else {
             abort(404);
         }
@@ -220,7 +220,7 @@ class CashBookController extends AdminController
                 })
                 ->addIndexColumn()
                 ->make(true);
-                
+
         } else {
             abort(404);
         }
@@ -239,15 +239,15 @@ class CashBookController extends AdminController
             return $this->errorException($th,"admin.cashbook", $id );
         }
     }
-    
+
     public function approvecashbook($id){
         try {
 
             DB::beginTransaction();
 
-            CashBook::where("cash_no", $id)->update(   
+            CashBook::where("cash_no", $id)->update(
                 [
-                    
+
                     'is_approve' => 1,
                     'approved_by' => Auth::user()->name
                 ]
@@ -255,7 +255,7 @@ class CashBookController extends AdminController
 
             $journal = new AccountingController();
             $journal->journalCashBook($id);
-    
+
             DB::commit();
             return response()->redirectToRoute("admin.cashbook")->with("success", "Data Cashbook $id Successfully Approved");
         } catch (\Throwable $th) {
@@ -336,7 +336,7 @@ class CashBookController extends AdminController
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
             }
-            
+
 
 
         } else {
@@ -403,7 +403,7 @@ class CashBookController extends AdminController
                 DB::rollBack();
                 throw new \Exception($th->getMessage());
             }
-            
+
 
 
         } else {
@@ -412,5 +412,5 @@ class CashBookController extends AdminController
 
     }
 
-        
+
 }
