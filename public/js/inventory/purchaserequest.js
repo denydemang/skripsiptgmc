@@ -154,6 +154,16 @@ $(document).ready(function () {
     reloadTable(method, tableName, columns, getPRTable, supplyData, setcellDateNeed);
   }
 
+  function updateDTPTransDateValue() {
+    let startTrans = inputstartdatetrans.val();
+    let lastTrans = inputlastdatetrans.val();
+
+    supplyData.startDate = startTrans;
+    supplyData.endDate = lastTrans;
+
+    reloadTable(method, tableName, columns, getPRTable, supplyData);
+  }
+
   function deleteData(code, name) {
     const urlRequest = route('admin.deletePR', code);
     window.location.href = urlRequest;
