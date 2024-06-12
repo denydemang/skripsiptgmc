@@ -227,9 +227,9 @@ $(document).ready(async function () {
             CodeInput.val(data.code);
             NameInput.val(data.name);
             AddressInput.val(data.address);
-            ZipCodeInput.val(data.address);
-            NPWPInput.val(data.address);
-            EmailInput.val(data.address);
+            ZipCodeInput.val(data.zip_code);
+            NPWPInput.val(data.npwp);
+            EmailInput.val(data.email);
             PhoneInput.val(data.phone);
             CoaCodeInput.val(data.coa_code);
             $("#coa_code").select2().val(data.coa_code).trigger("change");

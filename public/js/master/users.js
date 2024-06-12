@@ -9,6 +9,7 @@ $(document).ready(async function () {
   let UsernameInput = $('.username');
   let NameInput = $('.name');
   let PasswordInput = $('.password');
+  let confirm_password = $('.confirm_password');
   let RoleInput = $('.role');
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
@@ -121,6 +122,23 @@ $(document).ready(async function () {
       }
     }
 
+    if (confirm_password.val() == '') {
+        confirm_password.addClass('is-invalid');
+        $('.confirm_password_error').text('Confirm Password Tidak Boleh Kosong');
+      confirm_password.focus();
+      return false;
+    }
+
+    if (confirm_password.val() != PasswordInput.val()) {
+        confirm_password.addClass('is-invalid');
+        $('.confirm_password_error').text('Konfirmasi Password Tidak Sama Dengan Password');
+      confirm_password.focus();
+      return false;
+    } else {
+        confirm_password.removeClass('is-invalid');
+        $('.confirm_password_error').text('');
+    }
+
     if (RoleInput.val() == '') {
       RoleInput.addClass('is-invalid');
       RoleInput.focus();
@@ -138,6 +156,7 @@ $(document).ready(async function () {
     UsernameInput.val('');
     NameInput.val('');
     PasswordInput.val('');
+    confirm_password.val('');
     RoleInput.val('');
   }
 

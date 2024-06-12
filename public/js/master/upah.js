@@ -223,7 +223,7 @@ $(document).ready(async function () {
             JobInput.val(data.job);
             DescriptionInput.val(data.description);
             UnitInput.val(data.unit);
-            PriceInput.val(data.price);
+            PriceInput.val(data.price != null ? Math.round(data.price) : 0);
             CoaCodeInput.val(data.coa_code);
             $("#coa_code").select2().val(data.coa_code).trigger("change");
 

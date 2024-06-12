@@ -65,24 +65,31 @@
             <form id="formProjectType" action="asdasda" method="post">
               @csrf
               <div class="form-group">
-                <label for="username">username</label>
+                <label for="username">username <span title="Wajib Diisi" style="color: red">*</span></label>
                 <input class="form-control username" type="text" name="username" style="font-weight: bolder">
                 <div class="invalid-feedback">
                   <b>username Cannot Be Blank </b>
                 </div>
               </div>
               <div class="form-group">
-                <label for="name">Name</label>
+                <label for="name">Name <span title="Wajib Diisi" style="color: red">*</span></label>
                 <input class="form-control name" type="text" name="name" style="font-weight: bolder">
                 <div class="invalid-feedback">
                   <b>Name Cannot Be Blank </b>
                 </div>
               </div>
               <div class="form-group">
-                <label for="name">Password</label>
-                <input class="form-control password" type="text" name="password" style="font-weight: bolder">
+                <label for="name">Password <span title="Wajib Diisi" style="color: red">*</span></label>
+                <input class="form-control password" type="password" name="password" style="font-weight: bolder">
                 <div class="invalid-feedback">
                   <b>Password Cannot Be Blank </b>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="name">Confirm Password <span title="Wajib Diisi" style="color: red">*</span></label>
+                <input class="form-control confirm_password" type="password" name="confirm_password" style="font-weight: bolder">
+                <div class="invalid-feedback">
+                  <b class="confirm_password_error"></b>
                 </div>
               </div>
               <div class="form-group">

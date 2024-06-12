@@ -260,8 +260,8 @@ $(document).ready(async function () {
             CodeInput.val(data.code);
             NameInput.val(data.name);
             UnitCodeInput.val(data.unit_code);
-            MinStockInput.val(data.min_stock);
-            MaxStockInput.val(data.max_stock);
+            MinStockInput.val(data.min_stock != null ? Math.round(data.min_stock) : 0);
+            MaxStockInput.val(data.max_stock != null ? Math.round(data.max_stock) : 0);
             CategoryCodeInput.val(data.category_code);
             $("#unit_code").select2().val(data.unit_code).trigger("change");
             $("#category_code").select2().val(data.category_code).trigger("change");

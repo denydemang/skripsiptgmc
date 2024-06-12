@@ -41,6 +41,12 @@ class ItemController extends AdminController
                 <button class="btn btn-sm btn-danger deletebtn" data-code="' . $row->code . '" title="Delete"><i class="fa fa-trash"></i></button>
                 </div>';
                 })
+                ->editColumn('min_stock', function($row) {
+                    return floatval($row->min_stock);
+                })
+                ->editColumn('max_stock', function($row) {
+                    return floatval($row->max_stock);
+                })
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);

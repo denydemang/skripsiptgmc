@@ -48,6 +48,9 @@ class UpahController extends AdminController
                 <button class="btn btn-sm btn-danger deletebtn" data-code="' . $row->code . '" title="Delete"><i class="fa fa-trash"></i></button>
                 </div>';
                 })
+                ->editColumn('price', function($row) {
+                    return floatval($row->price);
+                })
                 ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);
