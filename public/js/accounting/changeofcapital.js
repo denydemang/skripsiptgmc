@@ -31,7 +31,7 @@ $(document).ready(async function () {
   inputlastdatetrans.val(moment(lastMONTH, 'DD/MM/YYYY').format('MMMM/YYYY'));
 
   function printCOA() {
-    let urlRoute = route('admin.');
+    let urlRoute = route('admin.printcapitalchange');
 
     urlRoute =
       urlRoute +

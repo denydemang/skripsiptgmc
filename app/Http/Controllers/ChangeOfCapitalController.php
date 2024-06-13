@@ -21,6 +21,6 @@ class ChangeOfCapitalController extends AdminController
         $data = $request->all();
 
         $print = new PrintController();
-        return $print->printbalancesheetreport($data['startDate'], $data['endDate']);
+        return $print->printequityChangeReport($data['startDate'], $data['endDate']);
     }
 }

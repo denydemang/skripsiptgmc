@@ -1678,7 +1678,197 @@ class PrintController extends AdminController
         }
     }
 
-    public function equityChangeReport(string $startDate, string $endDate){
+    public function printequityChangeReport(string $startDate, string $endDate){
 
+        
+        $result = DB::select(
+            "
+            -- Modal Awal
+            SELECT
+            'Modal' as type, 
+            querymodal.`code`,
+            coa.name ,
+            coa.name As description,
+            querymodal.beginning_balance + querymodal.balance as balance
+            from
+            (
+                SELECT
+                coa.`code`,
+                coa.beginning_balance,
+                SUM(IFNULL(qry3.balance_amount, 0)) as balance
+                from coa
+                LEFT JOIN
+                (
+                        SELECT 
+                        -- Transaksi jurnal akun modal
+                        jd.coa_code,
+                        (jd.kredit - jd.debit) as balance_amount
+                        
+                        from 
+                        journals j INNER JOIN journal_details jd 
+                        on j.voucher_no = jd.voucher_no
+                        INNER JOIN coa 
+                        on jd.coa_code = coa.`code`
+                        where j.posting_status = 1 AND
+                        j.transaction_date < ? AND
+                        SUBSTRING(coa.code,1,5) = '30.01'
+                        
+                        GROUP BY jd.coa_code , jd.kredit - jd.debit
+                                                        
+                ) qry3
+                on coa.`code` =  qry3.coa_code
+
+                Where SUBSTRING(coa.code,1,5) = '30.01' AND coa.description = 'Detail'
+                GROUP BY coa.`code`, coa.beginning_balance
+                                                                                                                                        
+            ) querymodal
+                                                                                                                                        
+            INNER JOIN 
+            coa ON coa.code = querymodal.code
+
+            UNION ALL
+
+            -- Laba DitahanAwalBulan
+            SELECT
+            'LABA RUGI' as type ,	
+            '30.02.01' as code,
+            'Laba Ditahan' as name,
+            'Saldo Laba Ditahan Awal Bulan' as description,
+            sum(saldolabaditahan.balance_amount) as balance
+            from
+            (
+                -- akumulasi laba/rugi (pendapatan - beban) sd akhir bulan
+                SELECT 
+                coa.code ,
+                sum(jd.kredit -jd.debit) as balance_amount 
+                FROM
+                coa
+                INNER JOIN journal_details jd
+                ON coa.`code` = jd.coa_code
+                INNER JOIN journals j 
+                ON jd.voucher_no = j.voucher_no
+                where SUBSTR(coa.`code`,1,1) NOT IN (1,2,3) AND
+                coa.description ='Detail' AND
+                j.transaction_date < ? AND
+                j.posting_status = 1
+
+                GROUP BY 
+                coa.code 
+                
+                UNION ALL
+                
+                -- saldo laba ditahan transaksi + saldo awal master coa
+                SELECT
+                saldotransaksilabaditahan.code,
+                saldotransaksilabaditahan.beginning_balance + saldotransaksilabaditahan.balance as balance_amount
+                from
+                (
+                        
+                        SELECT
+                        -- saldo awal master coa labaditahan
+                        coa.`code`,
+                        coa.beginning_balance,
+                        SUM(IFNULL(qry5.balance_amount, 0)) as balance
+                        from coa
+                        LEFT JOIN
+                        (
+                                SELECT 
+                                        -- transaksi jurnal labaditahan
+                                        jd.coa_code,
+                                        jd.description,
+                                        jd.kredit - jd.debit as balance_amount
+                                        
+                                        from 
+                                        journals j INNER JOIN journal_details jd 
+                                        on j.voucher_no = jd.voucher_no
+                                        INNER JOIN coa 
+                                        on jd.coa_code = coa.`code`
+                                        where j.posting_status = 1 AND
+                                        j.transaction_date < ? AND
+                                        jd.coa_code = '30.02.01' -- labaditahancode   
+                                        GROUP BY jd.coa_code, jd.kredit - jd.debit, jd.description
+
+                        ) qry5
+                                        
+                        on coa.`code` =  qry5.coa_code
+                        Where coa.code = '30.02.01' AND coa.description = 'Detail'
+                        GROUP BY coa.`code`, coa.beginning_balance
+                                                        
+                ) saldotransaksilabaditahan			
+                                                
+                                                
+            ) saldolabaditahan
+
+            UNION ALL
+
+            -- Laba Bulan ini pendapatan - beban
+            SELECT
+            'LABA RUGI' as type ,	
+            '30.02.03' as code,
+            'Laba Bulan Ini' as name,
+            'Laba Bulan Ini' as description,
+            ifnull(sum(saldolabaditahan.balance_amount),0) as balance
+            FROM
+            (
+            SELECT 
+                coa.code ,
+                sum(jd.kredit -jd.debit) as balance_amount 
+                FROM
+                coa
+                INNER JOIN journal_details jd
+                ON coa.`code` = jd.coa_code
+                INNER JOIN journals j 
+                ON jd.voucher_no = j.voucher_no
+                where SUBSTR(coa.`code`,1,1) NOT IN (1,2,3) AND
+                coa.description ='Detail' AND
+                j.transaction_date BETWEEN ? AND ? AND
+                j.posting_status = 1
+
+                GROUP BY 
+                coa.code 
+            )saldolabaditahan
+
+            UNION ALL
+            -- transaksi labaditahan bulan ini
+            SELECT 
+            'LABA RUGI' as type, 
+            jd.coa_code,
+            coa.name,
+            jd.description,
+            jd.kredit - jd.debit as balance_amount
+
+            from 
+            journals j INNER JOIN journal_details jd 
+            on j.voucher_no = jd.voucher_no
+            INNER JOIN coa 
+            on jd.coa_code = coa.`code`
+            where j.posting_status = 1 AND
+            j.transaction_date BETWEEN ? AND ? AND
+            jd.coa_code = '30.02.01' -- labaditahancode   
+            GROUP BY jd.coa_code,coa.name, jd.kredit - jd.debit, jd.description
+
+            " , [$startDate,$startDate,$startDate, $startDate, $endDate, $startDate, $endDate  ]
+        
+            );
+
+        
+            $groupedData = collect($result)->groupBy('type');
+    
+            $data = [
+                'coaData' => $groupedData,
+                'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+            ];
+        
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'potrait');
+            $pdf->loadview("admin.accounting.prints.printcapitalchange",$data);
+            return $pdf->stream("CapitalChange($startDate-$endDate).pdf", array("Attachment" => false));
+        try {
+            //code...
+    
+        } catch (\Throwable $th) {
+            abort(400);
+        }
     }
 }
