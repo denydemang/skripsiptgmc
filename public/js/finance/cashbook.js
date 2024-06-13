@@ -54,7 +54,7 @@ $(document).ready(function () {
     { data: 'COA_Cash', name: 'COA_Cash', title: 'COA Cash', searchable: true },
     { data: 'coa_name', name: 'coa_name', title: 'COA Name', searchable: true },
     { data: 'ref', name: 'ref', title: 'Ref No', searchable: true },
-    // { data: 'total_transaction', name: 'total_transaction', title: 'Amount', searchable: false },
+    { data: 'total_transaction', name: 'total_transaction', title: 'Amount', searchable: false },
     { data: 'description', name: 'description', title: 'Description', searchable: true },
     { data: 'CbpType', name: 'CbpType', title: 'Type', searchable: true },
     { data: 'is_approve', name: 'is_approve', title: 'Approve', searchable: false },

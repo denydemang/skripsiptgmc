@@ -5,6 +5,7 @@ use App\Http\Controllers\AdvanceReceiptController;
 use App\Http\Controllers\BalanceSheetController;
 use App\Http\Controllers\CashBookController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChangeOfCapitalController;
 use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CustomerController;
@@ -564,6 +565,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // Print
         Route::get('/admin/balancesheet/print', 'printbalancesheet')->name('admin.printbalancesheet');
+    });
+
+    Route::controller(ChangeOfCapitalController::class)->group(function(){
+        //Get View
+        Route::get('/admin/capitalchange', 'getViewCapitalChange')->name('admin.capitalchange');
+
+        // Print
+        Route::get('/admin/capitalchange/print', 'printcapitalchange')->name('admin.printcapitalchange');
     });
 
 

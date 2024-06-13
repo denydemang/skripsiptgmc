@@ -7,6 +7,8 @@ import initiatedtp from '../datepickerinitiator.js';
 import initiatedtpmonth from '../datepickerinitiatormonth.js';
 
 $(document).ready(async function () {
+  const tablelistcoa = $('.tablelistcoa tbody');
+  const coaLIST = $('#coa_code');
   const Date = new managedate();
   const startMONTH = Date.getFirstMonth();
   const lastMONTH = Date.getLastMonth();
@@ -29,9 +31,14 @@ $(document).ready(async function () {
   inputlastdatetrans.val(moment(lastMONTH, 'DD/MM/YYYY').format('MMMM/YYYY'));
 
   function printCOA() {
-    let urlRoute = route('admin.printbalancesheet');
+    let urlRoute = route('admin.');
 
-    urlRoute = urlRoute + `?endDate=${moment(supplyData.endDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}`;
+    urlRoute =
+      urlRoute +
+      `?startDate=${moment(supplyData.startDate, 'DD/MM/YYYY').format('YYYY-MM-DD')}&endDate=${moment(
+        supplyData.endDate,
+        'DD/MM/YYYY'
+      ).format('YYYY-MM-DD')}`;
 
     window.open(urlRoute, '_blank');
   }

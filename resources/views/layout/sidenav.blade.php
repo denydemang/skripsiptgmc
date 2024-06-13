@@ -200,6 +200,8 @@
                     @php
                         $allaccounting = [
                             'admin.journal',
+                            'admin.addJournalView',
+                            'admin.editJournalView',
                             'admin.ledger',
                             'admin.trialbalance',
                             'admin.profitloss',
@@ -226,7 +228,8 @@
                         <div class="{{ in_array($sessionRoute, $allaccounting) ? 'show' : '' }} collapse"
                             id="navbar-forms">
                             <ul class="nav nav-sm flex-column">
-                                <li class="nav-item {{ $sessionRoute == 'admin.journal' ? 'active' : '' }}">
+                                <li
+                                    class="nav-item {{ $sessionRoute == 'admin.journal' || $sessionRoute == 'admin.addJournalView' || $sessionRoute == 'admin.editJournalView' ? 'active' : '' }}">
                                     <a href="{{ route('admin.journal') }}" class="nav-link">Journal</a>
                                 </li>
                                 <li class="nav-item {{ $sessionRoute == 'admin.ledger' ? 'active' : '' }}">
@@ -239,6 +242,10 @@
                                 <li class="nav-item {{ $sessionRoute == 'admin.profitloss' ? 'active' : '' }}">
                                     <a href="{{ route('admin.profitloss') }}" class="nav-link">Profit & Loss
                                         Report</a>
+                                </li>
+                                <li class="nav-item {{ $sessionRoute == 'admin.capitalchange' ? 'active' : '' }}">
+                                    <a href="{{ route('admin.capitalchange') }}" class="nav-link">Stament Of Change In
+                                        Capital Report</a>
                                 </li>
                                 <li class="nav-item {{ $sessionRoute == 'admin.balancesheet' ? 'active' : '' }}">
                                     <a href="{{ route('admin.balancesheet') }}" class="nav-link">Balance Sheet
