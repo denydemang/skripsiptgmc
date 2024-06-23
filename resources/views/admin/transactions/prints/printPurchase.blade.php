@@ -259,7 +259,7 @@
         </table>
     </section>
 
-    <section style="margin-top: 200px;position:relative;font-size:12px">
+    <section style="margin-top: 200px;margin-bottom: 200px;position:relative;font-size:12px">
         <table style="width: 300px;position:absolute;top:-50;right:10">
             <tr>
                 <td align="right">Semarang ,
