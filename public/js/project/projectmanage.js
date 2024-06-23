@@ -28,6 +28,7 @@ $(document).ready(function () {
   const customerName = $('.customerName');
   const projectypecode = $('.projecttypecode');
   const projecttypename = $('.projecttypename');
+  const inputtotaltermin = $('.inputtotaltermin');
   // end html input
 
   const updateMode = route().current() == 'admin.editProjectView';
@@ -40,6 +41,7 @@ $(document).ready(function () {
   const dataprojecttypename = $('.dataprojecttypename');
   const databahanbaku = $('.databahanbaku');
   const dataupah = $('.dataupah');
+  const datatotaltermin = $('.datatotaltermin');
   // Tampungan Parsing hasil data
   let bahanbaku = [];
   let upah = [];
@@ -59,6 +61,7 @@ $(document).ready(function () {
     coa_expense: '',
     coa_payable: '',
     pic: '',
+    total_termin: 1,
     duration_days: 0,
     project_details: [],
     project_detail_b: [],
@@ -107,6 +110,7 @@ $(document).ready(function () {
     projecttypename.val(dataprojecttypename.data('projecttypename'));
     inputtransdate.val(moment(inputtransdate.data('transdate')).format('DD/MM/YYYY'));
     inputbudget.val(formatRupiah1(inputbudget.data('budget')));
+    inputtotaltermin.val(parseInt(datatotaltermin.data('totaltermin')));
 
     bahanbaku.forEach((item) => {
       let dataMaterial = {
@@ -372,6 +376,7 @@ $(document).ready(function () {
     PostData.location = inputlocation.val();
     PostData.name = inputname.val();
     PostData.pic = inputpic.val();
+    PostData.total_termin = inputtotaltermin.val();
     PostData.project_type_code = projectypecode.val();
     PostData.transaction_date = inputtransdate.val();
     PostData.project_details = [];
@@ -420,6 +425,8 @@ $(document).ready(function () {
   function createFormData() {
     var formData = new FormData();
 
+    console.log(PostData.total_termin);
+
     formData.append('file', PostData.file);
     formData.append('name', PostData.name);
     formData.append('budget', PostData.budget);
@@ -429,6 +436,7 @@ $(document).ready(function () {
     formData.append('description', PostData.description);
     formData.append('duration_days', PostData.duration_days);
     formData.append('location', PostData.location);
+    formData.append('total_termin', PostData.total_termin);
     formData.append('pic', PostData.pic);
     formData.append('project_type_code', PostData.project_type_code);
     formData.append('transaction_date', PostData.transaction_date);

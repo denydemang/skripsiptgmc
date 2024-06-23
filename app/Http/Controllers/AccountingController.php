@@ -16,6 +16,7 @@ use App\Models\Project_Detail;
 use App\Models\Project_Detail_B_Realisation;
 use App\Models\Project_Detail_Realisations;
 use App\Models\ProjectDetailB;
+use App\Models\ProjectRealisation;
 use App\Models\Purchase;
 use App\Models\Purchase_Detail;
 use App\Models\Stock;
@@ -57,19 +58,6 @@ class AccountingController extends AdminController
         $journal->created_by =Auth::user()->username;
         $journal->save();
 
-        // // Insert Beban Material Jurnal Detail
-        // $cogsMaterial = Stocks_Out::where("ref_no", $ref_no)->selectRaw('SUM(qty * cogs) as total')->first();
-        // $cogsMaterial = floatval($cogsMaterial->total);
-
-        // $journalDetail  = New Journal_Detail();
-        // $journalDetail->voucher_no = $journal->voucher_no;
-        // $journalDetail->description = "Beban Material Untuk Pengerjaan Project Code : ". $project->code ;
-        // $journalDetail->coa_code = $project->coa_expense;
-        // $journalDetail->debit = $cogsMaterial;
-        // $journalDetail->kredit = 0;
-        // $journalDetail->created_by = Auth::user()->username;
-        // $journalDetail->save();
-
         // Insert Proyek Dalam Proses Journal Detail
         $cogsMaterial = Stocks_Out::where("ref_no", $ref_no)->selectRaw('SUM(qty * cogs) as total')->first();
         $cogsMaterial = floatval($cogsMaterial->total);
@@ -94,22 +82,7 @@ class AccountingController extends AdminController
             $journalDetail->save();
         }
 
-        // // Insert  Beban TKL Journal Detail
-        // $totalutanggajitkl = 0;
-        // foreach ($Variation_COA_ProjectDetailB as $coa){
-        //     $journalDetail  = New Journal_Detail();
-        //     $totalutanggajitkl+= floatval($coa->totalcogs);
-        //     $journalDetail->voucher_no = $journal->voucher_no;
-        //     $journalDetail->description = "Beban Tenaga Kerja Langung Untuk Pengerjaan Project Code: $project->code"  ;
-        //     $journalDetail->coa_code = $coa->coa_code;
-        //     $journalDetail->debit = floatval($coa->totalcogs);
-        //     $journalDetail->kredit = 0;
-        //     $journalDetail->created_by = Auth::user()->username;
-        //     $journalDetail->save();
-        // }
-
-
-         $totalutanggajitkl = 0;
+        $totalutanggajitkl = 0;
         foreach ($Variation_COA_ProjectDetailB as $coa){
             $totalutanggajitkl+= floatval($coa->totalcogs);
         }
@@ -133,73 +106,207 @@ class AccountingController extends AdminController
         $journalDetail->save();
     }
 
-    public function journalFinishProyek($ref_no, $type_journal, $project, $transDate){
-        $supplyModel = Journal::where("voucher_no", 'like', "%".$type_journal."%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
-        $AutomaticCode = $this->automaticCode($type_journal, $supplyModel,true,"voucher_no");
-        $Variation_COA_ProjectDetailB = ProjectDetailB::join("upah", "project_detail_b.upah_code", "=", "upah.code")
+    
+    public function journalRealisasi($ref_no){
+
+        $supplyModel = Journal::where("voucher_no", 'like', "%JU%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode('JU', $supplyModel,true,"voucher_no");
+
+        $Variation_COA_ProjectDetailB = Project_Detail_B_Realisation::join("upah", "project_detail_b_realisations.upah_code", "=", "upah.code")
         ->select("upah.coa_code" , DB::raw("sum(total) as totalcogs"))
-        ->where("project_detail_b.project_code", $ref_no)
+        ->where("project_detail_b_realisations.project_realisation_code", $ref_no)
         ->groupBy("upah.coa_code")
         ->get();
+
+        $Variation_COA_ProjectDetail = Project_Detail_Realisations::join("items",'project_detail_realisations.item_code', '=', 'items.code')
+        ->join("categories", "items.category_code", "=", 'categories.code')
+        ->join("stocks" , function ($join){
+            $join->on("stocks.item_code", "=", "items.code")
+            ->on("stocks.ref_no", "=", "project_detail_realisations.project_realisation_code");
+        })
+        ->select("categories.coa_code",DB::raw("SUM(stocks.actual_stock * stocks.cogs) as totalcogs"))
+        ->where("project_detail_realisations.project_realisation_code", $ref_no)
+        ->groupBy("categories.coa_code")
+        ->get();
+
+
+        $projectrealisation = ProjectRealisation::where("code", $ref_no)->first();
+
+        $projectDetailB = Project_Detail_B_Realisation::join('project_realisations', 'project_detail_b_realisations.project_realisation_code', '=', 'project_realisations.code')
+                        ->where('project_realisations.code', '=',$ref_no )->where('project_detail_b_realisations.qty_additional', '>', 0)->get();
+    
+        $projectDetailA = Project_Detail_Realisations::join('project_realisations', 'project_detail_realisations.project_realisation_code', '=', 'project_realisations.code')
+                        ->where('project_realisations.code', '=', $ref_no)->get();
+            
+        $project = Project::where("code",$projectrealisation->project_code)->first();
 
         // Insert Header Journal
         $journal = New Journal();
         $journal->voucher_no = $AutomaticCode;
-        $journal->transaction_date =  $transDate;
-        $journal->ref_no = $ref_no;
+        $journal->transaction_date =  $projectrealisation->realisation_date;
+        $journal->ref_no =  $projectrealisation->code;
         $journal->journal_type_code = "JU";
         $journal->posting_status = 0;
         $journal->created_by =Auth::user()->username;
         $journal->save();
 
-        $cogsMaterial = Stocks_Out::where("ref_no", $ref_no)->selectRaw('SUM(qty * cogs) as total')->first();
-        $cogsMaterial = floatval($cogsMaterial->total);
+        // Perhitungan Beban Material
+        $totalCogs = 0;
+        foreach ($projectDetailA as $item){
+            $cogs = Stocks_Out::where("ref_no", $projectrealisation->project_code)->where('item_code', $item->item_code)->first()->cogs;
+            $totalCogs +=  floatval($item->qty_used) * floatval($cogs);
+        }
 
         // Insert Beban Material Jurnal Detail
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
-        $journalDetail->description = "Beban Material Untuk Realisasi Pengerjaan Project Code : ". $project->code ;
+        $journalDetail->description = "Beban Material Untuk Realisasi Proyek $projectrealisation->code" ;
         $journalDetail->coa_code = $project->coa_expense;
-        $journalDetail->debit = $cogsMaterial;
+        $journalDetail->debit = $totalCogs;
         $journalDetail->kredit = 0;
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
 
+        // Insert Sisa Material Diakhir Termin (Menambah Stock) Journal Detail
+        $totalCOGSSisaQty = 0;
+        if (count($Variation_COA_ProjectDetail) > 0){
+
+            foreach($Variation_COA_ProjectDetail as $item){
+                $totalCOGSSisaQty +=  floatval($item->totalcogs);
+                $journalDetail  = New Journal_Detail();
+                $journalDetail->voucher_no = $journal->voucher_no;
+                $journalDetail->description = "Persediaan Masuk Sisa Realisasi Proyek Termin Terakhir $projectrealisation->code" ;
+                $journalDetail->coa_code = $item->coa_code;
+                $journalDetail->debit =floatval($item->totalcogs);
+                $journalDetail->kredit = 0;
+                $journalDetail->created_by = Auth::user()->username;
+                $journalDetail->save();
+            }
+        }
+
+
+
         // Insert Proyek Dalam Proses Journal Detail
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
-        $journalDetail->description = "Proyek Dalam Proses Untuk Realisasi Pengerjaan Project Code : ". $project->code ;
+        $journalDetail->description = "Proyek Dalam Proses Untuk Realisasi $projectrealisation->code" ;
         $journalDetail->coa_code = "10.01.04.02";
         $journalDetail->debit = 0 ;
-        $journalDetail->kredit = $cogsMaterial;
+        $journalDetail->kredit = $totalCogs + $totalCOGSSisaQty;
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
 
 
+
         //  Insert Beban BTKL Journal Detail
-        $totalutanggajitkl = 0;
+        $bebanTKL = 0;
         foreach ($Variation_COA_ProjectDetailB as $coa){
             $journalDetail  = New Journal_Detail();
-            $totalutanggajitkl+= floatval($coa->totalcogs);
             $journalDetail->voucher_no = $journal->voucher_no;
-            $journalDetail->description = "Beban TKL Untuk Realisasi Pengerjaan Project Code: $project->code"  ;
+            $journalDetail->description = "Beban TKL Untuk Realisasi : $projectrealisation->code"  ;
             $journalDetail->coa_code = $coa->coa_code;
             $journalDetail->debit = floatval($coa->totalcogs);
             $journalDetail->kredit = 0;
             $journalDetail->created_by = Auth::user()->username;
             $journalDetail->save();
+
+            $bebanTKL += floatval($coa->totalcogs);
         }
 
+        // Mendebit Utang Gaji  Ketika Diakhir Termin Terdapat Sisa Qty Yang Tidak Tereleasi (jika ada)
+
+        $totalutanggajitkl = 0;
+        if (count($projectDetailB) > 0){
+
+            foreach($projectDetailB as $i){
+                $totalutanggajitkl += floatval($i->qty_additional) * floatval($i->price);
+            }
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description = "Pengurangan Utang Gaji Untuk Upah Yang Tidak Terealisasi Pada Termin Terakhir: $projectrealisation->code"  ;
+            $journalDetail->coa_code = $project->coa_payable;
+            $journalDetail->debit = floatval($totalutanggajitkl);
+            $journalDetail->kredit = 0;
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
         // Insert Proyek Dalam Proses Journal Detail
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
-        $journalDetail->description = "Proyek Dalam Proses Untuk Realisasi Pengerjaan Project Code : ". $project->code ;
+        $journalDetail->description = "Proyek Dalam Proses Untuk Realisasi : ". $projectrealisation->code ;
         $journalDetail->coa_code =  "10.01.04.02" ;
         $journalDetail->debit = 0;
-        $journalDetail->kredit = $totalutanggajitkl;
+        $journalDetail->kredit = $bebanTKL +  $totalutanggajitkl;
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
     }
+    // public function journalFinishProyek($ref_no, $type_journal, $project, $transDate){
+    //     $supplyModel = Journal::where("voucher_no", 'like', "%".$type_journal."%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+    //     $AutomaticCode = $this->automaticCode($type_journal, $supplyModel,true,"voucher_no");
+    //     $Variation_COA_ProjectDetailB = ProjectDetailB::join("upah", "project_detail_b.upah_code", "=", "upah.code")
+    //     ->select("upah.coa_code" , DB::raw("sum(total) as totalcogs"))
+    //     ->where("project_detail_b.project_code", $ref_no)
+    //     ->groupBy("upah.coa_code")
+    //     ->get();
+
+    //     // Insert Header Journal
+    //     $journal = New Journal();
+    //     $journal->voucher_no = $AutomaticCode;
+    //     $journal->transaction_date =  $transDate;
+    //     $journal->ref_no = $ref_no;
+    //     $journal->journal_type_code = "JU";
+    //     $journal->posting_status = 0;
+    //     $journal->created_by =Auth::user()->username;
+    //     $journal->save();
+
+    //     $cogsMaterial = Stocks_Out::where("ref_no", $ref_no)->selectRaw('SUM(qty * cogs) as total')->first();
+    //     $cogsMaterial = floatval($cogsMaterial->total);
+
+    //     // Insert Beban Material Jurnal Detail
+    //     $journalDetail  = New Journal_Detail();
+    //     $journalDetail->voucher_no = $journal->voucher_no;
+    //     $journalDetail->description = "Beban Material Untuk Realisasi Pengerjaan Project Code : ". $project->code ;
+    //     $journalDetail->coa_code = $project->coa_expense;
+    //     $journalDetail->debit = $cogsMaterial;
+    //     $journalDetail->kredit = 0;
+    //     $journalDetail->created_by = Auth::user()->username;
+    //     $journalDetail->save();
+
+    //     // Insert Proyek Dalam Proses Journal Detail
+    //     $journalDetail  = New Journal_Detail();
+    //     $journalDetail->voucher_no = $journal->voucher_no;
+    //     $journalDetail->description = "Proyek Dalam Proses Untuk Realisasi Pengerjaan Project Code : ". $project->code ;
+    //     $journalDetail->coa_code = "10.01.04.02";
+    //     $journalDetail->debit = 0 ;
+    //     $journalDetail->kredit = $cogsMaterial;
+    //     $journalDetail->created_by = Auth::user()->username;
+    //     $journalDetail->save();
+
+
+    //     //  Insert Beban BTKL Journal Detail
+    //     $totalutanggajitkl = 0;
+    //     foreach ($Variation_COA_ProjectDetailB as $coa){
+    //         $journalDetail  = New Journal_Detail();
+    //         $totalutanggajitkl+= floatval($coa->totalcogs);
+    //         $journalDetail->voucher_no = $journal->voucher_no;
+    //         $journalDetail->description = "Beban TKL Untuk Realisasi Pengerjaan Project Code: $project->code"  ;
+    //         $journalDetail->coa_code = $coa->coa_code;
+    //         $journalDetail->debit = floatval($coa->totalcogs);
+    //         $journalDetail->kredit = 0;
+    //         $journalDetail->created_by = Auth::user()->username;
+    //         $journalDetail->save();
+    //     }
+
+    //     // Insert Proyek Dalam Proses Journal Detail
+    //     $journalDetail  = New Journal_Detail();
+    //     $journalDetail->voucher_no = $journal->voucher_no;
+    //     $journalDetail->description = "Proyek Dalam Proses Untuk Realisasi Pengerjaan Project Code : ". $project->code ;
+    //     $journalDetail->coa_code =  "10.01.04.02" ;
+    //     $journalDetail->debit = 0;
+    //     $journalDetail->kredit = $totalutanggajitkl;
+    //     $journalDetail->created_by = Auth::user()->username;
+    //     $journalDetail->save();
+    // }
 
     public function journalPenyesuaianRealisationProyek($codeProyek, $transDate){
 

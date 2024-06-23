@@ -22,6 +22,8 @@ class ProjectRealisation extends Model
         'percent_realisation',
         'realisation_amount',
         'description',
+        'is_approve',
+        'approved_by',
         'created_at',
         'created_by',
         'updated_at',

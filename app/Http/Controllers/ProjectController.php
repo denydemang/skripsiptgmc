@@ -87,6 +87,44 @@ class ProjectController extends AdminController
         return response()->view("admin.project.projectmanage",$supplyData);
     }
 
+    public function getDataSearch(Request $request, DataTables $dataTables){
+
+        $customerCode = $request->customer_code;
+
+        $project = Project::select('projects.code' , 'projects.name', 'projects.budget','projects.realisation_amount', 'projects.total_termin', DB::raw('(Select count(*) from project_realisations where project_code = projects.code) as last_termin'))
+                ->where('projects.total_termin', '<>', DB::raw('(Select count(*) from project_realisations where project_code =projects.code)'))
+                ->where('projects.project_status', '>', 0)
+                ->whereColumn('projects.budget', '>', 'projects.realisation_amount')
+                ->where('projects.customer_code', '=', $customerCode);
+
+        return $dataTables->of($project)
+        ->editColumn('budget', function($row) {
+            return "Rp " .number_format($row->budget,2, ',', '.');
+        })
+        ->editColumn('realisation_amount', function($row) {
+            return "Rp " .number_format($row->realisation_amount,2, ',', '.');
+        })
+        ->editColumn('total_termin', function($row) {
+            return intval($row->total_termin);
+        })
+        ->editColumn('last_termin', function($row) {
+            return intval($row->last_termin);
+        })
+        ->addColumn('action', function ($row) {
+            return '
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-sm btn-success btnselectproject" data-name="'.$row->name.'" data-budget="'.$row->budget.'" data-totaltermin="'.$row->total_termin.'" data-lasttermin="'.$row->last_termin.'" data-code="'.$row->code.'" title="Select"><i class="fa fa-check"></i> Select</button>
+            </div>';
+
+        })
+
+        ->rawColumns(['action','is_approve'])
+        ->addIndexColumn()
+        ->make(true);
+
+
+    }
+
     public function projectrecapview(Request $request){
         $supplyData = [
             'title' =>"Project Recapitulation",
@@ -213,7 +251,18 @@ class ProjectController extends AdminController
             ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description', 
             'customers.name as customer_name', 'customers.address as customer_address')
             ->when($status !== null, function($query) use($status){
-                $query->where('project_status', intval($status));
+                switch ($status) {
+                    case 0:
+                        $query->where('project_status', 0);
+                        break;
+                    case 1:
+                        $query->where('project_status', 1);
+                        $query->whereColumn('budget', '>', 'realisation_amount');
+                        break;
+                    case 2:
+                        $query->whereColumn('budget', '<=', 'realisation_amount');
+                        break;
+                }
             })
             ->when($startProject !== null && $startProject2 !== null, function($query) use($startProject , $startProject2){
 
@@ -232,7 +281,10 @@ class ProjectController extends AdminController
         
                 return $dataTables->of($project)
                 ->editColumn('budget', function($row) {
-                    return "Rp " .number_format($row->budget,2, '.');
+                    return "Rp " .number_format($row->budget,2, ',', '.');
+                })
+                ->editColumn('realisation_amount', function($row) {
+                    return "Rp " .number_format($row->realisation_amount,2, ',','.');
                 })
                 ->editColumn('transaction_date', function($row) {
                     return Carbon::parse($row->transaction_date)->format('d/m/Y');
@@ -245,18 +297,13 @@ class ProjectController extends AdminController
                 })
                 ->editColumn('project_status', function($row) {
                     $html ="";
-                    switch ($row->project_status) {
-                        case 0:
-                            $html= "<span class='badge badge-danger'>Not Started</span>";
-                            break;
-                        case 1:
-                            $html= "<span class='badge badge-primary'>On Progress</span>";
-                            break;
-                        case 2:
-                            $html= "<span class='badge badge-success'>Done</span>";
-                            break;
-                        default:
-                            break;
+
+                    if ($row->budget - $row->realisation_amount > 0 && intval($row->project_status) == 0 ){
+                        $html= "<span class='badge badge-danger'>Not Started</span>";
+                    } else if($row->budget - $row->realisation_amount > 0 && intval($row->project_status) == 1)  {
+                        $html= "<span class='badge badge-primary'>On Progress</span>";
+                    } else {
+                        $html= "<span class='badge badge-success'>Done</span>";
                     }
                     return $html;
                 })
@@ -378,7 +425,10 @@ class ProjectController extends AdminController
         
                 return $dataTables->of($project)
                 ->editColumn('budget', function($row) {
-                    return "Rp " .number_format($row->budget,2, '.');
+                    return "Rp " .number_format($row->budget,2, ',', '.');
+                })
+                ->editColumn('realisation_amount', function($row) {
+                    return "Rp " .number_format($row->realisation_amount,2, '.');
                 })
                 ->editColumn('transaction_date', function($row) {
                     return Carbon::parse($row->transaction_date)->format('d/m/Y');
@@ -542,6 +592,7 @@ class ProjectController extends AdminController
                 $project->description = $data['description'];
                 $project->coa_expense = $data['coa_expense'];
                 $project->coa_payable = $data['coa_payable'];
+                $project->total_termin = intval($data['total_termin']);
                 $project->pic = $data['pic'];
                 $project->duration_days = $data['duration_days'];
                 $project->updated_by = Auth::user()->username;
@@ -657,6 +708,8 @@ class ProjectController extends AdminController
                 $project->coa_expense = $data['coa_expense'];
                 $project->coa_payable = $data['coa_payable'];
                 $project->pic = $data['pic'];
+                $project->total_termin = intval($data['total_termin']);
+                $project->realisation_amount = 0;
                 $project->project_document = $fileName;
                 $project->duration_days = $data['duration_days'];
                 $project->created_by = Auth::user()->username;

@@ -17,7 +17,8 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
-INSERT INTO `upah` VALUES ('UPAH001', 'Upah Pekerjaan Ngecor', 'Upah Pengerjaan Ngecor', 'Hour', 2555000.0000, '50.02', 'Admin', NULL, '2024-04-07 11:45:21', '2024-04-07 11:45:27');
-INSERT INTO `upah` VALUES ('UPAH002', 'Upah Pekerjaan Nyemen', 'upah Pekerjaan Nyemen', 'Hour', 350000.0000, '50.02', 'Admin', NULL, '2024-04-07 11:46:08', '2024-04-07 11:46:11');
+INSERT INTO `upah` VALUES ('UPAH001', 'Upah Pekerjaan Ngecor', 'Upah Pengerjaan Ngecor', 'Hour', 4000.0000, '50.02', 'Admin', NULL, '2024-04-07 11:45:21', '2024-04-07 11:45:27');
+INSERT INTO `upah` VALUES ('UPAH002', 'Upah Pekerjaan Nyemen', 'Upah Pekerjaan Nyemen', 'Hour', 3500.0000, '50.02', 'Admin', NULL, '2024-04-07 11:46:08', '2024-04-07 11:46:11');
+INSERT INTO `upah` VALUES ('UPAH003', 'Upah Pekerjaan Cat tembok dan Pagar', 'Upah Pekerjaan Cat Tembok dan Pagar', 'Hour', 5000.0000, '50.02', 'Admin', NULL, '2024-04-07 11:46:08', '2024-04-07 11:46:11');
 
 SET FOREIGN_KEY_CHECKS = 1;

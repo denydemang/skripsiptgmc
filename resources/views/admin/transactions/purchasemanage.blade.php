@@ -247,8 +247,9 @@
 
 	{{-- MODAL FORM --}}
 
-	@include('searchModal.suppliersearch')
+	
 	@include('searchModal.prsearch')
+	@include('searchModal.suppliersearch')
 
 	{{-- @include('searchModal.coaSearch') --}}
 

@@ -114,6 +114,25 @@ export const showconfirmfinish = async (id, objectHtml, funcfinish = null, menun
   });
 };
 
+export const showconfirmlogout = (id, objectHtml, funclogout = null, menuname) => {
+  $.confirm({
+    buttons: {
+      LOGOUT: function () {
+        return funclogout(id, objectHtml);
+      },
+      CANCEL: {
+        action: function () {}
+      }
+    },
+    title: `Confirm Logout ?`,
+    content: `You Will Logged Out`,
+    icon: 'fa fa-question-circle-o',
+    theme: 'supervan',
+    animation: 'scale',
+    type: 'blue'
+  });
+};
+
 export const showerror = (message, title = 'Error', backColor = 'red') => {
   $.alert({
     title: title,

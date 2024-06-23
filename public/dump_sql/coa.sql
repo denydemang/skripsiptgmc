@@ -22,8 +22,8 @@ INSERT INTO `coa` VALUES ('10.01', 'Aktiva Lancar', 'Aktiva', '1', 'D', 'Header'
 INSERT INTO `coa` VALUES ('10.01.01', 'Kas', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.01.01', 'Kas Di Tangan', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.02', 'Bank', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
-INSERT INTO `coa` VALUES ('10.01.02.01', 'Bank Mandiri', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
-INSERT INTO `coa` VALUES ('10.01.02.02', 'Bank BNI', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
+INSERT INTO `coa` VALUES ('10.01.02.01', 'Bank Mandiri', 'Aktiva', '3', 'D', 'Detail', 1000000000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
+INSERT INTO `coa` VALUES ('10.01.02.02', 'Bank BNI', 'Aktiva', '3', 'D', 'Detail', 1000000000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.02.03', 'Bank BCA', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.03', 'Piutang', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.03.01', 'Piutang Usaha', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
@@ -61,7 +61,7 @@ INSERT INTO `coa` VALUES ('20.02', 'Utang Jangka Panjang', 'Passiva', '1', 'K', 
 INSERT INTO `coa` VALUES ('20.02.01', 'Utang Bank', 'Passiva', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-02 11:53:51', '2024-04-02 11:53:56');
 INSERT INTO `coa` VALUES ('30', 'Equity', 'Modal', '0', 'K', 'Header', 0.0000, 'Admin', NULL, '2024-04-02 11:56:03', '2024-04-02 11:56:06');
 INSERT INTO `coa` VALUES ('30.01', 'Modal', 'Modal', '1', 'K', 'Header', 0.0000, 'Admin', NULL, '2024-04-02 11:58:38', '2024-04-02 11:58:42');
-INSERT INTO `coa` VALUES ('30.01.01', 'Modal Disetor', 'Modal', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-02 11:58:55', '2024-04-02 11:58:57');
+INSERT INTO `coa` VALUES ('30.01.01', 'Modal Disetor', 'Modal', '2', 'K', 'Detail', 2000000000, 'Admin', NULL, '2024-04-02 11:58:55', '2024-04-02 11:58:57');
 INSERT INTO `coa` VALUES ('30.02', 'Rugi Laba', 'Rugi Laba', '1', 'K', 'Header', 0.0000, 'Admin', NULL, '2024-04-03 10:02:15', '2024-04-03 10:02:19');
 INSERT INTO `coa` VALUES ('30.02.01', 'Laba Ditahan', 'Rugi Laba', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-03 10:03:05', '2024-04-03 10:03:10');
 INSERT INTO `coa` VALUES ('30.02.02', 'Laba s/d Bulan Ini', 'Rugi Laba', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-03 10:03:16', '2024-04-03 10:03:19');

@@ -2,7 +2,7 @@ import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showerror } from '../jqueryconfirm.js';
 import { formatRupiah1 } from '../rupiahformatter.js';
-import { showconfirmdelete, showconfirmstart } from '../jqueryconfirm.js';
+import { showconfirmdelete, showconfirmstart, showconfirmapprove } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
 import daterangeInitiator from '../daterangeinitiator.js';
 import initiatedtp from '../datepickerinitiator.js';
@@ -37,7 +37,7 @@ $(document).ready(function () {
   const startMONTH = Date.getFirstMonth();
   const lastMONTH = Date.getLastMonth();
   let supplyData = {
-    status: 3,
+    status: '',
     startDate: startMONTH,
     endDate: lastMONTH,
     startProject: '',
@@ -50,25 +50,24 @@ $(document).ready(function () {
 
   // INISIASI DATATABLE
   // ========================================================================
-  var getDataProject = route('admin.getDataProjectRealisation');
+  var getDataProject = route('admin.getDataProjectRealisationTable');
   const tableName = '.projectrealisationtable';
-  const method = 'post';
+  const method = 'get';
   const columns = [
-    { data: 'action', name: 'actions', title: 'Action', searchable: false, orderable: false, width: '10%' },
-    { data: 'code', name: 'Code', title: 'CODE', searchable: true },
-    { data: 'name', name: 'Name', title: 'Project Name', searchable: true },
-    { data: 'transaction_date', name: 'transaction_date', title: 'Transaction Date', searchable: false },
-    { data: 'project_type_code', name: 'project_type_code', title: 'Project Type Code', searchable: true },
-    { data: 'type_project_description', name: 'type_project_description', title: 'Project Type' },
-    { data: 'customer_code', name: 'customer_code', title: 'Cutomer Code', searchable: true },
+    { data: 'action', name: 'actions', title: 'Action', searchable: false, orderable: false },
+    { data: 'code', name: 'Code', title: 'Relisation Code', searchable: true },
+    { data: 'project_code', name: 'project_code', title: 'Project Code', searchable: true },
+    { data: 'project_name', name: 'project_name', title: 'Project Name', searchable: true },
+    { data: 'realisation_date', name: 'realisation_date', title: 'Realisation Date', searchable: false },
+    { data: 'termin', name: 'termin', title: 'No Termin', searchable: false },
+    { data: 'total_termin', name: 'total_termin', title: 'Total Termin', searchable: false },
+    { data: 'customer_code', name: 'customer_code', title: 'Customer Code', searchable: true },
     { data: 'customer_name', name: 'customer_name', title: 'Cutomer Name', searchable: true },
-    { data: 'location', name: 'Location', title: 'Location', searchable: true },
-    { data: 'budget', name: 'Budget', title: 'Budget', searchable: true },
-    { data: 'start_date', name: 'start_date', title: 'Start Date', searchable: false },
-    { data: 'end_date', name: 'end_date', title: 'End Date', searchable: false },
-    { data: 'project_status', name: 'project_status', title: 'Status' },
-    { data: 'project_document', name: 'project_document', title: 'Project Document' },
-    { data: 'description', name: 'Description', title: 'Description' },
+    { data: 'project_amount', name: 'project_amount', title: 'Project Amount', searchable: false },
+    { data: 'percent_realisation', name: 'percent_realisation', title: 'Percent Realisation', searchable: false },
+    { data: 'realisation_amount', name: 'realisation_amount', title: 'Realisation Amount', searchable: false },
+    { data: 'is_approve', name: 'is_approve', title: 'Approved', searchable: false },
+    { data: 'approved_by', name: 'approved_by', title: 'Approved By' },
     { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
     { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
   ];
@@ -107,8 +106,8 @@ $(document).ready(function () {
   // Function
   // ==================================================================
   async function getData(code = '') {
-    const urlRequest = route('admin.getDataDetailProjectRaw', code);
-    const method = 'POST';
+    const urlRequest = route('admin.getDetailRealisation', code);
+    const method = 'GET';
 
     try {
       const ajx = new AjaxRequest(urlRequest, method);
@@ -117,6 +116,11 @@ $(document).ready(function () {
       showerror(error);
       return null;
     }
+  }
+
+  function deleteData(code, name) {
+    const urlRequest = route('admin.deleterealisation', code);
+    window.location.href = urlRequest;
   }
   function checkValueCheckbox() {
     const isCheckedstartDate = checkstartdate[0].checked;
@@ -162,42 +166,12 @@ $(document).ready(function () {
     }
   }
 
-  function updateDTPTransDateValue() {
-    let startTrans = inputstartdatetrans.val();
-    let lastTrans = inputlastdatetrans.val();
-
-    supplyData.startDate = startTrans;
-    supplyData.endDate = lastTrans;
-
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  function updateDTPStartDateValue() {
-    let startDate1 = inputstartdateproject1.val();
-    let startDate2 = inputstartdateproject2.val();
-
-    supplyData.startProject = startDate1;
-    supplyData.startProject2 = startDate2;
-
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
-  function updateDTPFinishDateValue() {
-    let finishDate1 = inputenddateproject1.val();
-    let finishDate2 = inputenddateproject2.val();
-
-    supplyData.EndProject = finishDate1;
-    supplyData.EndProject2 = finishDate2;
-
-    reloadTable(method, tableName, columns, getDataProject, supplyData);
-  }
-
   function populateData(Material = [], upah = []) {
     // Populate Title Detail
-    let codeProyek = Material[0].project_code;
-    let namaProyek = Material[0].project_name;
+    let codeProyek = Material[0].project_realisation_code;
+    // let namaProyek = Material[0].project_name;
 
-    titledetail.html(`${codeProyek} - ${namaProyek}`);
+    titledetail.html(`${codeProyek}`);
     let htmlMaterial = '';
     let counterMaterial = 1;
 
@@ -208,7 +182,7 @@ $(document).ready(function () {
         <td class="col-1" style="white-space:normal;word-wrap: break-word;">${counterMaterial}</td>
         <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.item_code}</td>
         <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.item_name}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty)}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty_used)}</td>
         <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.unit_code}</td>
       </tr>
   
@@ -229,8 +203,8 @@ $(document).ready(function () {
       <tr class="row">
         <td class="col-1" style="white-space:normal;word-wrap: break-word;">${counterUpah}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.upah_code}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.job}</td>
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty)}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.upah_name}</td>
+        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty_used)}</td>
         <td class="col-1" style="white-space:normal;word-wrap: break-word;">${item.unit}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.price))}</td>
         <td class="col-3" style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.total))}</td>
@@ -255,6 +229,11 @@ $(document).ready(function () {
     listUpah.html(htmlUpah);
   }
 
+  function approveData(code, name) {
+    const urlRequest = route('admin.approverealisation', code);
+    window.location.href = urlRequest;
+  }
+
   // ====================================================================
 
   // CRUD and Event
@@ -273,9 +252,27 @@ $(document).ready(function () {
     populateData(dataMaterial, dataupah);
   });
 
+  // Click Edit Button
+  $(document).on('click', '.editbtn', function () {
+    let code = $(this).data('code');
+    let url = route('admin.editProjectrealisationview', code);
+
+    window.location.href = url;
+  });
+
+  $(document).on('click', '.deletebtn', function () {
+    let Code = $(this).data('code');
+    showconfirmdelete(Code, Code, deleteData, 'Realisation :');
+  });
+
+  $(document).on('click', '.approvebtn', function () {
+    let Code = $(this).data('code');
+    showconfirmapprove(Code, Code, approveData, 'Project Realisation');
+  });
   // Click Select Button
   $(document).on('change', '#statusSelect', function () {
     let val = $(this).val();
+    console.log(val);
     supplyData.status = val;
 
     reloadTable(method, tableName, columns, getDataProject, supplyData);

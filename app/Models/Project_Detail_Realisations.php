@@ -16,7 +16,7 @@ class Project_Detail_Realisations extends Model
         'project_realisation_code',
         'item_code', 
         'unit_code',
-        'qty_estimated',
+        'qty_addtional',
         'qty_used',
         'created_at',
         'created_by',

@@ -10,6 +10,9 @@ use App\Models\Item;
 use App\Models\Journal;
 use App\Models\Payment;
 use App\Models\Project;
+use App\Models\Project_Detail_B_Realisation;
+use App\Models\Project_Detail_Realisations;
+use App\Models\ProjectRealisation;
 use App\Models\Purchase;
 use App\Models\Purchase_Request;
 use App\Models\Stock;
@@ -33,21 +36,6 @@ class PrintController extends AdminController
         ->where("journal_details.description", "not like", "%Realisasi%")
         ->get();
 
-        $journalFinish = Journal::join("journal_details", "journals.voucher_no", "=", "journal_details.voucher_no")
-        ->join("coa", "journal_details.coa_code", "=", "coa.code")
-        ->select("coa.name as coa_name", "journals.*", "journal_details.*")
-        ->where("journals.ref_no", $id)
-        ->where("journals.journal_type_code", "!=", "jp")
-        ->where("journal_details.description", "like", "%Realisasi%")
-        ->get();
-
-        $journalPenyesuaian = Journal::join("journal_details", "journals.voucher_no", "=", "journal_details.voucher_no")
-        ->join("coa", "journal_details.coa_code", "=", "coa.code")
-        ->select("coa.name as coa_name", "journals.*", "journal_details.*")
-        ->where("journals.ref_no", $id)
-        ->where("journals.journal_type_code", "jp")
-        ->get();
-
         if (count($journal) == 0){
             abort(404);
         };
@@ -60,31 +48,16 @@ class PrintController extends AdminController
             $totalKredit += floatval($j->kredit);
         }
 
-        $totalDebitRealisasi = 0;
-        $totalKreditRealisasi = 0;
-
-        foreach($journalFinish as $j){
-            $totalDebitRealisasi +=  floatval($j->debit);
-            $totalKreditRealisasi  += floatval($j->kredit);
-        }
-
-        $totalDebitPenyesuaian = 0;
-        $totalKreditPenyesuian = 0;
-        foreach($journalPenyesuaian as $j){
-            $totalDebitPenyesuaian +=  floatval($j->debit);
-            $totalKreditPenyesuian += floatval($j->kredit);
-        }
-
         $data =[
             "dataprojectdanjurnal" => $journal,
-            "jurnalpenyesuaian" => $journalPenyesuaian,
-            "jurnalRealisasi" =>  $journalFinish,
+            // "jurnalpenyesuaian" => $journalPenyesuaian,
+            // "jurnalRealisasi" =>  $journalFinish,
             "totalDebit" => $totalDebit,
             "totalKredit" => $totalKredit,
-            "totalDebitPenyesuaian" => $totalDebitPenyesuaian,
-            "totalKreditPenyesuian" => $totalKreditPenyesuian,
-            "totalDebitRealisasi" => $totalDebitRealisasi ,
-            "totalKreditRealisasi" => $totalKreditRealisasi ,
+            // "totalDebitPenyesuaian" => $totalDebitPenyesuaian,
+            // "totalKreditPenyesuian" => $totalKreditPenyesuian,
+            // "totalDebitRealisasi" => $totalDebitRealisasi ,
+            // "totalKreditRealisasi" => $totalKreditRealisasi ,
         ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'landscape');
@@ -101,98 +74,62 @@ class PrintController extends AdminController
         ->where("projects.code", $id)
         ->first();
 
-        $project_detail = new ProjectDetailController();
-        $project_detail = $project_detail->getDetail($id);
-        $dataBahanBaku = $project_detail->get();
+        $projectrealisation = ProjectRealisation::where("project_code", $id)->orderBy('realisation_date', 'asc')->orderBy("code", "asc")->get();
 
+        $data['project'] = $project;
+        $data['projectrealisation'] = $projectrealisation;
+        $data['currenttermin'] = count($projectrealisation);
+        $data['percentprogress'] = count($projectrealisation) > 0 ? $projectrealisation[count($projectrealisation) - 1]['percent_realisation'] : 0;
 
-        $project_detail_b = new ProjectDetailBController();
-        $project_detail_b = $project_detail_b->getDetailB($id);
-        $dataUpah = $project_detail_b->get();
-
-        // Realisation
-
-        $project_detail_realisation = new ProjectDetailRealisationController();
-        $project_detail_realisation = $project_detail_realisation->getDetail($id);
-        $dataBahanBakuRealisation = $project_detail_realisation->get();
-
-        $project_detail_realisationdiff = new ProjectDetailRealisationController();
-        $project_detail_realisationdiff = $project_detail_realisationdiff->getDetailDifference($id);
-        $dataBahanBakuRealisationdiff = $project_detail_realisationdiff->get();
-
-        $project_detail_realisation_b = new ProjectDetailRealisationBController();
-        $project_detail_realisation_b = $project_detail_realisation_b->getDetailB($id);
-        $dataUpahRealisation = $project_detail_realisation_b->get();
-
-        $project_detail_realisation_bdiff = new ProjectDetailRealisationBController();
-        $project_detail_realisation_bdiff = $project_detail_realisation_bdiff->getDetailDifference($id);
-        $dataUpahRealisationdiff = $project_detail_realisation_bdiff->get();
-
-        $totalUpah = 0;
-        $totalUpahrealisation = 0;
-
-        foreach ($dataUpah as $upah) {
-            $totalUpah+= floatval($upah->total);
-        }
-        foreach ($dataUpahRealisation as $upah) {
-            $totalUpahrealisation+= floatval($upah->total);
-        }
-        if ($project === null){
-            abort(404);
-        };
-
-
-        $data =[
-            "project" => $project,
-            "dataBahanBaku" =>  $dataBahanBaku,
-            "dataBahanBakuRealisation" => $dataBahanBakuRealisation,
-            "dataBahanBakuRealisationdiff" => $dataBahanBakuRealisationdiff,
-            "dataUpah" => $dataUpah,
-            "dataUpahRealisation" => $dataUpahRealisation,
-            "dataUpahRealisationdiff" => $dataUpahRealisationdiff,
-            "totalUpah" => $totalUpah,
-            "totalUpahrealisation" => $totalUpahrealisation
-        ];
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('A4', 'potrait');
         $pdf->loadview("admin.project.print.printproject", $data);
-        return $pdf->stream("ProjectReport-$id.pdf", array("Attachment" => false));
+        return $pdf->stream("ProjectReport.pdf", array("Attachment" => false));
     }
 
     public function printprojectrecap($statuscode = null,$startdate,$lastdate, $customercode = null){
 
-        try {
-
+    
         $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')
         ->join('customers','projects.customer_code', '=', 'customers.code' )
         ->select('projects.*', 'type_projects.name as type_project_name', 'type_projects.description as type_project_description',
         'customers.name as customer_name', 'customers.address as customer_address')
         ->whereBetween('transaction_date' , [$startdate,$lastdate])
         ->when($statuscode !== null , function($query) use($statuscode){
-            $query->where("projects.project_status", $statuscode);
+            switch (intval($statuscode)) {
+                case 0:
+                    $query->where('project_status', 0);
+                    break;
+                case 1:
+                    $query->where('project_status', 1);
+                    $query->whereColumn('budget', '>', 'realisation_amount');
+                    break;
+                case 2:
+                    $query->whereColumn('budget', '<=', 'realisation_amount');
+                    break;
+            }
         })
         ->when($customercode !== null, function($query) use($customercode){
             $query->where("projects.customer_code", $customercode);
         })
         ->get();
 
-        if ($project === null){
-            abort(404);
-        };
-        $data = [
-            "projects" => $project,
-            "customer_code" => $customercode,
-            "statuscode"=> $statuscode,
-            "startDate" => $startdate,
-            "endDate" => $lastdate,
-        ];
+    $data = [
+        "projects" => $project,
+        "customer_code" => $customercode,
+        "statuscode"=> $statuscode,
+        "startDate" => $startdate,
+        "endDate" => $lastdate,
+    ];
 
 
 
-        $pdf = App::make('dompdf.wrapper');
-        $pdf->setPaper('A4', 'landscape');
-        $pdf->loadview("admin.project.print.printprojectrecap", $data);
-        return $pdf->stream("ProjectRecapitulation($startdate-$lastdate).pdf", array("Attachment" => false));
+    $pdf = App::make('dompdf.wrapper');
+    $pdf->setPaper('A4', 'landscape');
+    $pdf->loadview("admin.project.print.printprojectrecap", $data);
+    return $pdf->stream("ProjectRecapitulation($startdate-$lastdate).pdf", array("Attachment" => false));
+        try {
+
         } catch (\Throwable $th) {
             abort(404);
         }
@@ -787,7 +724,7 @@ class PrintController extends AdminController
         ->join("project_realisations", "project_realisations.code" , "=", "invoices.project_realisation_code")
         ->join("projects", "projects.code" , "=", "project_realisations.project_code")
         ->select('invoices.*', 'projects.name as project_name', "projects.code as project_code","customers.code as customer_code", "customers.name as customer_name",
-                "project_realisations.code as project_realisation_code" , "project_realisations.percent_realisation", "project_realisations.realisation_amount" ,"projects.budget as project_amount")
+                "project_realisations.code as project_realisation_code" ,'project_realisations.termin','projects.total_termin', "project_realisations.percent_realisation", "project_realisations.realisation_amount" ,"projects.budget as project_amount")
         ->where("invoices.invoice_no", $id)->first();
 
         // return $invoices;
@@ -1870,5 +1807,90 @@ class PrintController extends AdminController
         } catch (\Throwable $th) {
             abort(400);
         }
+    }
+
+    public function printjurnalrealisasi($id){
+        
+        try {
+            //code...
+            $journal = Journal::join('journal_details', "journals.voucher_no", "=", "journal_details.voucher_no")
+            ->join("coa", "journal_details.coa_code", "=", "coa.code")
+            ->where("journals.ref_no", $id)
+            ->select("coa.name", "journals.*", "journal_details.*")
+            // ->orderBy("journal_details.debit", 'desc')
+            ->get();
+
+            if (count($journal) == 0){
+                throw new Exception();
+            }
+
+            $realisasi = ProjectRealisation::join("projects", "projects.code" , "=", "project_realisations.project_code")
+                        ->join('customers', 'customers.code', "=",'projects.customer_code')
+            ->select('project_realisations.*','projects.name as project_name', DB::raw('ifnull(customers.name ,"-" ) as customer_name'))
+            ->where("project_realisations.code", $id)->get();
+
+            $data = [
+                "realisasiData" => $realisasi,
+                "journal" => $journal,
+            ];
+
+            $pdf = App::make('dompdf.wrapper');
+            $pdf->setPaper('A4', 'landscape');
+            $pdf->loadview("admin.project.print.printjournalrealisasi", $data);
+            return $pdf->stream("JournalRealisasi-$id.pdf", array("Attachment" => false));
+
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+    }
+    public function printprojectrealisationdetail($id){
+
+
+        // $Purchase = Purchase::join("purchase_details", "purchases.purchase_no" , "=", "purchase_details.purchase_no")
+        // ->join("suppliers", "purchases.supplier_code" , "=", "suppliers.code")
+        // ->leftJoin("items", 'items.code', "=", "purchase_details.item_code")
+        // ->select('purchases.*', 'purchases.total as total_item_purchase','purchases.created_by as dibuat_oleh','items.name as item_name',  DB::raw('ifnull(suppliers.name ,"-" ) as supplier_name'),  DB::raw('ifnull(suppliers.address ,"-" ) as supplier_address'), DB::raw('ifnull(suppliers.phone,"-" ) as supplier_phone'),"purchase_details.*")
+        // ->where("purchases.purchase_no", $id)->get();
+
+        $projectRealisation =  ProjectRealisation::join('customers', 'customers.code', '=', 'project_realisations.customer_code')
+                                ->join("projects", 'projects.code', '=', 'project_realisations.project_code')
+                                ->select(
+                                "projects.code as project_code", 
+                                "project_realisations.code as project_realisation_code",
+                                "project_realisations.realisation_date",
+                                "projects.budget as project_amount",
+                                "project_realisations.realisation_amount as realisation_amount",
+                                "projects.name as project_name", 
+                                "customers.name as customer_name",
+                                "customers.code as customer_code",
+                                'project_realisations.termin',
+                                'projects.total_termin')
+                                ->where('project_realisations.code', $id)
+                                ->first();
+        
+        $dataBahanBaku = Project_Detail_Realisations::join("items", "project_detail_realisations.item_code", '=', 'items.code')
+                        ->where('project_detail_realisations.project_realisation_code', $id)
+                        ->get();
+        $dataUpah = Project_Detail_B_Realisation::join("upah", 'project_detail_b_realisations.upah_code', '=', 'upah.code')
+                    ->select('upah.job as upah_name','project_detail_b_realisations.*' )
+                    ->where("project_detail_b_realisations.project_realisation_code" ,$id)
+                    ->get();
+        
+        
+        $data['projectRealisation'] = $projectRealisation;
+        $data['dataBahanBaku'] = $dataBahanBaku;
+        $data['dataUpah'] = $dataUpah;
+        
+
+        if (!$projectRealisation){
+        abort(404);
+        };
+        // $data = [
+        // "dataPurchase" => $Purchase
+        // ];
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'potrait');
+        $pdf->loadview("admin.project.print.printrealisasi", $data);
+        return $pdf->stream("ProjectRealisation-($id).pdf", array("Attachment" => false));
     }
 }

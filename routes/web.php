@@ -15,6 +15,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\LedgerController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ProfitLossController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
@@ -80,6 +81,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
         Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
         Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
+        Route::get('/admin/project/getSearchtable', 'getDataSearch')->name('admin.getDataProjectSearch');
         // Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
         // Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
         Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
@@ -97,13 +99,41 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
         Route::get('/admin/project/printprojectrecap', 'printprojectrecap')->name('admin.printprojectrecap');
     });
+
+
     // Route::controller(CustomerController::class)->group(function () {
 
     //     Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
     // });
 
     Route::controller(ProjectRealisationController::class)->group(function(){
+           // GET VIEW
+        Route::get('/admin/projectrealisation', 'getViewProjectRealisation')->name('admin.projectrealisationview');
+        Route::get('/admin/projectrealisation/add', 'getViewProjectRealisationManage')->name('admin.addProjectrealisationview');
+        Route::get('/admin/projectrealisation/edit/{id}', 'getViewProjectRealisationManage')->name('admin.editProjectrealisationview');
+        // Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
+
+        // // // CRUD
         Route::get('/admin/projectrealisation/gettablesearch', 'getProjectRealisationSearchtable')->name('admin.getProjectRealisationSearchtable');
+        Route::get('/admin/projectrealisation/getdetail/{id}', 'getDetailRealisation')->name('admin.getDetailRealisation');
+        Route::get('/admin/projectrealisation/gettable', 'getProjectRealisationtable')->name('admin.getDataProjectRealisationTable');
+        Route::get('/admin/projectrealisation/getdatabyproyek/{projectcode}', 'getProjectRealisationDataByProyek')->name('admin.getDataRealisasiByProyek');
+        Route::get('/admin/projectrealisation/getmaterialproyek/{projectcode}', 'getMaterialProyek')->name('admin.getMaterialProyek');
+        Route::get('/admin/projectrealisation/getupahproyek/{projectcode}', 'getUpahProyek')->name('admin.getUpahProyek');
+        // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
+        // // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
+        Route::post('/admin/projectrealisation/add', 'addRealisation')->name('admin.addRealisation');
+        Route::post('/admin/projectrealisation/edit/{id}', 'editrealisation')->name('admin.editrealisation');
+        Route::get('/admin/projectrealisation/delete/{id}', 'deleterealisation')->name('admin.deleterealisation');
+        Route::get('/admin/projectrealisation/approve/{id}', 'approverealisation')->name('admin.approverealisation');
+        // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+
+
+        // // Print
+        Route::get('/admin/projectrealisation/detail/print/{id}', 'printdetailprojectrealisation')->name('admin.printdetailprojectrealisation');
+        Route::get('/admin/projectrealisation/jurnal/print/{id}', 'printjurnalprojectrealisation')->name('admin.printjurnalprojectrealisation');
+        // Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
+   
     });
 
     Route::controller(COAController::class)->group(function () {

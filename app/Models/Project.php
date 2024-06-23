@@ -29,6 +29,8 @@ class Project extends Model
         'coa_payable',
         'created_at',
         'created_by',
+        'total_termin',
+        'realisation_amount',
         'updated_at',
         'updated_by',
         'pic',

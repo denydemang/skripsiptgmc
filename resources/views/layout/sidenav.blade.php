@@ -38,7 +38,8 @@
                                 'admin.editProjectView',
                                 'admin.projectrecapview',
                                 'admin.projectrealisationview',
-                                'admin.projectrealisationfinishview',
+                                'admin.addProjectrealisationview',
+                                'admin.editProjectrealisationview',
                             ];
                         @endphp
                         <a class="nav-link {{ in_array($sessionRoute, $projectRoute) ? 'active' : '' }}"
@@ -61,10 +62,11 @@
                                 <li class="nav-item {{ $sessionRoute == 'admin.projectrecapview' ? 'active' : '' }}">
                                     <a href="{{ route('admin.projectrecapview') }}" class="nav-link">Project Recap</a>
                                 </li>
-                                {{-- <li
-									class="nav-item {{ $sessionRoute == 'admin.projectrealisationview' || $sessionRoute == 'admin.projectrealisationfinishview' ? 'active' : '' }}">
-									<a href="{{ route('admin.projectrealisationview') }}" class="nav-link">Project Realisation</a>
-								</li> --}}
+                                <li
+                                    class="nav-item {{ $sessionRoute == 'admin.projectrealisationview' || $sessionRoute == 'admin.addProjectrealisationview' || $sessionRoute == 'admin.editProjectrealisationview' ? 'active' : '' }}">
+                                    <a href="{{ route('admin.projectrealisationview') }}" class="nav-link">Project
+                                        Realisation</a>
+                                </li>
                             </ul>
                         </div>
                     </li>
@@ -244,7 +246,8 @@
                                         Report</a>
                                 </li>
                                 <li class="nav-item {{ $sessionRoute == 'admin.capitalchange' ? 'active' : '' }}">
-                                    <a href="{{ route('admin.capitalchange') }}" class="nav-link">Stament Of Change In
+                                    <a href="{{ route('admin.capitalchange') }}" class="nav-link">Stament Of Change
+                                        In
                                         Capital Report</a>
                                 </li>
                                 <li class="nav-item {{ $sessionRoute == 'admin.balancesheet' ? 'active' : '' }}">

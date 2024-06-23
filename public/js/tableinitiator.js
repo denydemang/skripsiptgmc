@@ -5,8 +5,8 @@ export default class tableInitiator {
     columns = [],
     url,
     data = function () {},
-    fixedColumnsCount = 1,
     funcCell = function () {},
+    fixedColumnsCount = 1,
     searchable = true
   ) {
     this.method = method;

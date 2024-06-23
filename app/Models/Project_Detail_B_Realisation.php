@@ -16,7 +16,7 @@ class Project_Detail_B_Realisation extends Model
         'project_realisation_code',
         'upah_code', 
         'unit',
-        'qty_estimated',
+        'qty_additional',
         'qty_used',
         'price',
         'total',

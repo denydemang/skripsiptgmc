@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journal Project {{ $dataprojectdanjurnal[0]['ref_no'] }}</title>
+    <title>Journal Realisasi Proyek {{ $realisasiData[0]['code'] }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -100,26 +100,38 @@
             @include('layout.logoimage')
         </div>
         <header style="position:absolute;top:0;left:0;padding-top:40px">
-            <h3 style="margin-top:-10px;text-align:left">JOURNAL PROJECT</h3>
+            <h3 style="margin-top:-10px;text-align:left">JOURNAL REALISASI PROYEK</h3>
         </header>
     </div>
     <section class="transaction">
         <div class="transaction-info">
             <table border="0" cellpadding="4" style="padding: 10px">
                 <tr>
-                    <td><strong>Transaction Date</strong></td>
+                    <td><strong>Realisation Date</strong></td>
                     <td>:</td>
-                    <td>{{ \Carbon\Carbon::parse($dataprojectdanjurnal[0]['transaction_date'])->format('d/m/Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($realisasiData[0]['realisation_date'])->format('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Realisation Code</strong></td>
+                    <td>:</td>
+                    <td>{{ $realisasiData[0]['code'] }} - Termin {{ $realisasiData[0]['termin'] }} </td>
                 </tr>
                 <tr>
                     <td><strong>Project Code</strong></td>
                     <td>:</td>
-                    <td>{{ $dataprojectdanjurnal[0]['ref_no'] }}</td>
+                    <td>{{ $realisasiData[0]['project_code'] }}</td>
+                    </td>
                 </tr>
                 <tr>
                     <td><strong>Project Name</strong></td>
                     <td>:</td>
-                    <td>{{ $dataprojectdanjurnal[0]['project_name'] }}</td>
+                    <td>{{ $realisasiData[0]['project_name'] }}</td>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Customer Name</strong></td>
+                    <td>:</td>
+                    <td>{{ $realisasiData[0]['customer_name'] }}</td>
                     </td>
                 </tr>
             </table>
@@ -129,12 +141,12 @@
                 <tr>
                     <td><strong>Voucher No</strong></td>
                     <td>:</td>
-                    <td>{{ $dataprojectdanjurnal[0]['voucher_no'] }}</td>
+                    <td>{{ $journal[0]['voucher_no'] }}</td>
                 </tr>
                 <tr>
                     <td><strong>Voucher Type</strong></td>
                     <td>:</td>
-                    <td>{{ $dataprojectdanjurnal[0]['journal_type_code'] }}</td>
+                    <td>{{ $journal[0]['journal_type_code'] }}</td>
                 </tr>
 
             </table>
@@ -151,29 +163,42 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($dataprojectdanjurnal as $coa)
+                @php
+                    $totalDebit = 0;
+                    $totalKredit = 0;
+                @endphp
+                @foreach ($journal as $coa)
+                    @php
+                        $totalDebit += floatval($coa->debit);
+                        $totalKredit += floatval($coa->kredit);
+                    @endphp
                     <tr>
                         <td class="no-wrap">{{ $loop->iteration }}</td>
                         <td class="no-wrap">{{ $coa->coa_code }}</td>
-                        <td>{{ $coa->coa_name }}</td>
+                        <td>{{ $coa->name }}</td>
                         <td>{{ $coa->description }}</td>
-                        <td class="no-wrap">Rp. {{ number_format($coa->debit, 2, ',', '.') }}</td>
-                        <td class="no-wrap">Rp. {{ number_format($coa->kredit, 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="text-align:left">Rp.
+                            {{ number_format(round($coa->debit), 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="text-align:left">Rp.
+                            {{ number_format(round($coa->kredit), 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
+
                 <tr>
                     <td colspan="4" style="text-align: right"></td>
                     <td class="no-wrap" style="text-align: right;"><strong>Rp.
-                            {{ number_format($totalDebit, 2, ',', '.') }}</strong>
+                            {{ number_format(round($totalDebit), 2, ',', '.') }}</strong>
                     </td>
                     <td class="no-wrap" style="text-align: right"><strong>Rp.
-                            {{ number_format($totalKredit, 2, ',', '.') }}</strong>
+                            {{ number_format(round($totalKredit), 2, ',', '.') }}</strong>
                     </td>
                 </tr>
                 <!-- More rows can be added here -->
             </tbody>
         </table>
     </section>
+
+
 </body>
 
 </html>

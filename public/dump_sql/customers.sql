@@ -20,6 +20,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Records of customers
 -- ----------------------------
-INSERT INTO `customers` VALUES ('CUST001', 'PT X Gumilar', 'Jakarta', '2231esdm', 'kjksjd', 'ptxgumilar@gmail.com', '9383839', '20.01.01.01', 'Admin', NULL, NULL, NULL);
+INSERT INTO `customers` VALUES ('CUST001', 'PT X Gumilar', 'Jakarta', '3323', '-', 'ptxgumilar@gmail.com', '9383839', '10.01.03.01', 'Admin', NULL, NULL, NULL);
+INSERT INTO `customers` VALUES ('CUST001', 'PT Y Sekar Arum', 'Yogyakarta', '2323', '-', 'sekararum@gmail.com', '9383839', '10.01.03.01', 'Admin', NULL, NULL, NULL);
+INSERT INTO `customers` VALUES ('CUST001', 'PT Sugeng Adella', 'Solo', '2323', '-', 'sugengaddeka@gmail.com', '9383839', '10.01.03.01', 'Admin', NULL, NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
