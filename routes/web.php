@@ -29,12 +29,37 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\TrialBalanceConttroller;
 use App\Http\Controllers\UpahController;
+use App\Http\Middleware\AdvancedReceiptMiddleware;
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\AuthMiddleware;
+use App\Http\Middleware\BalanceSheetmiddleware;
+use App\Http\Middleware\CapitalChangemiddleware;
+use App\Http\Middleware\CashbookMiddleware;
+use App\Http\Middleware\DashBoardMiddleware;
 use App\Http\Middleware\GuestMiddleware;
+use App\Http\Middleware\IINmiddleware;
+use App\Http\Middleware\InvoiceMiddleware;
+use App\Http\Middleware\IOUTMiddleware;
+use App\Http\Middleware\JournalMiddleware;
+use App\Http\Middleware\LedgerMiddleware;
+use App\Http\Middleware\PaymentMiddleware;
+use App\Http\Middleware\ProfitLossMiddleware;
+use App\Http\Middleware\ProjectMiddleware;
+use App\Http\Middleware\ProjectRealisationMiddleware;
+use App\Http\Middleware\ProjectTypeMiddleware;
+use App\Http\Middleware\PurchaseMiddleware;
+use App\Http\Middleware\PurchaseRequestMiddleware;
+use App\Http\Middleware\ReceiptMiddleware;
+use App\Http\Middleware\StockCardMiddleware;
+use App\Http\Middleware\StockReminderMiddleware;
+use App\Http\Middleware\StocksMiddleware;
+use App\Http\Middleware\SuppplierMiddleware;
+use App\Http\Middleware\TrialBalanceMiddleware;
+use App\Models\Advanced_Receipt;
 use App\Models\CashBook;
 use App\Models\Category;
 use App\Models\COA;
+use App\Models\ProjectRealisation;
 use App\Models\Role;
 use App\Models\Unit;
 use Illuminate\Support\Facades\Auth;
@@ -62,43 +87,55 @@ Route::controller(CredentialController::class)->group(function () {
 });
 
 Route::middleware(AuthMiddleware::class)->group(function () {
-    Route::controller(AdminController::class)->group(function () {
-        Route::get('/admin', 'dashboard')->name('dashboard');
+    Route::middleware(DashBoardMiddleware::class)->group(function(){
+        Route::controller(AdminController::class)->group(function () {
+            Route::get('/admin', 'dashboard')->name('dashboard');
+        });
     });
+
     Route::controller(ProjectController::class)->group(function () {
-        Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
-        Route::get('/admin/project', 'getViewProject')->name('admin.project');
-        // View
-        Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
-        Route::get('/admin/project', 'getViewProject')->name('admin.project');
-        Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');
-        Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
-        Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
-        // Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
-        // Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
 
-        // CRUD
-        Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
-        Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
-        Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
-        Route::get('/admin/project/getSearchtable', 'getDataSearch')->name('admin.getDataProjectSearch');
-        // Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
-        // Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
-        Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
-        Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
-        Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
-        Route::get('/admin/project/delete/{id}', 'deleteProject')->name('admin.deleteDataProject');
-        Route::post('/admin/project/add', 'addProject')->name('admin.addprojects');
-        Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
-        Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
-        Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
-        Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
+        Route::middleware(ProjectTypeMiddleware::class)->group(function(){
+            Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
+            Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
+            Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
+            Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
+            Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
+            Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
+            Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
+        });
 
-        // Print
-        Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
-        Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
-        Route::get('/admin/project/printprojectrecap', 'printprojectrecap')->name('admin.printprojectrecap');
+
+
+        Route::middleware(ProjectMiddleware::class)->group(function(){
+
+            // View
+            Route::get('/admin/project', 'getViewProject')->name('admin.project');
+            Route::get('/admin/project/add', 'getViewProjectManage')->name('admin.addProjectView');
+            Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
+            // Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
+            // Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
+            
+            // CRUD
+            Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
+            Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
+            Route::get('/admin/project/getSearchtable', 'getDataSearch')->name('admin.getDataProjectSearch');
+            // Route::post('/admin/projectrealisation/getdata', 'getDataProjectRealisation')->name('admin.getDataProjectRealisation');
+            // Route::post('/admin/projectrealisation/finish/{id}', 'finishproject')->name('admin.finishproject');
+            Route::get('/admin/project/delete/{id}', 'deleteProject')->name('admin.deleteDataProject');
+            Route::post('/admin/project/add', 'addProject')->name('admin.addprojects');
+            Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
+            Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
+            Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
+    
+            // Print
+            Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
+            Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
+            Route::get('/admin/project/printprojectrecap', 'printprojectrecap')->name('admin.printprojectrecap');
+        });
+        
     });
+
 
 
     // Route::controller(CustomerController::class)->group(function () {
@@ -107,32 +144,36 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // });
 
     Route::controller(ProjectRealisationController::class)->group(function(){
-           // GET VIEW
-        Route::get('/admin/projectrealisation', 'getViewProjectRealisation')->name('admin.projectrealisationview');
-        Route::get('/admin/projectrealisation/add', 'getViewProjectRealisationManage')->name('admin.addProjectrealisationview');
-        Route::get('/admin/projectrealisation/edit/{id}', 'getViewProjectRealisationManage')->name('admin.editProjectrealisationview');
-        // Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
 
-        // // // CRUD
-        Route::get('/admin/projectrealisation/gettablesearch', 'getProjectRealisationSearchtable')->name('admin.getProjectRealisationSearchtable');
-        Route::get('/admin/projectrealisation/getdetail/{id}', 'getDetailRealisation')->name('admin.getDetailRealisation');
-        Route::get('/admin/projectrealisation/gettable', 'getProjectRealisationtable')->name('admin.getDataProjectRealisationTable');
-        Route::get('/admin/projectrealisation/getdatabyproyek/{projectcode}', 'getProjectRealisationDataByProyek')->name('admin.getDataRealisasiByProyek');
-        Route::get('/admin/projectrealisation/getmaterialproyek/{projectcode}', 'getMaterialProyek')->name('admin.getMaterialProyek');
-        Route::get('/admin/projectrealisation/getupahproyek/{projectcode}', 'getUpahProyek')->name('admin.getUpahProyek');
-        // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
-        // // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
-        Route::post('/admin/projectrealisation/add', 'addRealisation')->name('admin.addRealisation');
-        Route::post('/admin/projectrealisation/edit/{id}', 'editrealisation')->name('admin.editrealisation');
-        Route::get('/admin/projectrealisation/delete/{id}', 'deleterealisation')->name('admin.deleterealisation');
-        Route::get('/admin/projectrealisation/approve/{id}', 'approverealisation')->name('admin.approverealisation');
-        // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+        Route::middleware(ProjectRealisationMiddleware::class)->group(function(){
 
-
-        // // Print
-        Route::get('/admin/projectrealisation/detail/print/{id}', 'printdetailprojectrealisation')->name('admin.printdetailprojectrealisation');
-        Route::get('/admin/projectrealisation/jurnal/print/{id}', 'printjurnalprojectrealisation')->name('admin.printjurnalprojectrealisation');
-        // Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
+                // GET VIEW
+            Route::get('/admin/projectrealisation', 'getViewProjectRealisation')->name('admin.projectrealisationview');
+            Route::get('/admin/projectrealisation/add', 'getViewProjectRealisationManage')->name('admin.addProjectrealisationview');
+            Route::get('/admin/projectrealisation/edit/{id}', 'getViewProjectRealisationManage')->name('admin.editProjectrealisationview');
+            // Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
+    
+            // // // CRUD
+            Route::get('/admin/projectrealisation/gettablesearch', 'getProjectRealisationSearchtable')->name('admin.getProjectRealisationSearchtable');
+            Route::get('/admin/projectrealisation/getdetail/{id}', 'getDetailRealisation')->name('admin.getDetailRealisation');
+            Route::get('/admin/projectrealisation/gettable', 'getProjectRealisationtable')->name('admin.getDataProjectRealisationTable');
+            Route::get('/admin/projectrealisation/getdatabyproyek/{projectcode}', 'getProjectRealisationDataByProyek')->name('admin.getDataRealisasiByProyek');
+            Route::get('/admin/projectrealisation/getmaterialproyek/{projectcode}', 'getMaterialProyek')->name('admin.getMaterialProyek');
+            Route::get('/admin/projectrealisation/getupahproyek/{projectcode}', 'getUpahProyek')->name('admin.getUpahProyek');
+            // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
+            // // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
+            Route::post('/admin/projectrealisation/add', 'addRealisation')->name('admin.addRealisation');
+            Route::post('/admin/projectrealisation/edit/{id}', 'editrealisation')->name('admin.editrealisation');
+            Route::get('/admin/projectrealisation/delete/{id}', 'deleterealisation')->name('admin.deleterealisation');
+            Route::get('/admin/projectrealisation/approve/{id}', 'approverealisation')->name('admin.approverealisation');
+            // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+    
+    
+            // // Print
+            Route::get('/admin/projectrealisation/detail/print/{id}', 'printdetailprojectrealisation')->name('admin.printdetailprojectrealisation');
+            Route::get('/admin/projectrealisation/jurnal/print/{id}', 'printjurnalprojectrealisation')->name('admin.printjurnalprojectrealisation');
+            // Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
+        });
    
     });
 
@@ -230,6 +271,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
 
+
+
+
         Route::resource('/admin/customer', CustomerController::class)->names([
             'index' => 'r_customer.index',
             'create' => 'r_customer.create',
@@ -244,20 +288,31 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
 
     // -----------------    supplier
-    Route::controller(SupplierController::class)->group(function () {
-        Route::get("admin/supplier/getForModal", 'getDataSupplierForModal')->name('admin.SupplierGetForModal');
 
+
+
+    // Route::middleware(SuppplierMiddleware::class)->group(function(){
+    
+    // });
+
+
+    Route::controller(SupplierController::class)->group(function () {
+
+        
+        Route::get("admin/supplier/getForModal", 'getDataSupplierForModal')->name('admin.SupplierGetForModal');
+        
         Route::resource('/admin/supplier', SupplierController::class)->names([
-            'index' => 'r_supplier.index',
-            'create' => 'r_supplier.create',
-            'store' => 'r_supplier.store',
-            'show' => 'r_supplier.show',
-            'edit' => 'r_supplier.edit',
-            'update' => 'r_supplier.update',
-            'destroy' => 'r_supplier.destroy',
+                'index' => 'r_supplier.index',
+                'create' => 'r_supplier.create',
+                'store' => 'r_supplier.store',
+                'show' => 'r_supplier.show',
+                'edit' => 'r_supplier.edit',
+                'update' => 'r_supplier.update',
+                'destroy' => 'r_supplier.destroy',
         ]);
-        Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');
+            Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');
     });
+
 
     // -----------------    role
     Route::controller(RoleController::class)->group(function () {
@@ -350,52 +405,73 @@ Route::middleware(AuthMiddleware::class)->group(function () {
     // -----------------------------------------
     Route::controller(PurchaseRequestController::class)->group(function(){
 
+        Route::middleware(PurchaseRequestMiddleware::class)->group(function(){
+      // GET VIEW
+            Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
+            Route::get("admin/purchaserequest/getForModal", 'getDataPRForModal')->name('admin.PRGetForModal');
+            Route::get('/admin/purchaserequest/add' ,'getViewPRManage')->name('admin.addprview');
+            Route::get('/admin/purchaserequest/edit/{code}' ,'getViewPRManage')->name('admin.editprview');
 
-        // GET VIEW
-        Route::get('/admin/purchaserequest', 'getViewPR')->name('admin.pr');
-        Route::get("admin/purchaserequest/getForModal", 'getDataPRForModal')->name('admin.PRGetForModal');
-        Route::get('/admin/purchaserequest/add' ,'getViewPRManage')->name('admin.addprview');
-        Route::get('/admin/purchaserequest/edit/{code}' ,'getViewPRManage')->name('admin.editprview');
 
+            // CRUD
+            Route::post('/admin/purchaserequest/add' ,'addPR')->name('admin.addpr');
+            Route::post('/admin/purchaserequest/edit/{id}' ,'editPR')->name('admin.editpr');
+            Route::post('/admin/purchaserequest/gettable', 'getTablePR')->name('admin.getprtable');
+            Route::get('/admin/purchaserequest/delete/{id}', 'deletePR')->name('admin.deletePR');
+            Route::get('/admin/purchaserequest/approve/{id}', 'approvePR')->name('admin.approvePR');
+            Route::post('/admin/purchaserequest/detail/{id}', 'detailPR')->name('admin.detailPR');
 
-        // CRUD
-        Route::post('/admin/purchaserequest/add' ,'addPR')->name('admin.addpr');
-        Route::post('/admin/purchaserequest/edit/{id}' ,'editPR')->name('admin.editpr');
-        Route::post('/admin/purchaserequest/gettable', 'getTablePR')->name('admin.getprtable');
-        Route::get('/admin/purchaserequest/delete/{id}', 'deletePR')->name('admin.deletePR');
-        Route::get('/admin/purchaserequest/approve/{id}', 'approvePR')->name('admin.approvePR');
-        Route::post('/admin/purchaserequest/detail/{id}', 'detailPR')->name('admin.detailPR');
-
-        // PRINT
-        Route::get('/admin/purchaserequest/print/{id}', 'printPR')->name('admin.printPR');
+            // PRINT
+            Route::get('/admin/purchaserequest/print/{id}', 'printPR')->name('admin.printPR');
+        });
+    
     });
     // Stock
     Route::controller(StockController::class)->group(function(){
 
-        // GET VIEW
-        Route::get('/admin/inventoryin', 'getViewInventoryIN')->name('admin.iin');
-        Route::get('/admin/inventoryout', 'getViewInventoryOUT')->name('admin.iout');
-        Route::get('/admin/stocks', 'getViewStocks')->name('admin.stocks');
-        Route::get('/admin/stockreminder', 'getViewStockReminder')->name('admin.stockreminder');
-        Route::get('/admin/stockcard', 'getViewStockCard')->name('admin.stockcard');
 
-        // CRUD
-        Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
-        Route::post('/admin/inventoryout/gettable', 'getTableInventoryOut')->name('admin.tableout');
-        Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
-        Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
-        Route::post('/admin/stockcard/gettable', 'getTableStockCard')->name('admin.tablestockcard');
+        Route::middleware(IINmiddleware::class)->group(function(){
+            
+            Route::get('/admin/inventoryin', 'getViewInventoryIN')->name('admin.iin');
+            Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
+            Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
+        });
+        
+        
+        Route::middleware(IOUTMiddleware::class)->group(function(){
+            Route::get('/admin/inventoryout', 'getViewInventoryOUT')->name('admin.iout');
+            Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
+            Route::post('/admin/inventoryout/gettable', 'getTableInventoryOut')->name('admin.tableout');
+        });
 
-        // Print
-        Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
-        Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
-        Route::get('/admin/stocks/printstocks', 'printstock')->name('admin.printstock');
-        Route::get('/admin/stocks/printstockreminder', 'printstockreminder')->name('admin.printstockreminder');
-        Route::get('/admin/stockscard/print', 'printstockcard')->name('admin.printstockcard');
+
+        Route::middleware(StocksMiddleware::class)->group(function(){
+            Route::get('/admin/stocks', 'getViewStocks')->name('admin.stocks');
+            Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
+            Route::get('/admin/stocks/printstocks', 'printstock')->name('admin.printstock');
+        });
+
+        Route::middleware(StockReminderMiddleware::class)->group(function(){
+
+            Route::get('/admin/stockreminder', 'getViewStockReminder')->name('admin.stockreminder');
+            Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
+            Route::get('/admin/stocks/printstockreminder', 'printstockreminder')->name('admin.printstockreminder');
+        });
+
+
+        Route::middleware(StockCardMiddleware::class)->group(function(){
+
+            Route::get('/admin/stockcard', 'getViewStockCard')->name('admin.stockcard');
+            Route::get('/admin/stockscard/print', 'printstockcard')->name('admin.printstockcard');
+            Route::post('/admin/stockcard/gettable', 'getTableStockCard')->name('admin.tablestockcard');
+        });
 
     });
 
     Route::controller(PurchaseController::class)->group(function(){
+
+        Route::middleware(PurchaseMiddleware::class)->group(function(){
+
 
         // GET VIEW
         Route::get('/admin/purchase', 'getViewPurchase')->name('admin.purchase');
@@ -409,16 +485,18 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/purchase/approve/{id}', 'approvepurchase')->name('admin.approvepurchase');
         Route::get('/admin/purchase/delete/{id}', 'deletepurchase')->name('admin.deletepurchase');
         Route::post('/admin/purchase/detail/{id}', 'detailpurchase')->name('admin.detailpurchase');
-
+        
         // Print
         Route::get('/admin/purchase/detail/print/{id}', 'printdetailpurchase')->name('admin.printdetailpurchase');
         Route::get('/admin/purchase/jurnal/print/{id}', 'printjurnalpurchase')->name('admin.printjurnalpurchase');
         Route::get('/admin/purchase/recap/print', 'printrecappurchase')->name('admin.printrecappurchase');
-
+        
+        });
     });
 
     Route::controller(PaymentController::class)->group(function(){
 
+        Route::middleware(PaymentMiddleware::class)->group(function(){
         // GET VIEW
         Route::get('/admin/payment', 'getViewPayment')->name('admin.payment');
         Route::get('/admin/payment/add', 'getViewPaymentManage')->name('admin.addPaymentView');
@@ -438,10 +516,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/payment/jurnal/print/{id}', 'printjurnalpayment')->name('admin.printjurnalpayment');
         Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
 
+
+        });
+
     });
 
     Route::controller(CashBookController::class)->group(function(){
 
+        Route::middleware(CashbookMiddleware::class)->group(function(){
         // GET VIEW
         Route::get('/admin/cashbook', 'getViewCashBook')->name('admin.cashbook');
         Route::get('/admin/cashbook/add', 'getViewCashbookManage')->name('admin.addCashbookView');
@@ -463,10 +545,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/cashbook/jurnal/print/{id}', 'printjurnalcashbook')->name('admin.printjurnalcashbook');
         // Route::get('/admin/payment/recap/print', 'printrecappayment')->name('admin.printrecappayment');
 
+        });
     });
 
     Route::controller(AdvanceReceiptController::class)->group(function(){
 
+        Route::middleware(AdvancedReceiptMiddleware::class)->group(function(){
         // GET VIEW
         Route::get('/admin/advancedreceipt', 'getViewAdvancedReceipt')->name('admin.advancedreceipt');
         Route::get('/admin/advancedreceipt/add', 'getViewAdvancedReceiptManage')->name('admin.addAdvancedReceiptView');
@@ -487,36 +571,41 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/advancedreceipt/detail/print/{id}', 'printdetailar')->name('admin.printdetailar');
         Route::get('/admin/advancedreceipt/jurnal/print/{id}', 'printjurnalar')->name('admin.printjurnalar');
         Route::get('/admin/advancedreceipt/recap/print', 'printrecapar')->name('admin.printrecapar');
-
+        });
     });
 
 
     Route::controller(InvoiceController::class)->group(function(){
 
-        // GET VIEW
-        Route::get('/admin/invoice', 'getViewInvoice')->name('admin.invoice');
-        Route::get('/admin/invoice/add', 'getViewInvoiceManage')->name('admin.addInvoiceView');
-        Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
 
-        // // // CRUD
-        Route::post('/admin/invoice/gettable', 'getTableInvoice')->name('admin.tableinvoice');
-        // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
-        // // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
-        Route::post('/admin/invoice/add', 'addinvoice')->name('admin.addinvoice');
-        Route::post('/admin/invoice/edit/{id}', 'editinvoice')->name('admin.editinvoice');
-        Route::get('/admin/invoice/delete/{id}', 'deleteinvoices')->name('admin.deleteinvoices');
-        Route::get('/admin/invoice/approve/{id}', 'approveinvoices')->name('admin.approveinvoices');
-        // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
-
-
-        // // Print
-        Route::get('/admin/invoice/detail/print/{id}', 'printdetailinvoice')->name('admin.printdetailinvoice');
-        Route::get('/admin/invoice/jurnal/print/{id}', 'printjurnalinvoice')->name('admin.printjurnalinvoice');
-        Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
+        Route::middleware(InvoiceMiddleware::class)->group(function(){
+            // GET VIEW
+            Route::get('/admin/invoice', 'getViewInvoice')->name('admin.invoice');
+            Route::get('/admin/invoice/add', 'getViewInvoiceManage')->name('admin.addInvoiceView');
+            Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
+    
+            // // // CRUD
+            Route::post('/admin/invoice/gettable', 'getTableInvoice')->name('admin.tableinvoice');
+            // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
+            // // Route::post('/admin/cashbook/gettable2/{id}', 'getTableCashBook2')->name('admin.tablecashbook2');
+            Route::post('/admin/invoice/add', 'addinvoice')->name('admin.addinvoice');
+            Route::post('/admin/invoice/edit/{id}', 'editinvoice')->name('admin.editinvoice');
+            Route::get('/admin/invoice/delete/{id}', 'deleteinvoices')->name('admin.deleteinvoices');
+            Route::get('/admin/invoice/approve/{id}', 'approveinvoices')->name('admin.approveinvoices');
+            // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
+    
+    
+            // // Print
+            Route::get('/admin/invoice/detail/print/{id}', 'printdetailinvoice')->name('admin.printdetailinvoice');
+            Route::get('/admin/invoice/jurnal/print/{id}', 'printjurnalinvoice')->name('admin.printjurnalinvoice');
+            Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
+        });
 
     });
 
     Route::controller(ReceiptController::class)->group(function(){
+
+        Route::middleware(ReceiptMiddleware::class)->group(function(){
 
         // GET VIEW
         Route::get('/admin/receipt', 'getViewReceipt')->name('admin.receipt');
@@ -538,10 +627,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
         Route::get('/admin/receipt/recap/print', 'printrecapreceipt')->name('admin.printrecapreceipt');
 
+        });
     });
 
     Route::controller(JournalController::class)->group(function(){
 
+        Route::middleware(JournalMiddleware::class)->group(function(){
         // GET VIEW
         Route::get('/admin/journal', 'getViewJournal')->name('admin.journal');
 
@@ -563,46 +654,72 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         // Route::get('/admin/receipt/detail/print/{id}', 'printdetailreceipt')->name('admin.printdetailreceipt');
         // Route::get('/admin/receipt/jurnal/print/{id}', 'printjurnalreceipt')->name('admin.printjurnalreceipt');
         Route::get('/admin/journal/recap/print', 'printjournalrecap')->name('admin.printjournalrecap');
+        });
+
+
     });
+
 
     Route::controller(LedgerController::class)->group(function(){
-        //Get View
-        Route::get('/admin/ledger', 'getViewLedger')->name('admin.ledger');
 
-        // Print
-        Route::get('/admin/ledger/print', 'printLedger')->name('admin.PrintLedger');
+        Route::middleware(LedgerMiddleware::class)->group(function(){
+               //Get View
+            Route::get('/admin/ledger', 'getViewLedger')->name('admin.ledger');
+
+            // Print
+            Route::get('/admin/ledger/print', 'printLedger')->name('admin.PrintLedger');
+        });
+     
     });
 
-    Route::controller(TrialBalanceConttroller::class)->group(function(){
-        //Get View
-        Route::get('/admin/trialbalance', 'getViewTrialBalance')->name('admin.trialbalance');
 
-        // Print
-        Route::get('/admin/trialbalance/print', 'printtrialbalance')->name('admin.printtrialbalance');
+    Route::controller(TrialBalanceConttroller::class)->group(function(){
+        Route::middleware(TrialBalanceMiddleware::class)->group(function(){
+                //Get View
+                Route::get('/admin/trialbalance', 'getViewTrialBalance')->name('admin.trialbalance');
+
+                // Print
+                Route::get('/admin/trialbalance/print', 'printtrialbalance')->name('admin.printtrialbalance');
+        });
+       
     });
 
     Route::controller(ProfitLossController::class)->group(function(){
-        //Get View
-        Route::get('/admin/profitloss', 'getViewProfitLoss')->name('admin.profitloss');
 
-        // Print
-        Route::get('/admin/profitloss/print', 'printprofitloss')->name('admin.printprofitloss');
+        Route::middleware(ProfitLossMiddleware::class)->group(function(){
+            //Get View
+            Route::get('/admin/profitloss', 'getViewProfitLoss')->name('admin.profitloss');
+
+            // Print
+            Route::get('/admin/profitloss/print', 'printprofitloss')->name('admin.printprofitloss');
+        });
+      
     });
 
     Route::controller(BalanceSheetController::class)->group(function(){
-        //Get View
-        Route::get('/admin/balancesheet', 'getViewBalanceSheet')->name('admin.balancesheet');
 
-        // Print
-        Route::get('/admin/balancesheet/print', 'printbalancesheet')->name('admin.printbalancesheet');
+
+        Route::middleware(BalanceSheetmiddleware::class)->group(function(){
+            //Get View
+            Route::get('/admin/balancesheet', 'getViewBalanceSheet')->name('admin.balancesheet');
+    
+            // Print
+    
+            Route::get('/admin/balancesheet/print', 'printbalancesheet')->name('admin.printbalancesheet');
+
+        });
     });
 
     Route::controller(ChangeOfCapitalController::class)->group(function(){
-        //Get View
-        Route::get('/admin/capitalchange', 'getViewCapitalChange')->name('admin.capitalchange');
 
-        // Print
-        Route::get('/admin/capitalchange/print', 'printcapitalchange')->name('admin.printcapitalchange');
+        Route::middleware(CapitalChangemiddleware::class)->group(function(){
+            //Get View
+            Route::get('/admin/capitalchange', 'getViewCapitalChange')->name('admin.capitalchange');
+
+            // Print
+            Route::get('/admin/capitalchange/print', 'printcapitalchange')->name('admin.printcapitalchange');
+        });
+
     });
 
 

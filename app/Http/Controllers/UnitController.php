@@ -14,6 +14,8 @@ class UnitController extends AdminController
      */
     public function index(Request $request)
     {
+
+        
         $supplyData = [
             'title' => 'Units',
             'users' => Auth::user(),
