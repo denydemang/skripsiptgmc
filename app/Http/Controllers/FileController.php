@@ -16,6 +16,9 @@ class FileController extends Controller
 
     }
     public function downloadFile($fileName){
+        if (!$fileName){
+            return;
+        }
         try {
             
             $path =  public_path('uploads/'. $fileName);
@@ -25,6 +28,9 @@ class FileController extends Controller
         }
     }
     public function deleteFile($filename){
+        if (!$filename){
+            return;
+        }
         try {
             $path =  public_path('uploads/'. $filename);
 

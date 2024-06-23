@@ -83,11 +83,11 @@ $(document).ready(function () {
   ];
 
   function ShowTable(method, tableName, columns, url, data = {}, cellFunc = function () {}, search = true) {
-    const Table = new tableInitiator(method, tableName, columns, url, data, 1, cellFunc, search);
+    const Table = new tableInitiator(method, tableName, columns, url, data, cellFunc, 1, search);
     Table.showTable();
   }
   function DestroyTable(method, tableName, columns, url, data = {}, cellFunc = function () {}, search = true) {
-    const Table = new tableInitiator(method, tableName, columns, url, data, 1, cellFunc, search);
+    const Table = new tableInitiator(method, tableName, columns, url, data, cellFunc, 1, search);
     Table.destroyTable();
   }
 

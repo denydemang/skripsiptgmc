@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Payment;
 use App\Models\Purchase;
+use App\Services\CheckBalanceCOAService;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -178,7 +180,7 @@ class PaymentController extends AdminController
         }
     }
 
-    public function approvepayment($id){
+    public function approvepayment($id, CheckBalanceCOAService $check){
         try {
 
             DB::beginTransaction();
@@ -190,6 +192,19 @@ class PaymentController extends AdminController
                     'approved_by' => Auth::user()->name
                 ]
             );
+
+
+
+            $coaCash = Payment::where("bkk_no", $id)->first()->coa_cash_code;
+            $amount = floatval(Payment::where("bkk_no", $id)->first()->total_amount);
+
+
+            // dd($coaCash);
+
+            if (!$check->isValidAmount(floatval($amount) ,$coaCash)){
+
+                throw new Exception("Insufficient Balance of COA $check->coaCode - $check->coaName , Remaining Balance is ".number_format($check->balance,2, ',', '.')." Will Be Decreased By Amount " .number_format($amount,2,',','.'));
+            }
 
             $journal = new AccountingController();
             $journal->journalPembayaran($id);

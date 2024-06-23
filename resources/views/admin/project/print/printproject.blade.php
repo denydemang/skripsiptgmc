@@ -125,7 +125,8 @@
                     <tr>
                         <td style="vertical-align: top"><strong>Estimation</strong></td>
                         <td style="vertical-align: top">:</td>
-                        <td style="vertical-align: top">{{ floatval($project['duration_days']) / 30 }} Months</td>
+                        <td style="vertical-align: top">{{ round(floatval($project['duration_days']) / 30, 0) }}
+                            Months</td>
                     </tr>
                     <tr>
                         <td style="vertical-align: top"><strong>Cust. Code</strong></td>
@@ -180,7 +181,7 @@
                     <tr>
                         <td><strong>Transaction Date</strong></td>
                         <td>:</td>
-                        <td>{{ \Carbon\Carbon::parse($project['transaction__date'])->format('d/m/Y') }}</td>
+                        <td>{{ \Carbon\Carbon::parse($project['transaction_date'])->format('d/m/Y') }}</td>
                     </tr>
                     @if ($project['start_date'])
                         <tr>
@@ -278,7 +279,7 @@
                     <td style="height: 80px;"></td>
                 </tr>
                 <tr>
-                    <td align="center" style="text-decoration:underline">asdasdasd</td>
+                    <td align="center" style="text-decoration:underline">{{ $project['pic'] }}</td>
                 </tr>
             </table>
         </div>

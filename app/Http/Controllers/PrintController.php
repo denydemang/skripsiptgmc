@@ -939,9 +939,6 @@ class PrintController extends AdminController
 
         try {
                 //code...
-             
-
-              
         $result= "";
         if (count($listCOACODE) >0){
             

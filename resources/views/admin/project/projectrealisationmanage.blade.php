@@ -195,7 +195,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-12" style="max-height:200px">
+                                            <div class="col-lg-12" style="max-height:200px;margin-bottom:150px">
                                                 <table class="w-100 tablemateriallist table-bordered table"
                                                     cellpadding="3" style="table-layout:auto; border-collapse: collapse">
                                                     <thead class="bg-primary text-white" style="font-size: 12px">
@@ -215,7 +215,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-12 mt-5">
+                                    <div class="col-lg-12">
                                         <div class="d-lg-flex">
                                             <h5 class="text-primary">UPAH LIST <span class="fetchingdata"></span></h5>
                                         </div>

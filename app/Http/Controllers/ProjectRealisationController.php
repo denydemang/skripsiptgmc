@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\Project_Detail_B_Realisation;
 use App\Models\Project_Detail_Realisations;
 use App\Models\ProjectRealisation;
+use App\Models\Stock;
 use App\Models\Stocks_Out;
 use Carbon\Carbon;
 use Database\Seeders\ProjectRelationSeed;
@@ -360,7 +361,7 @@ class ProjectRealisationController extends AdminController
 
                     // Check Qty Sisa Di Akhir Termin
                     
-                    if (intval($data['termin']) ==  $defaultTermin && $value->sisa_qty > 0 ){
+                    if (intval($data['termin']) ==  intval($defaultTermin) && $value->sisa_qty > 0 ){
                         
                         $PDR->qty_additional =$value->sisa_qty;
                         $stocksOut = Stocks_Out::where('ref_no',$PR->project_code)->where("item_code", $PDR->item_code )->first();
@@ -484,7 +485,7 @@ class ProjectRealisationController extends AdminController
                 $PR->is_approve = 0;
                 $PR->description = $data['description'];
                 $PR->created_by = Auth::user()->name;
-                $PR->updatedt_by = Auth::user()->name;
+                $PR->updated_by = Auth::user()->name;
                 $PR->update();
 
                 $Project->realisation_amount = $Project->realisation_amount +  $PR->realisation_amount;
@@ -510,6 +511,7 @@ class ProjectRealisationController extends AdminController
                     // Check Qty Sisa Di Akhir Termin
                     
                     if (intval($data['termin']) ==  $defaultTermin && $value->sisa_qty > 0 ){
+                        Stock::where('ref_no',$PDR->project_realisation_code)->delete();
                         
                         $PDR->qty_additional =$value->sisa_qty;
                         $stocksOut = Stocks_Out::where('ref_no',$PR->project_code)->where("item_code", $PDR->item_code )->first();

@@ -6,6 +6,7 @@ use App\Models\CashBook;
 use App\Models\CashBook_Detail;
 use App\Models\CashBook_DetailB;
 use App\Models\Journal;
+use App\Services\CheckBalanceCOAService;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -240,7 +241,7 @@ class CashBookController extends AdminController
         }
     }
 
-    public function approvecashbook($id){
+    public function approvecashbook($id, CheckBalanceCOAService $check){
         try {
 
             DB::beginTransaction();
@@ -253,10 +254,21 @@ class CashBookController extends AdminController
                 ]
             );
 
+            $Cashbook = CashBook::where("cash_no", $id)->first();
+
+            if($Cashbook->CbpType == "P"){
+
+                $amount = floatval($Cashbook->total_transaction);
+                if (!$check->isValidAmount(floatval($Cashbook->total_transaction),$Cashbook->COA_Cash)){
+                    throw new Exception("Insufficient Balance of COA $check->coaCode - $check->coaName , Remaining Balance is ".number_format($check->balance,2, ',', '.')." Will Be Decreased By Amount " .number_format($amount,2,',','.'));
+                }
+            }
+            dd('alright');
+
             $journal = new AccountingController();
             $journal->journalCashBook($id);
 
-            DB::commit();
+            // DB::commit();
             return response()->redirectToRoute("admin.cashbook")->with("success", "Data Cashbook $id Successfully Approved");
         } catch (\Throwable $th) {
             DB::rollBack();

@@ -593,6 +593,7 @@ class AccountingController extends AdminController
         $AutomaticCode= "";
 
         if($Cashbook->CbpType == "P"){
+            
             $supplyModel = Journal::where("voucher_no", 'like', "%JKK%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
             $AutomaticCode = $this->automaticCode("JKK", $supplyModel,true,"voucher_no");
         } else {
