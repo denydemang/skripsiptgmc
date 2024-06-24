@@ -274,20 +274,41 @@ $(document).ready(function () {
         createHtmTBodyItem();
         break;
       case 'deposit_amount':
-        const editedDetail1 = tampungDetail.map((item) => {
-          if (item.ref_no === code) {
-            let deposit_amountNew = parseFloat(amount);
+        if (code == null) {
+          let counter = 1;
 
-            if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
-              deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+          const editedDetail1 = tampungDetail.map((item) => {
+            if (counter == 1) {
+              let deposit_amountNew = parseFloat(amount);
+
+              if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
+                deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+              }
+              let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
+              counter++;
+              return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
+            } else {
+              return item;
             }
-            let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
-            return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
-          } else {
-            return item;
-          }
-        });
-        tampungDetail = [...editedDetail1];
+          });
+          tampungDetail = [...editedDetail1];
+        } else {
+          const editedDetail1 = tampungDetail.map((item) => {
+            if (item.ref_no === code) {
+              let deposit_amountNew = parseFloat(amount);
+
+              if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
+                deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+              }
+              let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
+              return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
+            } else {
+              return item;
+            }
+          });
+          tampungDetail = [...editedDetail1];
+        }
+
         checkDepositAmount(code);
         break;
     }
@@ -441,6 +462,11 @@ $(document).ready(function () {
   $(document).on('keyup', '.inputdepositamount', function (event) {
     var object = $(this);
     inputOnlyNumber(object);
+  });
+
+  $(document).on('click', '.btnallocate', function () {
+    console.log(transAmount.deposit_amount);
+    calcInvoice(null, transAmount.deposit_amount, 'deposit_amount');
   });
 
   // Submit Button
