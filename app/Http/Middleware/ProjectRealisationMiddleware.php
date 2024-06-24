@@ -32,7 +32,7 @@ class ProjectRealisationMiddleware
         $viewRoute = ['admin.projectrealisationview'];
         $updateRoute = ['admin.editProjectrealisationview'];
         $deleteRoute = ['admin.deleterealisation'];
-        $createRoute = ['admin.addProjectView'];
+        $createRoute = ['admin.addProjectrealisationView'];
         $approveRoute = ['admin.approverealisation'];
         $printRoute = ['admin.printdetailprojectrealisation','admin.printjurnalprojectrealisation'];
         $routeName = $request->route()->getName();
