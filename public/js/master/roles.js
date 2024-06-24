@@ -1,4 +1,4 @@
-import tableInitiator from "../tableinitiator.js";
+import tableInitiator from '../tableinitiator.js';
 import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
@@ -9,7 +9,7 @@ $(document).ready(function () {
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
 
-//   Form DELETE Hidden
+  //   Form DELETE Hidden
   $('.delformHidden').hide();
 
   //  Inisiasi Property Untuk Datatable
@@ -17,11 +17,10 @@ $(document).ready(function () {
 
   var getDataProject = route('admin.getroles');
   const columns = [
-    { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
     { data: 'name', name: 'name', title: 'Name', searchable: true },
-    { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true },
-    { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
-    { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
+    { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true }
+    // { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
+    // { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
   ];
   const tableName = '.globalTabledata';
   const method = 'post';
@@ -54,7 +53,7 @@ $(document).ready(function () {
     const urlRequest = route('r_role.destroy', tondo);
     const method = 'DELETE';
     const data = {
-      id: tondo,
+      id: tondo
     };
 
     try {
@@ -103,9 +102,9 @@ $(document).ready(function () {
       } else {
         var tondo = $('.id').val();
         var inputMethod = $('<input>').attr({
-            type: 'hidden',
-            name: '_method',
-            value: 'PUT'
+          type: 'hidden',
+          name: '_method',
+          value: 'PUT'
         });
 
         var form = $(this);
@@ -122,7 +121,6 @@ $(document).ready(function () {
   function isFetchingData() {
     let text = 'Fetching Data .....';
     NameInput.val(text);
-
   }
 
   // Define populate
@@ -170,5 +168,4 @@ $(document).ready(function () {
 
   // Trigger Toast
   checkNotifMessage();
-
 });
