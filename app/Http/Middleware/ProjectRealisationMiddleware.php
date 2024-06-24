@@ -32,7 +32,7 @@ class ProjectRealisationMiddleware
         $viewRoute = ['admin.projectrealisationview'];
         $updateRoute = ['admin.editProjectrealisationview'];
         $deleteRoute = ['admin.deleterealisation'];
-        $createRoute = ['admin.addProjectrealisationView'];
+        $createRoute = ['admin.addProjectrealisationview'];
         $approveRoute = ['admin.approverealisation'];
         $printRoute = ['admin.printdetailprojectrealisation','admin.printjurnalprojectrealisation'];
         $routeName = $request->route()->getName();
@@ -65,6 +65,7 @@ class ProjectRealisationMiddleware
         // CREATE AKSEs
 
         if (in_array($routeName, $createRoute )){
+
             if (!in_array( $user->id_role , $allowedCreateRoles)){
                 abort(403, 'Access Forbidden! You Dont Have Permission ! ');
             }
