@@ -228,7 +228,7 @@
             </div>
         @endif
 
-        @if ($roleName == 'KEUANGAN' || ($roleName = 'ADMIN'))
+        @if ($roleName == 'KEUANGAN' || $roleName == 'ADMIN')
 
             <div class="row">
                 <div class="col-xl-12">
