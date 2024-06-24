@@ -263,7 +263,6 @@ class CashBookController extends AdminController
                     throw new Exception("Insufficient Balance of COA $check->coaCode - $check->coaName , Remaining Balance is ".number_format($check->balance,2, ',', '.')." Will Be Decreased By Amount " .number_format($amount,2,',','.'));
                 }
             }
-            dd('alright');
 
             $journal = new AccountingController();
             $journal->journalCashBook($id);
