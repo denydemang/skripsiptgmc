@@ -5,25 +5,32 @@
  Source Server Type    : MariaDB
  Source Server Version : 110300 (11.3.0-MariaDB-log)
  Source Host           : localhost:3306
- Source Schema         : skripsiptgmc
+ Source Schema         : skripsiptgmc2
 
  Target Server Type    : MariaDB
  Target Server Version : 110300 (11.3.0-MariaDB-log)
  File Encoding         : 65001
 
- Date: 21/04/2024 01:21:15
+ Date: 24/06/2024 14:06:10
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- ----------------------------
+-- Table structure for coa
+-- ----------------------------
+
+-- ----------------------------
+-- Records of coa
+-- ----------------------------
 INSERT INTO `coa` VALUES ('10', 'Aktiva', 'Aktiva', '0', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01', 'Aktiva Lancar', 'Aktiva', '1', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.01', 'Kas', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.01.01', 'Kas Di Tangan', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.02', 'Bank', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
-INSERT INTO `coa` VALUES ('10.01.02.01', 'Bank Mandiri', 'Aktiva', '3', 'D', 'Detail', 1000000000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
-INSERT INTO `coa` VALUES ('10.01.02.02', 'Bank BNI', 'Aktiva', '3', 'D', 'Detail', 1000000000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
+INSERT INTO `coa` VALUES ('10.01.02.01', 'Bank Mandiri', 'Aktiva', '3', 'D', 'Detail', 1000000000.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
+INSERT INTO `coa` VALUES ('10.01.02.02', 'Bank BNI', 'Aktiva', '3', 'D', 'Detail', 1000000000.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.02.03', 'Bank BCA', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.03', 'Piutang', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.03.01', 'Piutang Usaha', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
@@ -61,7 +68,7 @@ INSERT INTO `coa` VALUES ('20.02', 'Utang Jangka Panjang', 'Passiva', '1', 'K', 
 INSERT INTO `coa` VALUES ('20.02.01', 'Utang Bank', 'Passiva', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-02 11:53:51', '2024-04-02 11:53:56');
 INSERT INTO `coa` VALUES ('30', 'Equity', 'Modal', '0', 'K', 'Header', 0.0000, 'Admin', NULL, '2024-04-02 11:56:03', '2024-04-02 11:56:06');
 INSERT INTO `coa` VALUES ('30.01', 'Modal', 'Modal', '1', 'K', 'Header', 0.0000, 'Admin', NULL, '2024-04-02 11:58:38', '2024-04-02 11:58:42');
-INSERT INTO `coa` VALUES ('30.01.01', 'Modal Disetor', 'Modal', '2', 'K', 'Detail', 2000000000, 'Admin', NULL, '2024-04-02 11:58:55', '2024-04-02 11:58:57');
+INSERT INTO `coa` VALUES ('30.01.01', 'Modal Disetor', 'Modal', '2', 'K', 'Detail', 2000000000.0000, 'Admin', NULL, '2024-04-02 11:58:55', '2024-04-02 11:58:57');
 INSERT INTO `coa` VALUES ('30.02', 'Rugi Laba', 'Rugi Laba', '1', 'K', 'Header', 0.0000, 'Admin', NULL, '2024-04-03 10:02:15', '2024-04-03 10:02:19');
 INSERT INTO `coa` VALUES ('30.02.01', 'Laba Ditahan', 'Rugi Laba', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-03 10:03:05', '2024-04-03 10:03:10');
 INSERT INTO `coa` VALUES ('30.02.02', 'Laba s/d Bulan Ini', 'Rugi Laba', '2', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-04-03 10:03:16', '2024-04-03 10:03:19');
