@@ -267,7 +267,7 @@ class CashBookController extends AdminController
             $journal = new AccountingController();
             $journal->journalCashBook($id);
 
-            // DB::commit();
+            DB::commit();
             return response()->redirectToRoute("admin.cashbook")->with("success", "Data Cashbook $id Successfully Approved");
         } catch (\Throwable $th) {
             DB::rollBack();
