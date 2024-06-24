@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\Project;
+use App\Models\Supplier;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -72,13 +77,59 @@ class AdminController extends Controller
     }
 
     public function dashboard(Request $request){
+
+
+        $startOfYear = Carbon::now()->startOfYear();
+        $endOfYear = Carbon::now()->endOfYear();
+
+
+        $currentYear = Carbon::now()->year;
+        $lastYear = Carbon::now()->subYear()->year;
+
+        // Jumlah proyek tahun ini
+        $projectsThisYear = Project::whereYear('transaction_date', $currentYear)->count();
+
+        // Jumlah proyek tahun lalu
+        $projectsLastYear = Project::whereYear('transaction_date', $lastYear)->count();
+
+        // Jumlah Pendapatan Tahun Ini
+        $invoice  = Invoice::whereYear('transaction_date',  $currentYear)->select(DB::raw('ifnull(sum(paid_amount),0) as revenue'))->first();
+
+        $revenue =  floatval($invoice->revenue);
+
+        $invoice2  = Invoice::whereYear('transaction_date',  $lastYear)->select(DB::raw('ifnull(sum(paid_amount),0) as revenue'))->first();
+
+        $revenueLastYear =  floatval($invoice2->revenue);
+        
+        $totalCustomer = Customer::count();
+        $totalSupplier = Supplier::count();
+
+        if ($projectsLastYear == 0) {
+            $percentageChange = $projectsThisYear > 0 ? 100 : 0; // Menghindari pembagian oleh nol
+        } else {
+            $percentageChange = (($projectsThisYear - $projectsLastYear) / $projectsLastYear) * 100;
+        }
+
+        if ($revenueLastYear == 0) {
+            $percentageChangeInv = $revenue > 0 ? 100 : 0; // Menghindari pembagian oleh nol
+        } else {
+            $percentageChangeInv = (($revenue - $revenueLastYear) / $revenueLastYear) * 100;
+        }
+
         return response()
         ->view(
             "admin.dashboard",
         [
             'title' => 'Welcome To Dashboard',
             'users' => Auth::user(),
-            'sessionRoute' =>  $request->route()->getName()
+            'sessionRoute' =>  $request->route()->getName(),   
+            'totalCust' => $totalCustomer,
+            'totalSupp' => $totalSupplier ,
+            'totalProject' => $projectsThisYear,
+            'percentageChange' => $percentageChange,
+            'percentageChangeInv' => $percentageChangeInv,
+            'revenue' => $revenue
+
 
         ]);
     }
