@@ -10,8 +10,10 @@ use App\Models\Item;
 use App\Models\Journal;
 use App\Models\Payment;
 use App\Models\Project;
+use App\Models\Project_Detail;
 use App\Models\Project_Detail_B_Realisation;
 use App\Models\Project_Detail_Realisations;
+use App\Models\ProjectDetailB;
 use App\Models\ProjectRealisation;
 use App\Models\Purchase;
 use App\Models\Purchase_Request;
@@ -76,7 +78,17 @@ class PrintController extends AdminController
 
         $projectrealisation = ProjectRealisation::where("project_code", $id)->orderBy('realisation_date', 'asc')->orderBy("code", "asc")->get();
 
+        $dataBahanBaku = Project_Detail::join("items", "project_details.item_code", '=', 'items.code')
+        ->where('project_details.project_code', $id)
+        ->get();
+        $dataUpah = ProjectDetailB::join("upah", 'project_detail_b.upah_code', '=', 'upah.code')
+            ->select('upah.job as upah_name','project_detail_b.*' )
+            ->where("project_detail_b.project_code" ,$id)
+            ->get();
+
         $data['project'] = $project;
+        $data['bahanBaku'] = $dataBahanBaku;
+        $data['upah'] = $dataUpah;
         $data['projectrealisation'] = $projectrealisation;
         $data['currenttermin'] = count($projectrealisation);
         $data['percentprogress'] = count($projectrealisation) > 0 ? $projectrealisation[count($projectrealisation) - 1]['percent_realisation'] : 0;
