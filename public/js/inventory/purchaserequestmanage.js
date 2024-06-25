@@ -120,14 +120,14 @@ $(document).ready(function () {
       html += `
     
       <tr class="row">
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.code}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:10px">${item.name}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.unit}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px"><input
-            style="width:100%" type="number" min="1" class="custom-input inputqtyitem" data-stocks="${item.stocks}" data-code="${item.code}" value="${item.qty}">
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.code}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.name}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.unit}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px"><input
+            style="width:100%;font-size:13px" type="number" min="1" class="custom-input inputqtyitem"data-stocks="${item.stocks}" data-code="${item.code}" value="${item.qty}">
         </td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.stocks}</td>
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;font-size: 10px"><button data-code="${item.code}" class="btn btn-danger btndeleteitem btn-sm">X</button></td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.stocks}</td>
+        <td class="col-1" style="white-space:normal;word-wrap: break-word;font-size:12px"><button data-code="${item.code}" class="btn btn-danger btndeleteitem btn-sm">X</button></td>
       </tr>
       `;
     });

@@ -43,8 +43,9 @@
         @php
             $allmaster = ['r_supplier.index','r_category.index','r_item.index','r_customer.index','r_unit.index','admin.users','r_role.index', 'r_upah.index', 'admin.ledger']
         @endphp
-        @if (in_array($sessionRoute, $allmaster))
+            @if (in_array($sessionRoute, $allmaster))
         <style>
+
             body {
                 background: #f0f0f0;
                 /* padding: 50px; */
@@ -187,7 +188,23 @@
             .btnlogout {
                 cursor: pointer;
             }
-        </style> @endif
+            </style> @endif
+
+            @if (!in_array($sessionRoute, $allmaster))
+
+            <style>
+            .form-control {
+                font-size: 13px !important;
+                font-weight:400 !important;
+                color: rgb(24, 23, 23);
+            }
+            .form-control:focus{
+                font-size: 13px !important;
+                font-weight: 400!important;
+                color: rgb(9, 9, 9);
+                font-family: Arial, Helvetica, sans-serif
+            }
+            </style> @endif
 
 
 	<!-- Core -->

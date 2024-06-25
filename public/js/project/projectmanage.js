@@ -29,6 +29,7 @@ $(document).ready(function () {
   const projectypecode = $('.projecttypecode');
   const projecttypename = $('.projecttypename');
   const inputtotaltermin = $('.inputtotaltermin');
+  const inputdepositamount = $('.inputdepositamount');
   // end html input
 
   const updateMode = route().current() == 'admin.editProjectView';
@@ -101,7 +102,7 @@ $(document).ready(function () {
   // Function and procedures
   // -----------------------------------------------------
 
-  function prepareEdit() {
+  async function prepareEdit() {
     bahanbaku = JSON.parse(JSON.parse(databahanbaku.data('bahanbaku')));
     upah = JSON.parse(JSON.parse(dataupah.data('upah')));
     customerCode.val(datacustomercode.data('customercode'));
@@ -112,6 +113,9 @@ $(document).ready(function () {
     inputbudget.val(formatRupiah1(inputbudget.data('budget')));
     inputtotaltermin.val(parseInt(datatotaltermin.data('totaltermin')));
 
+    const depositAmount = await getDataDepo(customerCode.val());
+
+    inputdepositamount.val(formatRupiah1(depositAmount));
     bahanbaku.forEach((item) => {
       let dataMaterial = {
         code: item.item_code,
@@ -177,6 +181,19 @@ $(document).ready(function () {
       return false;
     }
     return true;
+  }
+
+  async function getDataDepo(custcode = '') {
+    const urlRequest = route('admin.getbalancear', custcode);
+    const method = 'GET';
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method);
+      return await ajx.getData();
+    } catch (error) {
+      showerror(error);
+      return null;
+    }
   }
   function checkMaterialExist(code) {
     // Bernilai true jika ada item
@@ -623,6 +640,12 @@ $(document).ready(function () {
   $(document).on('keyup', '.inputbudget', function (event) {
     var object = $(this);
     inputOnlyNumber(object);
+  });
+
+  $('#modalCustomerSearch').on('hidden.bs.modal', async function (e) {
+    inputdepositamount.val('Fetching Data...');
+    const depo = await getDataDepo(customerCode.val());
+    inputdepositamount.val(formatRupiah1(depo));
   });
 
   // Trigger Notif Toast

@@ -122,12 +122,12 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="example3cols1Input">Budget <span
+                                                <label class="form-control-label" for="example3cols1Input">Amount <span
                                                         style="color: red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm inputbudget"
                                                     id="example3cols1Input"
                                                     data-budget="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['budget'] }}"
-                                                    style="font-weight:bold;color:brown">
+                                                    style="font-weight:bold !important;color:brown">
                                             </div>
                                         </div>
                                     </div>
@@ -176,6 +176,14 @@
                                         @include('component.customerName')
                                         <div class="datacustomername"
                                             data-customername="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['customer_name'] }}">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="example3cols1Input">Deposit Amount
+                                            </label>
+                                            <input type="text" class="form-control form-control-sm inputdepositamount"
+                                                id="example3cols1Input" readonly value="">
                                         </div>
                                     </div>
                                 </div>

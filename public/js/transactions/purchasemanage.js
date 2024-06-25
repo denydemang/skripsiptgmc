@@ -239,20 +239,30 @@ $(document).ready(function () {
       html += `
     
       <tr>
-        <td style="font-size: 10px;width:5%">${counter}</td>
-        <td style="font-size: 10px; width:5%">${item.item_code}</td>
-        <td style="font-size: 10px; width:15%">${item.item_name}
+        <td style="font-size:11px;font-weight:500;width:5%">${counter}</td>
+        <td style="font-size:11px;font-weight:500; width:5%">${item.item_code}</td>
+        <td style="font-size:11px;font-weight:500; width:15%">${item.item_name}
         </td>
-        <td style="font-size: 10px;width:5%">${item.unit_code}</td>
-        <td style="font-size: 10px;width:10%; white-space:nowrap"><input type="number" data-qty="${parseFloat(item.qty)}"
-            data-code="${item.item_code}" style="width: 100%" class="custom-input inputqtyitem" value="${parseFloat(item.qty)}"></td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-price="${parseFloat(item.price)}"
+        <td style="font-size:11px;font-weight:500;width:5%">${item.unit_code}</td>
+        <td style="font-size:11px;font-weight:500;width:10%; white-space:nowrap"><input type="number" data-qty="${parseFloat(item.qty)}"
+            data-code="${
+              item.item_code
+            }" style="width: 100%;font-size:11px;font-weight:500;" class="custom-input inputqtyitem" value="${parseFloat(item.qty)}"></td>
+        <td style="font-size:11px;font-weight:500;width:15%;white-space:nowrap"><input type="text" style="font-size:11px;font-weight:500;white-space:nowrap" data-price="${parseFloat(
+          item.price
+        )}"
             data-code="${item.item_code}" class="custom-input inputpriceitem" value="${formatRupiah1(item.price)}">
         </td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap">${formatRupiah1(item.total)}</td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-discount="${parseFloat(item.discount)}"
-            data-code="${item.item_code}" class="custom-input inputdiscountitem" value="${formatRupiah1(item.discount)}"></td>
-        <td style="font-size: 10px;width:20%;white-space:nowrap">${formatRupiah1(item.sub_total)}</td>
+        <td style="font-size:11px;font-weight:500;width:15%;white-space:nowrap">${formatRupiah1(item.total)}</td>
+        <td style="font-size:11px;font-weight:500;width:15%;white-space:nowrap"><input type="text"  style="font-size:11px;font-weight:500;white-space:nowrap" data-discount="${parseFloat(
+          item.discount
+        )}"
+            data-code="${
+              item.item_code
+            }" style="font-size:11px;font-weight:500;white-space:nowrap" class="custom-input inputdiscountitem" value="${formatRupiah1(
+        item.discount
+      )}"></td>
+        <td style="font-size:11px;font-weight:500;width:20%;white-space:nowrap">${formatRupiah1(item.sub_total)}</td>
       </tr>
       `;
       counter++;

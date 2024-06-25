@@ -166,15 +166,15 @@ $(document).ready(function () {
       html += `
     
       <tr>
-        <td style="font-size: 10px; width:10%">${item.ref_no}</td>
-        <td style="font-size: 10px; width:10%">${item.transaction_date}
+        <td style="font-size:13px; width:10%">${item.ref_no}</td>
+        <td style="font-size:13px; width:10%">${item.transaction_date}
         </td>
-        <td style="font-size: 10px;width:10%">${item.due_date}</td>
-        <td style="font-size: 10px;width:10%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
+        <td style="font-size:13px;width:10%">${item.due_date}</td>
+        <td style="font-size:13px;width:10%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
+        <td style="font-size:13px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
             data-code="${item.ref_no}" class="custom-input inputpaidamount" value="${formatRupiah1(item.paid_amount)}">
         </td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
+        <td style="font-size:13px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
       </tr>
       `;
 
