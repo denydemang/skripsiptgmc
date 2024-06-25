@@ -126,19 +126,21 @@
                     @endphp
                     @foreach ($coaData as $item)
                         @php
-                            $totalDebit += floatval($item->debit);
-                            $totalKredit += floatval($item->kredit);
+                            $totalDebit += floatval($item->CurrentDebit);
+                            $totalKredit += floatval($item->CurrentCredit);
                         @endphp
                         <tr>
                             <td class="no-wrap">{{ $item->code }}</td>
                             <td class="no-wrap">{{ $item->name }}</td>
                             <td class="no-wrap" style="text-align: right">
-                                {{ number_format($item->beginning_balance, 2, ',', '.') }}</td>
-                            <td class="no-wrap" style="text-align: right">{{ number_format($item->debit, 2, ',', '.') }}
+                                {{ number_format($item->BeginningBalance, 2, ',', '.') }}</td>
+                            <td class="no-wrap" style="text-align: right">
+                                {{ number_format($item->CurrentDebit, 2, ',', '.') }}
                             </td>
                             <td class="no-wrap" style="text-align: right">
-                                {{ number_format($item->kredit, 2, ',', '.') }}</td>
-                            <td class="no-wrap" style="text-align: right">{{ number_format($item->total, 2, ',', '.') }}
+                                {{ number_format($item->CurrentCredit, 2, ',', '.') }}</td>
+                            <td class="no-wrap" style="text-align: right">
+                                {{ number_format($item->LastBalance, 2, ',', '.') }}
                             </td>
                         </tr>
                     @endforeach
