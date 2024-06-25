@@ -151,7 +151,7 @@
     {{-- MODAL FORM --}}
     <div class="modal fade" id="modal-detailpurchase" tabindex="-1" role="dialog"
         aria-labelledby="exampleModalLabel">
-        <div class="modal-dialog modal- text-dark" style="background: red !important" role="document">
+        <div class="modal-dialog modal-lg text-dark" style="background: red !important" role="document">
             <div class="modal-content" style="background: rgb(246, 248, 248)">
                 <div class="modal-header">
                     <h5 class="modal-title titleview"></h5>

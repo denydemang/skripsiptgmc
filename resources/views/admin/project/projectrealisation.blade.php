@@ -99,7 +99,7 @@
 
     {{-- MODAL FORM --}}
     <div class="modal fade" id="modal-detailproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-        <div class="modal-dialog modal-lg modal-success" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title titleview"></h5>
@@ -110,14 +110,14 @@
                 <div class="modal-body">
                     <div class="row">
 
-                        <h3 class="title-detail text-white"></h3>
+                        <h3 class="title-detail"></h3>
                     </div>
                     <div class="row">
                         <h3 class="text-white">Material :</h3>
                         <div class="col-12 mb-2" style="max-height:200px ;overflow-y: scroll">
                             <table class="table-sm listbb table-wrap table">
                                 <thead>
-                                    <tr class="row">
+                                    <tr class="row" style="background-color: rgb(155, 230, 230)">
 
                                         <th class="col-1">No</th>
                                         <th class="col-3">Item Code</th>
@@ -135,7 +135,7 @@
                             <div>
                                 <table class="table-sm listupah table">
                                     <thead>
-                                        <tr class="row">
+                                        <tr class="row" style="background-color: rgb(155, 230, 230)">
                                             <th class="col-1">No</th>
                                             <th class="col-2">Upah Code</th>
                                             <th class="col-2">Job</th>
