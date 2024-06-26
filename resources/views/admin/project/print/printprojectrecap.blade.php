@@ -170,8 +170,8 @@
                     @if ($statuscode === null)
                         <th>Status</th>
                     @endif
-                    <th>ProjectAmount</th>
-                    <th>RealisationAmount</th>
+                    <th style="text-align:right">ProjectAmount</th>
+                    <th style="text-align:right">RealisationAmount</th>
                 </tr>
             </thead>
             <tbody>
@@ -218,8 +218,10 @@
                                 @endphp
                                 <td>{{ $statusProject }}</td>
                             @endif
-                            <td class="no-wrap">Rp. {{ number_format($p->budget, 2, ',', '.') }}</td>
-                            <td class="no-wrap">Rp. {{ number_format($p->realisation_amount, 2, ',', '.') }}</td>
+                            <td class="no-wrap" style="text-align:right">Rp.
+                                {{ number_format($p->budget, 2, ',', '.') }}</td>
+                            <td class="no-wrap" style="text-align:right">Rp.
+                                {{ number_format($p->realisation_amount, 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
 
@@ -228,18 +230,22 @@
                             <tr>
                                 <td colspan="9" align="right"> <strong
                                         style="display: block;text-align:right">Total</strong></td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalBudget, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalBudget, 2, ',', '.') }}</strong>
                                 </td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalReal, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalReal, 2, ',', '.') }}</strong>
                                 </td>
                             </tr>
                         @else
                             <tr>
                                 <td colspan="7" align="right"> <strong
                                         style="display: block;text-align:right">Total</strong></td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalBudget, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalBudget, 2, ',', '.') }}</strong>
                                 </td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalReal, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalReal, 2, ',', '.') }}</strong>
                                 </td>
                             </tr>
                         @endif
@@ -248,18 +254,22 @@
                             <tr>
                                 <td colspan="8" align="right"> <strong
                                         style="display: block;text-align:right">Total</strong></td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalBudget, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalBudget, 2, ',', '.') }}</strong>
                                 </td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalReal, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalReal, 2, ',', '.') }}</strong>
                                 </td>
                             </tr>
                         @else
                             <tr>
                                 <td colspan="6" align="right"> <strong
                                         style="display: block;text-align:right">Total</strong></td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalBudget, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalBudget, 2, ',', '.') }}</strong>
                                 </td>
-                                <td class="no-wrap"><strong>Rp. {{ number_format($totalReal, 2, ',', '.') }}</strong>
+                                <td class="no-wrap" style="text-align:right"><strong>Rp.
+                                        {{ number_format($totalReal, 2, ',', '.') }}</strong>
                                 </td>
                             </tr>
                         @endif

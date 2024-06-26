@@ -131,8 +131,8 @@
                     <th>Code</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Debit</th>
-                    <th>Kredit</th>
+                    <th style="text-align: right">Debit</th>
+                    <th style="text-align: right">Kredit</th>
                 </tr>
             </thead>
             <tbody>
@@ -172,8 +172,8 @@
                     @endforeach
                     <tr>
                         <td colspan="4" style="text-align: center"><b>TOTAL</b></td>
-                        <td><b> {{ number_format($totalDebit, 2, ',', '.') }}</b></td>
-                        <td><b>{{ number_format($totalKredit, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b> {{ number_format($totalDebit, 2, ',', '.') }}</b></td>
+                        <td style="text-align: right"><b>{{ number_format($totalKredit, 2, ',', '.') }}</b></td>
                     </tr>
                 @endif
             </tbody>

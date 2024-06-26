@@ -298,8 +298,8 @@
                     <th>Job</th>
                     <th>Unit</th>
                     <th>Qty</th>
-                    <th>Price</th>
-                    <th>Total</th>
+                    <th style="text-align: right">Price</th>
+                    <th style="text-align: right">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -313,8 +313,10 @@
                         <td>{{ $item->upah_name }}</td>
                         <td class="no-wrap">{{ $item->unit }}</td>
                         <td class="no-wrap">{{ floatval($item->qty) }}</td>
-                        <td class="no-wrap">Rp. {{ number_format($item->price, 2, ',', '.') }}</td>
-                        <td class="no-wrap"> Rp. {{ number_format($item->total, 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="text-align:right">Rp. {{ number_format($item->price, 2, ',', '.') }}
+                        </td>
+                        <td class="no-wrap" style="text-align:right"> Rp.
+                            {{ number_format($item->total, 2, ',', '.') }}</td>
                     </tr>
                     @php
                         $total += floatval($item->total);
@@ -322,7 +324,8 @@
                 @endforeach
                 <tr>
                     <td colspan="6" style="text-align: center"><b>Total</b></td>
-                    <td class="no-wrap"><b>Rp. {{ number_format($total, 2, ',', '.') }}</b></td>
+                    <td class="no-wrap" style="text-align: right"><b>Rp. {{ number_format($total, 2, ',', '.') }}</b>
+                    </td>
                 </tr>
             </tbody>
         </table>

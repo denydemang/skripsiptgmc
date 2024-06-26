@@ -214,9 +214,9 @@
                     <th>Description</th>
                     <th>Qty</th>
                     <th>Unit</th>
-                    <th>Price</th>
-                    <th>Discount</th>
-                    <th>Total</th>
+                    <th style="text-align: right">Price</th>
+                    <th style="text-align: right">Discount</th>
+                    <th style="text-align: right">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -227,33 +227,41 @@
                         <td style="width: 25%">{{ $x->item_name }} ({{ $x->item_code }}) </td>
                         <td class="no-wrap" style="width: 10%%">{{ floatval($x->qty) }}</td>
                         <td>{{ $x->unit_code }}</td>
-                        <td class="no-wrap" style="20%">Rp. {{ number_format($x->price, 2, ',', '.') }}</td>
-                        <td class="no-wrap" style="20%">Rp. {{ number_format($x->discount, 2, ',', '.') }}</td>
-                        <td class="no-wrap" style="20%">Rp. {{ number_format($x->total, 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="20%;text-align:right">Rp.
+                            {{ number_format($x->price, 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="20%;text-align:right">Rp.
+                            {{ number_format($x->discount, 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="20%;text-align:right">Rp.
+                            {{ number_format($x->total, 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
                 <tr>
                     <td class="no-wrap" colspan="6" style="text-align: right"><b>Sub Total</b></td>
-                    <td>Rp. {{ number_format($dataPurchase[0]['total_item_purchase'], 2, ',', '.') }}</td>
+                    <td style="text-align: right">Rp.
+                        {{ number_format($dataPurchase[0]['total_item_purchase'], 2, ',', '.') }}</td>
                 </tr>
                 <tr>
                     <td class="no-wrap" colspan="6" style="text-align: right"><b>Freight In</b></td>
-                    <td>Rp. {{ number_format($dataPurchase[0]['other_fee'], 2, ',', '.') }}</td>
+                    <td style="text-align: right">Rp. {{ number_format($dataPurchase[0]['other_fee'], 2, ',', '.') }}
+                    </td>
                 </tr>
                 @if (floatval($dataPurchase[0]['percen_ppn']) > 0)
                     <tr>
                         <td class="no-wrap" colspan="6" style="text-align: right"><b>PPN
                                 ({{ floatval($dataPurchase[0]['percen_ppn']) * 100 }}%)</b></td>
-                        <td>Rp. {{ number_format($dataPurchase[0]['ppn_amount'], 2, ',', '.') }}</td>
+                        <td style="text-align: right">Rp.
+                            {{ number_format($dataPurchase[0]['ppn_amount'], 2, ',', '.') }}</td>
                     </tr>
                 @endif
                 <tr>
                     <td class="no-wrap" colspan="6" style="text-align: right"><b>Grand Total</b></td>
-                    <td>Rp. {{ number_format($dataPurchase[0]['grand_total'], 2, ',', '.') }}</td>
+                    <td style="text-align: right">Rp. {{ number_format($dataPurchase[0]['grand_total'], 2, ',', '.') }}
+                    </td>
                 </tr>
                 <tr>
                     <td class="no-wrap" colspan="6" style="text-align: right"><b>Paid Amount</b></td>
-                    <td>Rp. {{ number_format($dataPurchase[0]['paid_amount'], 2, ',', '.') }}</td>
+                    <td style="text-align: right">Rp. {{ number_format($dataPurchase[0]['paid_amount'], 2, ',', '.') }}
+                    </td>
                 </tr>
             </tbody>
         </table>
