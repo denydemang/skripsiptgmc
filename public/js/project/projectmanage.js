@@ -180,6 +180,14 @@ $(document).ready(function () {
       showwarning('Please Input Upah List!');
       return false;
     }
+    if (
+      parseInt(parseToNominal(inputdepositamount.val())) == '' ||
+      parseInt(parseToNominal(inputdepositamount.val())) == 0 ||
+      inputdepositamount.val() == ''
+    ) {
+      showwarning('No Deposit Amount Found !');
+      return false;
+    }
     return true;
   }
 

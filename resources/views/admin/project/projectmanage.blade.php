@@ -122,8 +122,8 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="example3cols1Input">Amount <span
-                                                        style="color: red">*</span></label>
+                                                <label class="form-control-label" for="example3cols1Input">Project Amount
+                                                    <span style="color: red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm inputbudget"
                                                     id="example3cols1Input"
                                                     data-budget="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['budget'] }}"

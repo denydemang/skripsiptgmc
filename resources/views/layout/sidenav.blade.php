@@ -104,7 +104,8 @@
                                     'admin.coalist',
                                 ];
                             @endphp
-                            <a class="nav-link" href="#navbar-master" data-toggle="collapse" role="button"
+                            <a class="nav-link {{ in_array($sessionRoute, $allmaster) ? 'active' : '' }}"
+                                href="#navbar-master" data-toggle="collapse" role="button"
                                 aria-expanded="{{ in_array($sessionRoute, $allmaster) ? 'true' : 'false' }}"
                                 aria-controls="navbar-examples">
                                 <i class="ni ni-ungroup text-orange"></i>
@@ -156,7 +157,8 @@
                                     'admin.addInvoiceView',
                                 ];
                             @endphp
-                            <a class="nav-link" href="#navbar-transaction" data-toggle="collapse"
+                            <a class="nav-link {{ in_array($sessionRoute, $alltransaction) ? 'active' : '' }}"
+                                href="#navbar-transaction" data-toggle="collapse"
                                 role="button"aria-expanded="{{ in_array($sessionRoute, $alltransaction) ? 'true' : 'false' }}"
                                 aria-controls="navbar-transaction">
                                 <i class="ni ni-ui-04 text-info"></i>
@@ -196,7 +198,8 @@
                                     'admin.editReceiptView',
                                 ];
                             @endphp
-                            <a class="nav-link" href="#navbar-finance" data-toggle="collapse" role="button"
+                            <a class="nav-link {{ in_array($sessionRoute, $allfinance) ? 'active' : '' }}"
+                                href="#navbar-finance" data-toggle="collapse" role="button"
                                 aria-expanded="{{ in_array($sessionRoute, $allfinance) ? 'true' : 'false' }}"
                                 aria-controls="navbar-finance">
                                 <i class="ni ni-money-coins text-info"></i>
@@ -237,6 +240,7 @@
                                     'admin.trialbalance',
                                     'admin.profitloss',
                                     'admin.balancesheet',
+                                    'admin.capitalchange',
                                     // 'admin.addPaymentView',
                                     // 'admin.editPaymentView',
                                     // 'admin.cashbook',
@@ -249,7 +253,8 @@
                                     // 'admin.editReceiptView',
                                 ];
                             @endphp
-                            <a class="nav-link" href="#navbar-forms" data-toggle="collapse" role="button"
+                            <a class="nav-link {{ in_array($sessionRoute, $allaccounting) ? 'active' : '' }}"
+                                href="#navbar-forms" data-toggle="collapse" role="button"
                                 aria-expanded="{{ in_array($sessionRoute, $allaccounting) ? 'true' : 'false' }}"
                                 aria-controls="navbar-forms">
                                 <i class="ni ni-single-copy-04 text-pink"></i>
@@ -274,7 +279,7 @@
                                             Report</a>
                                     </li>
                                     <li class="nav-item {{ $sessionRoute == 'admin.capitalchange' ? 'active' : '' }}">
-                                        <a href="{{ route('admin.capitalchange') }}" class="nav-link">Stament Of
+                                        <a href="{{ route('admin.capitalchange') }}" class="nav-link">Statment Of
                                             Change
                                             In
                                             Capital Report</a>
@@ -302,7 +307,8 @@
                                     'admin.stockcard',
                                 ];
                             @endphp
-                            <a class="nav-link" href="#navbar-tables" data-toggle="collapse" role="button"
+                            <a class="nav-link {{ in_array($sessionRoute, $allinventory) ? 'active' : '' }}"
+                                href="#navbar-tables" data-toggle="collapse" role="button"
                                 aria-expanded="{{ in_array($sessionRoute, $allinventory) ? 'true' : 'false' }}"
                                 aria-controls="navbar-tables">
                                 <i class="ni ni-box-2 text-default"></i>
