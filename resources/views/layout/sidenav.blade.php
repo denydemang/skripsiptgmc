@@ -2,12 +2,14 @@
 <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white" id="sidenav-main">
     <div class="scrollbar-inner">
 
+        {{-- Allowed View Authority --}}
         @php
             $Admin = 1;
             $Keuangan = 2;
             $Logistik = 3;
             $Direktur = 4;
             $currentUserRole = Auth::user()->id_role;
+
             $allowedViewRolesProject = [$Admin, $Keuangan, $Logistik, $Direktur];
             $allowedViewRolesMaster = [$Admin, $Keuangan, $Logistik, $Direktur];
             $allowedViewRolesTransaction = [$Admin, $Keuangan, $Direktur];
@@ -55,6 +57,8 @@
                                     'admin.projectrealisationview',
                                     'admin.addProjectrealisationview',
                                     'admin.editProjectrealisationview',
+                                    'admin.addprojecttypeview',
+                                    'admin.editprojecttypeview',
                                 ];
                             @endphp
 
@@ -68,7 +72,8 @@
                             <div class="{{ in_array($sessionRoute, $projectRoute) ? 'show' : '' }} collapse"
                                 id="navbar-projects">
                                 <ul class="nav nav-sm flex-column">
-                                    <li class="nav-item {{ $sessionRoute == 'admin.projecttype' ? 'active' : '' }}">
+                                    <li
+                                        class="nav-item {{ $sessionRoute == 'admin.projecttype' || $sessionRoute == 'admin.addprojecttypeview' || $sessionRoute == 'admin.editprojecttypeview' ? 'active' : '' }}">
                                         <a href="{{ route('admin.projecttype') }}" class="nav-link">Project Type</a>
                                     </li>
                                     <li
