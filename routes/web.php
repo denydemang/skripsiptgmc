@@ -105,7 +105,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::post('/admin/projecttype/update/{id}', 'updateProjectType')->name('admin.updateDataProjectType');
             Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
             Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
+            Route::get('/admin/projecttype/material/{projectypecode}', 'getdataforproyek')->name('admin.getdataforproyek');
             Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
+
         });
 
     });

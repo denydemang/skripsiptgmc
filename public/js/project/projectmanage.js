@@ -30,6 +30,8 @@ $(document).ready(function () {
   const projecttypename = $('.projecttypename');
   const inputtotaltermin = $('.inputtotaltermin');
   const inputdepositamount = $('.inputdepositamount');
+  const inputprojecttypecode = $('.projecttypecode');
+  const isfetchingdata = $('.isfetchingdata');
   // end html input
 
   const updateMode = route().current() == 'admin.editProjectView';
@@ -145,6 +147,19 @@ $(document).ready(function () {
     });
   }
 
+  async function getDataDetailProjectType(ProjectTypeCode) {
+    const urlRequest = route('admin.getdataforproyek', ProjectTypeCode);
+    const method = 'GET';
+
+    try {
+      const ajx = new AjaxRequest(urlRequest, method);
+      return await ajx.getData();
+    } catch (error) {
+      showerror(error);
+      return null;
+    }
+  }
+
   function customValidation() {
     if (inputtransdate.val() == '') {
       inputtransdate.focus();
@@ -180,6 +195,37 @@ $(document).ready(function () {
       showwarning('Please Input Upah List!');
       return false;
     }
+    let listInvalidMaterial = [];
+    for (let item of tampungMaterial) {
+      if (parseFloat(item.qty) <= 0) {
+        listInvalidMaterial.push(item.code);
+      }
+    }
+    if (listInvalidMaterial.length > 0) {
+      let textCodeMaterial = '';
+      listInvalidMaterial.forEach((x) => {
+        textCodeMaterial += `${x} ,`;
+      });
+      showwarning(`The Following Qty Material Code : ${textCodeMaterial} Cannot Be Less Than/Equal Zero Value!`);
+      return false;
+    }
+
+    const listInvaliUpah = [];
+    for (let item of tampungUpah) {
+      if (parseFloat(item.qty) <= 0 || parseFloat(item.price) <= 0) {
+        listInvaliUpah.push(item.code);
+      }
+    }
+
+    if (listInvaliUpah.length > 0) {
+      let textCodeUpah = '';
+      listInvaliUpah.forEach((x) => {
+        textCodeUpah += `${x} ,`;
+      });
+      showwarning(`The Following Qty/Price Upah Code : ${textCodeUpah} Cannot Be Less Than/Equal Zero Value!`);
+      return false;
+    }
+
     if (
       parseInt(parseToNominal(inputdepositamount.val())) == '' ||
       parseInt(parseToNominal(inputdepositamount.val())) == 0 ||
@@ -218,18 +264,22 @@ $(document).ready(function () {
 
     let html = ``;
 
+    let counter = 0;
+
     tampungMaterial.forEach((item) => {
+      counter++;
       html += `
     
-      <tr class="row">
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.code}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:10px">${item.name}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.unit}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px"><input
-            style="width:100%" type="number" min="1" class="custom-input inputqtymaterial" data-stocks="${item.stocks}" data-code="${item.code}" value="${item.qty}">
+      <tr>
+        <td style="white-space:nowrap;font-size: 12px;width:5%">${counter}</td>
+        <td style="white-space:nowrap;font-size: 12px;width:15%">${item.code}</td>
+        <td style="white-space:normal;word-wrap: break-word;font-size:12px;width:30%">${item.name}</td>
+        <td style="white-space:normal;word-wrap: break-word;font-size: 12px;width:5%">${item.unit}</td>
+        <td style="white-space:normal;word-wrap: break-word;font-size: 12px;width:15%"><input
+            style="width:100%; text-align:right" type="number" min="1" class="custom-input inputqtymaterial" data-stocks="${item.stocks}" data-code="${item.code}" value="${item.qty}">
         </td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.stocks}</td>
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;font-size: 10px"><button data-code="${item.code}" class="btn btn-danger btndeletematerial btn-sm">X</button></td>
+        <td  style="white-space:normal;word-wrap: break-word;font-size: 12px;text-align:right;width:20%">${item.stocks}</td>
+        <td style="white-space:normal;word-wrap: break-word;font-size: 12px;width:10%"><button data-code="${item.code}" class="btn btn-danger btndeletematerial btn-sm">X</button></td>
       </tr>
       `;
     });
@@ -240,25 +290,45 @@ $(document).ready(function () {
   function createHmtlTbodyUpah() {
     const tbody = $('.tableupah tbody');
 
+    let counter = 0;
+    let total = 0;
     let html = ``;
 
     tampungUpah.forEach((item) => {
+      counter++;
       html += `
     
-      <tr class="row">
-        <td class="col-2 text-left" style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.code}</td>
-        <td class="col-2 text-left"style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.job}</td>
-        <td class="col-1 text-left"style="white-space:normal;word-wrap: break-word;font-size: 10px">${item.unit}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 9px"><input
-            style="width:100%" type="number" class="custom-input inputqtyupah" data-code="${item.code}" value="${item.qty}">
+      <tr>
+        <td class="text-left" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:1%">${counter}</td>
+        <td class="text-left" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:5%">${item.code}</td>
+        <td class="text-left" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:27%">${item.job}</td>
+        <td class=" text-left" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:3%">${item.unit}</td>
+        <td class="" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:12%"><input
+            style="width:100%;text-align:right" type="number" min="1" class="custom-input inputqtyupah" data-code="${item.code}" value="${
+        item.qty
+      }">
         </td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px">${formatRupiah1(item.price)}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size: 10px"><input
-            style="width:100%" type="text" class="custom-input" readonly value="${formatRupiah1(item.total)}"></td>
-        <td class="col-1"><button class="btn btn-danger btn-sm btndeleteupah" data-code="${item.code}" >X</button></td>
+        <td class="" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:20%;text-align:right"><input
+            style="width:100%;text-align:right" type="text" class="custom-input inputpriceupah" data-code="${
+              item.code
+            }" value="${formatRupiah1(item.price)}"></td>
+        <td class="" style="white-space:normal;word-wrap: break-word;font-size: 12px;width:21%;text-align:right"><input
+            style="width:100%;text-align:right" type="text" class="custom-input" readonly value="${formatRupiah1(item.total)}"></td>
+        <td class="" style="width:10%;text-align:right"><button class="btn btn-danger btn-sm btndeleteupah" data-code="${
+          item.code
+        }" >X</button></td>
       </tr>
       `;
+      total += item.total;
     });
+    html += `
+    
+    <tr>
+      <td class="text-right" colspan="6" style="white-space:nowrap;font-size: 12px"><b>TOTAL</b></td>
+      <td class="text-right" style="white-space:nowrap;font-size: 12px"><b>${formatRupiah1(total)}</b></td>
+      <td></td>
+    </tr>
+    `;
 
     tbody.html(html);
   }
@@ -283,20 +353,21 @@ $(document).ready(function () {
 
   function populateMaterial(data = {}) {
     if (checkMaterialExist(data.code)) {
+      showwarning(`${data.code} Already Added In The List !`);
       // incrementqty + 1
-      const editedMaterial = tampungMaterial.map((item) => {
-        if (item.code === data.code) {
-          let qtytotal = parseFloat(item.qty) + parseFloat(data.qty);
+      // const editedMaterial = tampungMaterial.map((item) => {
+      //   if (item.code === data.code) {
+      //     let qtytotal = parseFloat(item.qty) + parseFloat(data.qty);
 
-          if (qtytotal > parseFloat(data.stocks)) {
-            qtytotal = parseFloat(data.stocks);
-          }
-          return { ...item, qty: qtytotal };
-        } else {
-          return item;
-        }
-      });
-      tampungMaterial = [...editedMaterial];
+      //     if (qtytotal > parseFloat(data.stocks)) {
+      //       qtytotal = parseFloat(data.stocks);
+      //     }
+      //     return { ...item, qty: qtytotal };
+      //   } else {
+      //     return item;
+      //   }
+      // });
+      // tampungMaterial = [...editedMaterial];
     } else {
       // Direct Push
       tampungMaterial.push(data);
@@ -312,17 +383,7 @@ $(document).ready(function () {
 
   function populateUpah(data = {}) {
     if (checkUpahExist(data.code)) {
-      // incrementqty + 1
-      const editedUpah = tampungUpah.map((item) => {
-        if (item.code === data.code) {
-          let qty = parseFloat(item.qty) + parseFloat(data.qty);
-          let total = qty * item.price;
-          return { ...item, qty: qty, total: total };
-        } else {
-          return item;
-        }
-      });
-      tampungUpah = [...editedUpah];
+      showwarning(`${data.code} Already Added In The List !`);
     } else {
       // Direct Push
       tampungUpah.push(data);
@@ -343,17 +404,71 @@ $(document).ready(function () {
     createHmtlTbodyMaterial();
   }
 
-  function calculateUpah(code, qtyupah) {
-    const editedUpah = tampungUpah.map((item) => {
-      if (item.code === code) {
-        const qty = qtyupah;
-        const total = qty * item.price;
-        return { ...item, qty: qty, total: total };
-      } else {
-        return item;
-      }
-    });
-    tampungUpah = [...editedUpah];
+  function populateFromType(dataMaterial = [], dataUpah = []) {
+    tampungMaterial = [];
+    tampungUpah = [];
+
+    if (dataMaterial.length > 0) {
+      dataMaterial.forEach((x) => {
+        let material = {
+          code: x.item_code,
+          stocks: parseFloat(x.stocks),
+          min_stock: 0,
+          max_stock: 0,
+          unit: x.unit_code,
+          name: x.item_name,
+          qty: parseFloat(x.stocks) > 0 ? 1 : 0
+        };
+        tampungMaterial.push({ ...material });
+      });
+    }
+    if (dataUpah.length > 0) {
+      dataUpah.forEach((x) => {
+        let dataUpah = {
+          code: x.upah_code,
+          job: x.job,
+          unit: x.unit,
+          description: '',
+          price: parseFloat(x.price),
+          qty: 1,
+          total: parseFloat(x.price) * 1
+        };
+        tampungUpah.push({ ...dataUpah });
+      });
+    }
+    createHmtlTbodyMaterial();
+    createHmtlTbodyUpah();
+  }
+
+  function calculateUpah(code, amount, state = 'Qty') {
+    switch (state) {
+      case 'Qty':
+        const editedUpah = tampungUpah.map((item) => {
+          if (item.code === code) {
+            const qty = amount;
+            const total = qty * item.price;
+            return { ...item, qty: qty, total: total };
+          } else {
+            return item;
+          }
+        });
+        tampungUpah = [...editedUpah];
+        break;
+      case 'Price':
+        const editedUpah1 = tampungUpah.map((item) => {
+          if (item.code === code) {
+            const price = amount;
+            const total = item.qty * price;
+            return { ...item, price: price, total: total };
+          } else {
+            return item;
+          }
+        });
+        tampungUpah = [...editedUpah1];
+        break;
+      default:
+        break;
+    }
 
     createHmtlTbodyUpah();
   }
@@ -449,8 +564,6 @@ $(document).ready(function () {
   }
   function createFormData() {
     var formData = new FormData();
-
-    console.log(PostData.total_termin);
 
     formData.append('file', PostData.file);
     formData.append('name', PostData.name);
@@ -595,14 +708,15 @@ $(document).ready(function () {
   // Ubah Qty Dalam List Material
   $(document).on('blur', '.inputqtymaterial', function () {
     if ($(this).val() <= 0 || $(this).val() == '') {
-      $(this).val(1);
+      $(this).val(0);
     }
+
     let code = $(this).data('code');
     let qtymaterial = parseFloat($(this).val());
     let stocks = parseFloat($(this).data('stocks'));
 
     if (qtymaterial > stocks) {
-      alert('Minus Stocks Not Allowed : Current Stock Is ' + stocks);
+      showwarning('Minus Stocks Not Allowed : Current Stock Is ' + stocks);
       $(this).val(stocks);
       calculateMaterial(code, stocks);
     } else {
@@ -612,12 +726,22 @@ $(document).ready(function () {
   // Ubah Qty Dalam List Upah
   $(document).on('blur', '.inputqtyupah', function () {
     if ($(this).val() <= 0 || $(this).val() == '') {
-      $(this).val(1);
+      $(this).val(0);
     }
     let code = $(this).data('code');
     let qtyupah = parseFloat($(this).val());
 
-    calculateUpah(code, qtyupah);
+    calculateUpah(code, qtyupah, 'Qty');
+  });
+
+  $(document).on('blur', '.inputpriceupah', function () {
+    if ($(this).val() <= 0 || $(this).val() == '') {
+      $(this).val(0);
+    }
+    let code = $(this).data('code');
+    let price = parseFloat($(this).val());
+
+    calculateUpah(code, price, 'Price');
   });
 
   // Submit Button
@@ -637,7 +761,7 @@ $(document).ready(function () {
     }
   });
 
-  $(document).on('focusin', '.inputbudget', function (e) {
+  $(document).on('focusin', '.inputbudget, .inputpriceupah', function (e) {
     let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val());
     $(this).val(X);
   });
@@ -654,6 +778,15 @@ $(document).ready(function () {
     inputdepositamount.val('Fetching Data...');
     const depo = await getDataDepo(customerCode.val());
     inputdepositamount.val(formatRupiah1(depo));
+  });
+
+  $('#modalProjectTypeSearch').on('hidden.bs.modal', async function (e) {
+    isfetchingdata.html('FetchingData....');
+    const dataDetailProjectType = await getDataDetailProjectType(inputprojecttypecode.val());
+    if (dataDetailProjectType) {
+      populateFromType(dataDetailProjectType.bahanBaku, dataDetailProjectType.upah);
+    }
+    isfetchingdata.html('');
   });
 
   // Trigger Notif Toast

@@ -23,8 +23,10 @@
         }
     </style>
     <div class="header bg-primary pb-6">
-        <div class="datamateriallist" data-materiallist="{{ $data['bahanBaku'] }}"></div>
-        <div class="dataupahlist" data-upahlist="{{ $data['upah'] }}"></div>
+        <div class="datamateriallist"
+            data-materiallist="{{ $sessionRoute == 'admin.editprojecttypeview' ? $data['bahanBaku'] : '' }}"></div>
+        <div class="dataupahlist" data-upahlist="{{ $sessionRoute == 'admin.editprojecttypeview' ? $data['upah'] : '' }}">
+        </div>
         <div class="container-fluid">
             <div class="header-body">
                 <div class="row align-items-center py-4">
@@ -135,7 +137,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <h5 class="text-info">Upah List</h5>
+                                        <h5 class="text-info">Upah BTKL List</h5>
                                         <div class="form-group mt-3">
                                             <div class="dataupah" data-upah="">
                                             </div>

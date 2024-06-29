@@ -156,7 +156,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-dark mt-1">Upah :</h3>
+                        <h3 class="text-dark mt-1">Upah BTKL:</h3>
                         <div class="col-12" style="max-height:200px ;overflow-y: scroll">
                             <table class="table-sm listupah table">
                                 <thead>

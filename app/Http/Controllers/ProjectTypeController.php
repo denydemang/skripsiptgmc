@@ -29,7 +29,7 @@ class ProjectTypeController extends Controller
 
     public function getViewManageTypeProject(Request $request,$code = null){
 
-        
+        $data = [];
         if ($code){
 
             $data['bahanBaku'] = TypeProjectDetail::join('items', 'items.code', "=", 'type_projects_details.item_code')
@@ -230,6 +230,24 @@ class ProjectTypeController extends Controller
             abort(404);
         }
 
+    }
+
+    public function getdataforproyek($id, Request $request){
+
+        if($request->ajax()){
+            $data['bahanBaku'] = TypeProjectDetail::join('items', 'items.code', "=", 'type_projects_details.item_code')
+            ->leftjoin('stocks', "items.code", "=", "stocks.item_code")
+            ->select("type_projects_details.item_code", "type_projects_details.unit_code", 'items.name as item_name', DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks'))
+            ->groupBy('type_projects_details.item_code','items.name' ,  "type_projects_details.unit_code")
+            ->where('type_projects_details.type_project_code', $id)->get();
+
+            $data['upah'] = TypeProjectDetailB::join('upah', 'upah.code', '=', 'type_projects_details_b.upah_code')
+                    ->select('type_projects_details_b.*', 'upah.job')
+                    ->where('type_projects_details_b.type_project_code' , $id)->get();
+            return json_encode($data);
+        } else{
+            abort(404);
+        }
     }
 
 }

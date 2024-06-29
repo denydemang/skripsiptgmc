@@ -232,20 +232,23 @@
                                                 @include('component.btnsearchcoa')
                                                 @include('component.btnadditem')
                                             </div>
+                                            <span class="text-danger text-bold isfetchingdata"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <table style="width: 100%" class="table-sm tablematerial table">
+                                    <div class="col-lg-12" style="max-height:350px ;overflow-y: scroll">
+                                        <table style="width: 100%;table-layout:auto" class="table-sm tablematerial table">
                                             <thead style="font-size: 6px">
-                                                <tr class="row">
-                                                    <th class="col-2 text-left" style="font-size: 10px">Item Code</th>
-                                                    <th class="col-2 text-left" style="font-size: 10px">Item Name</th>
-                                                    <th class="col-2" style="font-size: 10px">Unit</th>
-                                                    <th class="col-2" style="font-size: 10px">Qty</th>
-                                                    <th class="col-2" style="font-size: 10px">Available Stocks</th>
-                                                    <th class="col-2" style="font-size: 10px">...</th>
+                                                <tr>
+                                                    <th class="text-left" style="font-size: 12px">No</th>
+                                                    <th class="text-left" style="font-size: 12px">Item Code</th>
+                                                    <th class="text-left" style="font-size: 12px">Item Name</th>
+                                                    <th style="font-size: 12px">Unit</th>
+                                                    <th style="font-size: 12px;text-align:right">Qty</th>
+                                                    <th style="font-size: 12px;text-align:right">Available
+                                                        Stocks</th>
+                                                    <th style="font-size: 12px">...</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -262,7 +265,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <h5 class="text-primary">Upah</h5>
+                                        <h5 class="text-primary">Upah BTKL</h5>
                                         <div class="form-group">
                                             <div class="dataupah"
                                                 data-upah="{{ $sessionRoute == 'admin.addProjectView' ? '' : json_encode($data['dataUpah']) }}">
@@ -277,21 +280,24 @@
                                                 @include('component.btnsearchcoa')
                                                 @include('component.btnaddupah')
                                             </div>
+                                            <span class="text-danger text-bold isfetchingdata"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <table style="width: 100%" class="table-sm tableupah table">
-                                            <thead style="font-size: 6px">
-                                                <tr class="row">
-                                                    <th class="col-2 text-left" style="font-size: 10px">Upah Code</th>
-                                                    <th class="col-2 text-left" style="font-size: 10px">Job</th>
-                                                    <th class="col-1 text-left" style="font-size: 10px">Unit</th>
-                                                    <th class="col-2" style="font-size: 10px">Qty</th>
-                                                    <th class="col-2" style="font-size: 10px">Price</th>
-                                                    <th class="col-2" style="font-size: 10px">Total</th>
-                                                    <th class="col-1" style="font-size: 10px">...</th>
+                                    <div class="col-lg-12" style="max-height:350px ;overflow-y: scroll">
+                                        <table style="width: 100%; table-layout:auto" class="table-sm tableupah table">
+                                            <thead style="font-size: 12px">
+                                                <tr>
+                                                    <th class="text-left" style="font-size: 12px;">No</th>
+                                                    <th class="text-left" style="font-size: 12px;">Upah Code</th>
+                                                    <th class="text-left" style="font-size: 12px;">Job</th>
+                                                    <th class="col-1 text-left" style="font-size: 12px;">Unit
+                                                    </th>
+                                                    <th style="font-size: 12px;text-align:right">Qty</th>
+                                                    <th style="font-size: 12px;text-align:right">Price</th>
+                                                    <th style="font-size: 12px;text-align:right">Total</th>
+                                                    <th style="font-size: 12px;text-align:right">...</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

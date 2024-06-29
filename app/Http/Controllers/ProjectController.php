@@ -41,6 +41,7 @@ class ProjectController extends AdminController
     public function getViewProjectManage( Request $request, $code=null){
 
         
+        $data =[];
         if ($code){ //If In Update Mode
 
             $project = Project::join('type_projects', 'projects.project_type_code', '=', 'type_projects.code')

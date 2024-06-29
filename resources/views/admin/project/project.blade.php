@@ -215,7 +215,7 @@
                         <h3 class="title-detail text-dark"></h3>
                     </div>
                     <div class="row">
-                        <h3 class="text-white">Material :</h3>
+                        <h3 class="text-dark">Material :</h3>
                         <div class="col-12 mb-2" style="max-height:200px ;overflow-y: scroll">
                             <table class="table-sm listbb table-wrap table">
                                 <thead>
@@ -231,7 +231,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="mt-1 text-white">Upah :</h3>
+                        <h3 class="text-dark mt-1">Upah BTKL :</h3>
                         <div class="col-12" style="max-height:200px ;overflow-y: scroll">
                             <div>
                                 <table class="table-sm listupah table">
