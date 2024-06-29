@@ -59,3 +59,173 @@ if (! function_exists('automaticCode_H')) {
         return $newCode;
     }
 }
+
+if (! function_exists('getConditionRouteActions')) {
+    function getConditionRouteActions($route, $ls_action) {
+
+        $ls_rotes_actions = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'users', 'getDataUsers', 'updateDataUser', 'addDataUsers', 'deleteDataUser', 'editUsers', 'getTableItemSearch', 'CustomerGetForModal', 'SupplierGetForModal', 'getroles', 'getsuppliers', 'getcustomers', 'getcategorys', 'getitems', 'getUnits'];
+
+        if ($route == 'admin') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+
+        } elseif ($route == 'r_unit') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        } elseif ($route == 'r_item') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        } elseif ($route == 'r_category') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        } elseif ($route == 'r_customer') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        } elseif ($route == 'r_supplier') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        } elseif ($route == 'r_role') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        } elseif ($route == 'r_upah') {
+
+            foreach ($ls_action as $act) {
+                $ls_r_a[] = $route.'.'.$ls_rotes_actions[$act];
+            }
+        }
+
+        return $ls_r_a;
+    }
+}
+
+
+
+if (! function_exists('getRouteChecker_MDLR')) {
+    function getRouteChecker_MDLR($role, $route) {
+
+        $ls_rotes_murni = ['admin', 'r_unit', 'r_item', 'r_category', 'r_customer', 'r_supplier', 'r_role', 'r_upah'];
+
+        // $ls_rotes_actions = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'users', 'getDataUsers', 'updateDataUser', 'addDataUsers', 'deleteDataUser', 'editUsers', 'getTableItemSearch', 'CustomerGetForModal', 'SupplierGetForModal', 'getroles', 'getsuppliers', 'getcustomers', 'getcategorys', 'getitems', 'getUnits'];
+
+        // 1 iki ignore
+        // iki block 245 8910
+
+        $allow_route = [];
+        switch ($role) {
+            case 1: // Admin
+                $ls_action = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+                if (in_array($route, $ls_rotes_murni)) {
+                    $allow_route = getConditionRouteActions($route, $ls_action);
+                }
+                break;
+            case 2: // Keuangan
+                if (in_array($route, $ls_rotes_murni)) {
+                    if ($route == 'admin') {
+                        $ls_action = [6,7,12,13,14,15,16,17,18,19,20];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_unit') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_item') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_category') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_customer') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_supplier') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_role') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_upah') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    }
+                }
+                break;
+            case 3: // Logistik
+                if (in_array($route, $ls_rotes_murni)) {
+                    if ($route == 'admin') {
+                        $ls_action = [0,2,3,4,5,6,7,12,13,14,15,16,17,18,19,20];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_unit') {
+                        $ls_action = [0,2,3,4,5];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_item') {
+                        $ls_action = [0,2,3,4,5];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_category') {
+                        $ls_action = [0,2,3,4,5];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_customer') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_supplier') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_role') {
+                        $ls_action = [0,2,3,4,5];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_upah') {
+                        $ls_action = [0,2,3,4,5];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    }
+                }
+                break;
+            case 4: // Direktur
+                if (in_array($route, $ls_rotes_murni)) {
+                    if ($route == 'admin') {
+                        $ls_action = [6,7,12,13,14,15,16,17,18,19,20];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_unit') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_item') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_category') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_customer') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_supplier') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_role') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    } elseif ($route == 'r_upah') {
+                        $ls_action = [0,3];
+                        $allow_route = getConditionRouteActions($route, $ls_action);
+                    }
+                }
+                break;
+
+            default:
+                # code...
+                break;
+        }
+
+        return $allow_route;
+
+    }
+}

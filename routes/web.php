@@ -115,7 +115,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::get('/admin/projectrecapitulation', 'projectrecapview')->name('admin.projectrecapview');
             // Route::get('/admin/projectrealisation', 'projectrealisationview')->name('admin.projectrealisationview');
             // Route::get('/admin/projectrealisation/finish/{id}', 'projectrealisationfinishview')->name('admin.projectrealisationfinishview');
-            
+
             // CRUD
             Route::get('/admin/project/edit/{id?}', 'getViewProjectManage')->name('admin.editProjectView');
             Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
@@ -127,13 +127,13 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
             Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
             Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
-    
+
             // Print
             Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');
             Route::get('/admin/project/printproject/{code}', 'printproject')->name('admin.printproject');
             Route::get('/admin/project/printprojectrecap', 'printprojectrecap')->name('admin.printprojectrecap');
         });
-        
+
     });
 
 
@@ -152,7 +152,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::get('/admin/projectrealisation/add', 'getViewProjectRealisationManage')->name('admin.addProjectrealisationview');
             Route::get('/admin/projectrealisation/edit/{id}', 'getViewProjectRealisationManage')->name('admin.editProjectrealisationview');
             // Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
-    
+
             // // // CRUD
             Route::get('/admin/projectrealisation/gettablesearch', 'getProjectRealisationSearchtable')->name('admin.getProjectRealisationSearchtable');
             Route::get('/admin/projectrealisation/getdetail/{id}', 'getDetailRealisation')->name('admin.getDetailRealisation');
@@ -167,14 +167,14 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::get('/admin/projectrealisation/delete/{id}', 'deleterealisation')->name('admin.deleterealisation');
             Route::get('/admin/projectrealisation/approve/{id}', 'approverealisation')->name('admin.approverealisation');
             // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
-    
-    
+
+
             // // Print
             Route::get('/admin/projectrealisation/detail/print/{id}', 'printdetailprojectrealisation')->name('admin.printdetailprojectrealisation');
             Route::get('/admin/projectrealisation/jurnal/print/{id}', 'printjurnalprojectrealisation')->name('admin.printjurnalprojectrealisation');
             // Route::get('/admin/invoice/recap/print', 'printrecapinvoice')->name('admin.printrecapinvoice');
         });
-   
+
     });
 
     Route::controller(COAController::class)->group(function () {
@@ -207,138 +207,126 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('admin/download/{idfile}', 'downloadFile')->name('admin.download');
     });
 
-    // -----------------    user
-    Route::controller(UserController::class)->group(function () {
-        Route::get('/admin/users', 'getViewUsers')->name('admin.users');
-        // Route::get('/admin/project', 'getViewProject')->name('admin.project');
-        Route::post('/admin/users/getdata', 'getDataUsers')->name('admin.getDataUsers');
-        // Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
-        Route::post('/admin/users/update', 'updateUser')->name('admin.updateDataUser');
-        Route::post('/admin/users/add', 'addUsers')->name('admin.addDataUsers');
-        Route::get('/admin/users/delete/{username}', 'deleteUser')->name('admin.deleteDataUser');
-        Route::get('/admin/users/edit/{username}', 'editDataUsers')->name('admin.editUsers');
-    });
 
-    // -----------------    unit
-    Route::controller(UnitController::class)->group(function () {
-        Route::resource('/admin/unit', UnitController::class)->names([
-            'index' => 'r_unit.index',
-            'create' => 'r_unit.create',
-            'store' => 'r_unit.store',
-            'show' => 'r_unit.show',
-            'edit' => 'r_unit.edit',
-            'update' => 'r_unit.update',
-            'destroy' => 'r_unit.destroy',
-        ]);
-        Route::post('/admin/unit/getdata', 'getDataUnits')->name('admin.getUnits');
-    });
+    // -----------------    MasterMiddleware
+    Route::middleware(['auth', 'mastermdlr'])->group(function () {
+        // -----------------    user
+        Route::controller(UserController::class)->group(function () {
+            Route::get('/admin/users', 'getViewUsers')->name('admin.users');
+            // Route::get('/admin/project', 'getViewProject')->name('admin.project');
+            Route::post('/admin/users/getdata', 'getDataUsers')->name('admin.getDataUsers');
+            // Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
+            Route::post('/admin/users/update', 'updateUser')->name('admin.updateDataUser');
+            Route::post('/admin/users/add', 'addUsers')->name('admin.addDataUsers');
+            Route::get('/admin/users/delete/{username}', 'deleteUser')->name('admin.deleteDataUser');
+            Route::get('/admin/users/edit/{username}', 'editDataUsers')->name('admin.editUsers');
+        });
 
-    // -----------------    item
-    Route::controller(ItemController::class)->group(function () {
+        // -----------------    unit
+        Route::controller(UnitController::class)->group(function () {
+            Route::resource('/admin/unit', UnitController::class)->names([
+                'index' => 'r_unit.index',
+                'create' => 'r_unit.create',
+                'store' => 'r_unit.store',
+                'show' => 'r_unit.show',
+                'edit' => 'r_unit.edit',
+                'update' => 'r_unit.update',
+                'destroy' => 'r_unit.destroy',
+            ]);
+            Route::post('/admin/unit/getdata', 'getDataUnits')->name('admin.getUnits');
+        });
 
-        Route::get('admin/item/gettableitemsearch', 'getTableItemSearch')->name('admin.getTableItemSearch');
+        // -----------------    item
+        Route::controller(ItemController::class)->group(function () {
 
+            Route::get('admin/item/gettableitemsearch', 'getTableItemSearch')->name('admin.getTableItemSearch');
+            Route::resource('/admin/item', ItemController::class)->names([
+                'index' => 'r_item.index',
+                'create' => 'r_item.create',
+                'store' => 'r_item.store',
+                'show' => 'r_item.show',
+                'edit' => 'r_item.edit',
+                'update' => 'r_item.update',
+                'destroy' => 'r_item.destroy',
+            ]);
+            Route::post('/admin/item/getdata', 'getDataitems')->name('admin.getitems');
+        });
 
-        Route::resource('/admin/item', ItemController::class)->names([
-            'index' => 'r_item.index',
-            'create' => 'r_item.create',
-            'store' => 'r_item.store',
-            'show' => 'r_item.show',
-            'edit' => 'r_item.edit',
-            'update' => 'r_item.update',
-            'destroy' => 'r_item.destroy',
-        ]);
-        Route::post('/admin/item/getdata', 'getDataitems')->name('admin.getitems');
-    });
-
-    // -----------------    category
-    Route::controller(CategoryController::class)->group(function () {
-        Route::resource('/admin/category', CategoryController::class)->names([
-            'index' => 'r_category.index',
-            'create' => 'r_category.create',
-            'store' => 'r_category.store',
-            'show' => 'r_category.show',
-            'edit' => 'r_category.edit',
-            'update' => 'r_category.update',
-            'destroy' => 'r_category.destroy',
-        ]);
-        Route::post('/admin/category/getdata', 'getDatacategorys')->name('admin.getcategorys');
-    });
-
-
-    // -----------------    customer
-    Route::controller(CustomerController::class)->group(function () {
-
-        Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
+        // -----------------    category
+        Route::controller(CategoryController::class)->group(function () {
+            Route::resource('/admin/category', CategoryController::class)->names([
+                'index' => 'r_category.index',
+                'create' => 'r_category.create',
+                'store' => 'r_category.store',
+                'show' => 'r_category.show',
+                'edit' => 'r_category.edit',
+                'update' => 'r_category.update',
+                'destroy' => 'r_category.destroy',
+            ]);
+            Route::post('/admin/category/getdata', 'getDatacategorys')->name('admin.getcategorys');
+        });
 
 
+        // -----------------    customer
+        Route::controller(CustomerController::class)->group(function () {
+
+            Route::get("admin/customer/getForModal", 'getDataCustomerForModal')->name('admin.CustomerGetForModal');
+            Route::resource('/admin/customer', CustomerController::class)->names([
+                'index' => 'r_customer.index',
+                'create' => 'r_customer.create',
+                'store' => 'r_customer.store',
+                'show' => 'r_customer.show',
+                'edit' => 'r_customer.edit',
+                'update' => 'r_customer.update',
+                'destroy' => 'r_customer.destroy',
+            ]);
+            Route::post('/admin/customer/getdata', 'getDatacustomers')->name('admin.getcustomers');
+        });
 
 
-        Route::resource('/admin/customer', CustomerController::class)->names([
-            'index' => 'r_customer.index',
-            'create' => 'r_customer.create',
-            'store' => 'r_customer.store',
-            'show' => 'r_customer.show',
-            'edit' => 'r_customer.edit',
-            'update' => 'r_customer.update',
-            'destroy' => 'r_customer.destroy',
-        ]);
-        Route::post('/admin/customer/getdata', 'getDatacustomers')->name('admin.getcustomers');
-    });
+        // -----------------    supplier
+        Route::controller(SupplierController::class)->group(function () {
+            Route::get("admin/supplier/getForModal", 'getDataSupplierForModal')->name('admin.SupplierGetForModal');
+
+            Route::resource('/admin/supplier', SupplierController::class)->names([
+                    'index' => 'r_supplier.index',
+                    'create' => 'r_supplier.create',
+                    'store' => 'r_supplier.store',
+                    'show' => 'r_supplier.show',
+                    'edit' => 'r_supplier.edit',
+                    'update' => 'r_supplier.update',
+                    'destroy' => 'r_supplier.destroy',
+            ]);
+                Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');
+        });
 
 
-    // -----------------    supplier
+        // -----------------    role
+        Route::controller(RoleController::class)->group(function () {
+            Route::resource('/admin/role', RoleController::class)->names([
+                'index' => 'r_role.index',
+                'create' => 'r_role.create',
+                'store' => 'r_role.store',
+                'show' => 'r_role.show',
+                'edit' => 'r_role.edit',
+                'update' => 'r_role.update',
+                'destroy' => 'r_role.destroy',
+            ]);
+            Route::post('/admin/role/getdata', 'getDataroles')->name('admin.getroles');
+        });
 
-
-
-    // Route::middleware(SuppplierMiddleware::class)->group(function(){
-    
-    // });
-
-
-    Route::controller(SupplierController::class)->group(function () {
-
-        
-        Route::get("admin/supplier/getForModal", 'getDataSupplierForModal')->name('admin.SupplierGetForModal');
-        
-        Route::resource('/admin/supplier', SupplierController::class)->names([
-                'index' => 'r_supplier.index',
-                'create' => 'r_supplier.create',
-                'store' => 'r_supplier.store',
-                'show' => 'r_supplier.show',
-                'edit' => 'r_supplier.edit',
-                'update' => 'r_supplier.update',
-                'destroy' => 'r_supplier.destroy',
-        ]);
-            Route::post('/admin/supplier/getdata', 'getDatasuppliers')->name('admin.getsuppliers');
-    });
-
-
-    // -----------------    role
-    Route::controller(RoleController::class)->group(function () {
-        Route::resource('/admin/role', RoleController::class)->names([
-            'index' => 'r_role.index',
-            'create' => 'r_role.create',
-            'store' => 'r_role.store',
-            'show' => 'r_role.show',
-            'edit' => 'r_role.edit',
-            'update' => 'r_role.update',
-            'destroy' => 'r_role.destroy',
-        ]);
-        Route::post('/admin/role/getdata', 'getDataroles')->name('admin.getroles');
-    });
-
-    // -----------------    Upah
-    Route::controller(UpahController::class)->group(function () {
-        Route::resource('/admin/upah', UpahController::class)->names([
-            'index' => 'r_upah.index',
-            'create' => 'r_upah.create',
-            'store' => 'r_upah.store',
-            'show' => 'r_upah.show',
-            'edit' => 'r_upah.edit',
-            'update' => 'r_upah.update',
-            'destroy' => 'r_upah.destroy',
-        ]);
+        // -----------------    Upah
+        Route::controller(UpahController::class)->group(function () {
+            Route::resource('/admin/upah', UpahController::class)->names([
+                'index' => 'r_upah.index',
+                'create' => 'r_upah.create',
+                'store' => 'r_upah.store',
+                'show' => 'r_upah.show',
+                'edit' => 'r_upah.edit',
+                'update' => 'r_upah.update',
+                'destroy' => 'r_upah.destroy',
+            ]);
+        });
     });
 
     // -----------------    Request Ajax
@@ -424,20 +412,20 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             // PRINT
             Route::get('/admin/purchaserequest/print/{id}', 'printPR')->name('admin.printPR');
         });
-    
+
     });
     // Stock
     Route::controller(StockController::class)->group(function(){
 
 
         Route::middleware(IINmiddleware::class)->group(function(){
-            
+
             Route::get('/admin/inventoryin', 'getViewInventoryIN')->name('admin.iin');
             Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
             Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
         });
-        
-        
+
+
         Route::middleware(IOUTMiddleware::class)->group(function(){
             Route::get('/admin/inventoryout', 'getViewInventoryOUT')->name('admin.iout');
             Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
@@ -485,12 +473,12 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::get('/admin/purchase/approve/{id}', 'approvepurchase')->name('admin.approvepurchase');
         Route::get('/admin/purchase/delete/{id}', 'deletepurchase')->name('admin.deletepurchase');
         Route::post('/admin/purchase/detail/{id}', 'detailpurchase')->name('admin.detailpurchase');
-        
+
         // Print
         Route::get('/admin/purchase/detail/print/{id}', 'printdetailpurchase')->name('admin.printdetailpurchase');
         Route::get('/admin/purchase/jurnal/print/{id}', 'printjurnalpurchase')->name('admin.printjurnalpurchase');
         Route::get('/admin/purchase/recap/print', 'printrecappurchase')->name('admin.printrecappurchase');
-        
+
         });
     });
 
@@ -583,7 +571,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::get('/admin/invoice', 'getViewInvoice')->name('admin.invoice');
             Route::get('/admin/invoice/add', 'getViewInvoiceManage')->name('admin.addInvoiceView');
             Route::get('/admin/invoice/edit/{id}', 'getViewInvoiceManage')->name('admin.editInvoiceView');
-    
+
             // // // CRUD
             Route::post('/admin/invoice/gettable', 'getTableInvoice')->name('admin.tableinvoice');
             // // Route::post('/admin/cashbook/gettable1/{id}', 'getTableCashBook1')->name('admin.tablecashbook1');
@@ -593,8 +581,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::get('/admin/invoice/delete/{id}', 'deleteinvoices')->name('admin.deleteinvoices');
             Route::get('/admin/invoice/approve/{id}', 'approveinvoices')->name('admin.approveinvoices');
             // // Route::get('/admin/payment/getpurchase/{id}', 'getpurchaseforpayment')->name('admin.getpurchaseforpayment');
-    
-    
+
+
             // // Print
             Route::get('/admin/invoice/detail/print/{id}', 'printdetailinvoice')->name('admin.printdetailinvoice');
             Route::get('/admin/invoice/jurnal/print/{id}', 'printjurnalinvoice')->name('admin.printjurnalinvoice');
@@ -669,7 +657,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             // Print
             Route::get('/admin/ledger/print', 'printLedger')->name('admin.PrintLedger');
         });
-     
+
     });
 
 
@@ -681,7 +669,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
                 // Print
                 Route::get('/admin/trialbalance/print', 'printtrialbalance')->name('admin.printtrialbalance');
         });
-       
+
     });
 
     Route::controller(ProfitLossController::class)->group(function(){
@@ -693,7 +681,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             // Print
             Route::get('/admin/profitloss/print', 'printprofitloss')->name('admin.printprofitloss');
         });
-      
+
     });
 
     Route::controller(BalanceSheetController::class)->group(function(){
@@ -702,9 +690,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::middleware(BalanceSheetmiddleware::class)->group(function(){
             //Get View
             Route::get('/admin/balancesheet', 'getViewBalanceSheet')->name('admin.balancesheet');
-    
+
             // Print
-    
+
             Route::get('/admin/balancesheet/print', 'printbalancesheet')->name('admin.printbalancesheet');
 
         });
