@@ -377,6 +377,7 @@ class PrintController extends AdminController
                 "journal" => $journal,
             ];
 
+
             $pdf = App::make('dompdf.wrapper');
             $pdf->setPaper('A4', 'landscape');
             $pdf->loadview("admin.transactions.prints.printJurnalPurchase", $data);
