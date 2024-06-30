@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : mariadblocal
+ Source Server         : skripsi
  Source Server Type    : MariaDB
- Source Server Version : 110300 (11.3.0-MariaDB-log)
+ Source Server Version : 110302 (11.3.2-MariaDB-log)
  Source Host           : localhost:3306
- Source Schema         : skripsiptgmc4
+ Source Schema         : testgmj
 
  Target Server Type    : MariaDB
- Target Server Version : 110300 (11.3.0-MariaDB-log)
+ Target Server Version : 110302 (11.3.2-MariaDB-log)
  File Encoding         : 65001
 
- Date: 30/06/2024 16:54:08
+ Date: 30/06/2024 18:01:46
 */
 
 SET NAMES utf8mb4;
@@ -21,10 +21,11 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- Table structure for upah
 -- ----------------------------
 
+
 -- ----------------------------
 -- Records of upah
 -- ----------------------------
-INSERT INTO `upah` VALUES ('UPAH001', 'Pekerjaan pondasi', 'Pekerjaan pondasi', 'm³', 600000.0000, '50.02', 'admin', 'admin', '2024-06-28 20:04:39', '2024-06-30 12:04:13');
+INSERT INTO `upah` VALUES ('UPAH001', 'Pekerjaan pondasi', 'Pekerjaan pondasi', 'm³', 1500000.0000, '50.02', 'admin', 'admin', '2024-06-28 20:04:39', '2024-06-30 17:55:09');
 INSERT INTO `upah` VALUES ('UPAH002', 'Pekerjaan pemasangan struktur dan rangka bangunan', 'Pekerjaan pemasangan struktur dan rangka bangunan', 'm³', 2700000.0000, '50.02', 'admin', 'admin', '2024-06-28 20:06:06', '2024-06-30 12:03:49');
 INSERT INTO `upah` VALUES ('UPAH003', 'Pekerjaan komponen dinding penutup', 'Pekerjaan komponen dinding penutup', 'm³', 8200000.0000, '50.02', 'admin', 'admin', '2024-06-28 20:06:50', '2024-06-30 12:04:33');
 INSERT INTO `upah` VALUES ('UPAH004', 'Pekerjaan pemasangan kusen', 'Pekerjaan pemasangan kusen', 'pcs', 9000000.0000, '50.02', 'admin', 'admin', '2024-06-28 20:07:52', '2024-06-30 12:05:31');
