@@ -197,14 +197,20 @@ $(document).ready(function () {
         <td style="font-size: 12px; width:10%">${item.transaction_date}
         </td>
         <td style="font-size: 12px;width:10%">${item.due_date}</td>
-        <td style="font-size: 12px;width:15%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
-        <td style="font-size: 12px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
-            data-code="${item.ref_no}" class="custom-input inputpaidamount" value="${formatRupiah1(item.cash_amount)}">
+        <td style="font-size: 12px;width:15%; white-space:nowrap;text-align:right">${formatRupiah1(item.unpaid_amount)}</td>
+        <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><input type="text" style="text-align:right" data-unpaid_amount="${parseFloat(
+          item.unpaid_amount
+        )}"
+            data-code="${item.ref_no}" class="custom-input inputpaidamount" style="text-align:right;width:100%" value="${formatRupiah1(
+        item.cash_amount
+      )}">
         </td>
         <td style="font-size: 12px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
-            data-code="${item.ref_no}" class="custom-input inputdepositamount" value="${formatRupiah1(item.deposit_amount)}">
+            data-code="${item.ref_no}" class="custom-input inputdepositamount" style="text-align:right;width:100%" value="${formatRupiah1(
+        item.deposit_amount
+      )}">
         </td>
-        <td style="font-size: 12px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
+        <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right">${formatRupiah1(item.balance)}</td>
       </tr>
       `;
 
@@ -217,10 +223,10 @@ $(document).ready(function () {
       html += `
         <tr>
           <td colspan="3" style="text-align:center;font-size: 12px;width:15%;white-space:nowrap"><b>Total</b></td>
-          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalUnpaid)}</b></td>
-          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalPaid)}</b></td>
-          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalDepo)}</b></td>
-          <td style="font-size: 12px;width:15%;white-spac   e:nowrap"><b>${formatRupiah1(totalBalance)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalUnpaid)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalPaid)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalDepo)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalBalance)}</b></td>
         </tr>
       `;
     }

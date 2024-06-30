@@ -279,15 +279,15 @@ $(document).ready(function () {
     if (materialList.length > 0) {
       materialList.forEach((x) => {
         html += `   <tr>
-                      <td class="text-nowrap p-1">${counter}</td>
-                      <td class="p-1">${x.item_code}</td>
-                      <td class="p-1">${x.item_name}</td>
-                      <td class="p-1">${x.unit}</td>
-                      <td class="text-nowrap p-1" style="text-align:right">${parseFloat(x.last_qty)}</td>
-                      <td class="text-nowrap p-1" style="text-align:right"><input type="number" class="inputcurrentqty custom-input" style="font-size:13px;text-align:right" data-code="${
+                      <td class="text-nowrap p-1" style="width:5%">${counter}</td>
+                      <td class="p-1" style="width:10%">${x.item_code}</td>
+                      <td class="p-1" style="width:50%">${x.item_name}</td>
+                      <td class="p-1" style="width:5%">${x.unit}</td>
+                      <td class="text-nowrap p-1" style="text-align:right;width:10%">${parseFloat(x.last_qty)}</td>
+                      <td class="text-nowrap p-1" style="text-align:right;width:10%"><input type="number" class="inputcurrentqty custom-input" style="font-size:13px;text-align:right" data-code="${
                         x.item_code
                       }" value="${parseFloat(x.current_qty)}"></td>
-                      <td class="text-nowrap p-1" style="text-align:right">${parseFloat(x.sisa_qty)}</td>
+                      <td class="text-nowrap p-1" style="text-align:right;width:10%">${parseFloat(x.sisa_qty)}</td>
                   </tr>`;
         counter++;
       });
@@ -408,7 +408,7 @@ $(document).ready(function () {
         html += `<tr>
                     <td>${x.no_termin}</td>
                     <td>${x.realisation_code}</td>
-                    <td>${formatRupiah1(x.realisation_amount)}</td>
+                    <td style="text-align:right">${formatRupiah1(x.realisation_amount)}</td>
                     <td>${x.percentage}</td>
                 </tr>`;
 
@@ -420,7 +420,7 @@ $(document).ready(function () {
         <tr>
             <td>${postData.termin}</td>
             <td>${postData.realisation_code == '' ? 'AUTO' : postData.realisation_code}</td>
-            <td><input type="text" class="inputrealisationamount custom-input" style="font-size:13px" value="${formatRupiah1(
+            <td style="text-align:right"><input type="text" class="inputrealisationamount custom-input" style="font-size:13px;text-align:right" value="${formatRupiah1(
               postData.realisation_amount
             )}"></td>
             <td><input type="number" min="1" class="custom-input inputpercentage" max="100" style="font-size:13px" value="${
@@ -430,13 +430,13 @@ $(document).ready(function () {
         <tr>
             <td colspan="2" style="text-align: center"><b>TOTAL REALISATION</b>
             </td>
-            <td><b>${formatRupiah1(total)}</b></td>
+            <td style="text-align:right"><b>${formatRupiah1(total)}</b></td>
             <td></td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: center"><b>AMOUNT IN PROGRESS</b>
             </td>
-            <td><b>${formatRupiah1(project_amount - total)}</b></td>
+            <td style="text-align:right"><b>${formatRupiah1(project_amount - total)}</b></td>
             <td></td>
         </tr>
     `;

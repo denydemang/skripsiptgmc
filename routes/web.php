@@ -337,7 +337,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     // -----------------    Upah
     Route::controller(UpahController::class)->group(function () {
-        Route::resource('/admin/upah', UpahController::class)->names([
+        Route::resource('/admin/upahtkl', UpahController::class)->names([
             'index' => 'r_upah.index',
             'create' => 'r_upah.create',
             'store' => 'r_upah.store',

@@ -167,10 +167,12 @@
                                             <th class="text-left" style="font-size: 10px;width:10%">INV No</th>
                                             <th class="text-left" style="font-size: 10px;width:10%">Transaction Date</th>
                                             <th class="text-left" style="font-size: 10px; width:10%">Due Date</th>
-                                            <th class="text-left" style="font-size: 10px;width:15%">UnPaid Amount</th>
-                                            <th style="font-size: 10px; width:15%">Cash Amount</th>
-                                            <th style="font-size: 10px; width:15%">Deposit Amount</th>
-                                            <th style="font-size: 10px; width:15%">Balance Unpaid Amount</th>
+                                            <th style="font-size: 10px;width:15%;text-align:right">
+                                                UnPaid Amount</th>
+                                            <th style="font-size: 10px; width:15%;text-align:right">Cash Amount</th>
+                                            <th style="font-size: 10px; width:15%;text-align:right">Deposit Amount</th>
+                                            <th style="font-size: 10px; width:15%;text-align:right">Balance Unpaid Amount
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
