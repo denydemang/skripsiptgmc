@@ -5,13 +5,13 @@
  Source Server Type    : MariaDB
  Source Server Version : 110300 (11.3.0-MariaDB-log)
  Source Host           : localhost:3306
- Source Schema         : skripsiptgmc2
+ Source Schema         : skripsiptgmc4
 
  Target Server Type    : MariaDB
  Target Server Version : 110300 (11.3.0-MariaDB-log)
  File Encoding         : 65001
 
- Date: 24/06/2024 14:18:53
+ Date: 30/06/2024 16:57:40
 */
 
 SET NAMES utf8mb4;
@@ -20,6 +20,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 -- Table structure for suppliers
 -- ----------------------------
+
+
 -- ----------------------------
 -- Records of suppliers
 -- ----------------------------

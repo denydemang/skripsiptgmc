@@ -5,40 +5,23 @@
  Source Server Type    : MariaDB
  Source Server Version : 110300 (11.3.0-MariaDB-log)
  Source Host           : localhost:3306
- Source Schema         : skripsiptgmc2
+ Source Schema         : skripsiptgmc4
 
  Target Server Type    : MariaDB
  Target Server Version : 110300 (11.3.0-MariaDB-log)
  File Encoding         : 65001
 
- Date: 24/06/2024 14:22:28
+ Date: 30/06/2024 17:01:01
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for categories
--- ----------------------------
-DROP TABLE IF EXISTS `categories`;
-CREATE TABLE `categories`  (
-  `code` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `coa_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_by` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `updated_by` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`code`) USING BTREE,
-  INDEX `categories_coa_code_foreign`(`coa_code`) USING BTREE,
-  CONSTRAINT `categories_coa_code_foreign` FOREIGN KEY (`coa_code`) REFERENCES `coa` (`code`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Records of categories
 -- ----------------------------
 INSERT INTO `categories` VALUES ('CTG001', 'Semen', '10.01.04.01', 'Admin', NULL, '2024-04-07 11:24:26', '2024-04-07 11:24:28');
-INSERT INTO `categories` VALUES ('CTG002', 'Bata Ringan', '10.01.04.01', 'Admin', 'admin', '2024-04-07 11:29:07', '2024-06-23 19:44:19');
+INSERT INTO `categories` VALUES ('CTG002', 'Bata', '10.01.04.01', 'Admin', 'admin', '2024-04-07 11:29:07', '2024-06-28 20:24:55');
 INSERT INTO `categories` VALUES ('CTG003', 'Aspal', '10.01.04.01', 'Admin', NULL, '2024-04-07 11:30:09', '2024-04-07 11:30:12');
 INSERT INTO `categories` VALUES ('CTG004', 'Beton', '10.01.04.01', 'Admin', 'admin', '2024-04-07 11:31:12', '2024-06-23 19:44:01');
 INSERT INTO `categories` VALUES ('CTG005', 'Besi Beton', '10.01.04.01', 'admin', NULL, '2024-06-23 19:44:40', '2024-06-23 19:44:40');
@@ -63,5 +46,17 @@ INSERT INTO `categories` VALUES ('CTG023', 'Baja', '10.01.04.01', 'admin', NULL,
 INSERT INTO `categories` VALUES ('CTG024', 'Atap', '10.01.04.01', 'admin', NULL, '2024-06-23 20:31:45', '2024-06-23 20:31:45');
 INSERT INTO `categories` VALUES ('CTG025', 'Listplang', '10.01.04.01', 'admin', NULL, '2024-06-23 20:33:22', '2024-06-23 20:33:22');
 INSERT INTO `categories` VALUES ('CTG026', 'Canopy', '10.01.04.01', 'admin', NULL, '2024-06-23 20:33:39', '2024-06-23 20:33:39');
+INSERT INTO `categories` VALUES ('CTG027', 'Batu', '10.01.04.01', 'admin', NULL, '2024-06-28 14:18:10', '2024-06-28 14:18:10');
+INSERT INTO `categories` VALUES ('CTG028', 'Minyak', '10.01.04.01', 'admin', NULL, '2024-06-28 14:20:15', '2024-06-28 14:20:15');
+INSERT INTO `categories` VALUES ('CTG029', 'Besi', '10.01.04.01', 'admin', NULL, '2024-06-28 14:20:48', '2024-06-28 14:20:48');
+INSERT INTO `categories` VALUES ('CTG030', 'Kayu', '10.01.04.01', 'admin', NULL, '2024-06-28 14:21:18', '2024-06-28 14:21:18');
+INSERT INTO `categories` VALUES ('CTG031', 'Kawat', '10.01.04.01', 'admin', NULL, '2024-06-28 14:22:51', '2024-06-28 14:22:51');
+INSERT INTO `categories` VALUES ('CTG032', 'Paku', '10.01.04.01', 'admin', NULL, '2024-06-28 14:23:03', '2024-06-28 14:23:03');
+INSERT INTO `categories` VALUES ('CTG033', 'Seng', '10.01.04.01', 'admin', NULL, '2024-06-28 14:23:19', '2024-06-28 14:23:19');
+INSERT INTO `categories` VALUES ('CTG034', 'Tanah', '10.01.04.01', 'admin', NULL, '2024-06-28 14:23:43', '2024-06-28 14:23:43');
+INSERT INTO `categories` VALUES ('CTG035', 'Kerikil', '10.01.04.01', 'admin', NULL, '2024-06-28 14:24:03', '2024-06-28 14:24:03');
+INSERT INTO `categories` VALUES ('CTG036', 'Kunci', '10.01.04.01', 'admin', NULL, '2024-06-28 14:24:47', '2024-06-28 14:24:47');
+INSERT INTO `categories` VALUES ('CTG037', 'Engsel', '10.01.04.01', 'admin', NULL, '2024-06-28 14:25:00', '2024-06-28 14:25:00');
+INSERT INTO `categories` VALUES ('CTG038', 'Kaca', '10.01.04.01', 'admin', NULL, '2024-06-28 14:25:39', '2024-06-28 14:25:39');
 
 SET FOREIGN_KEY_CHECKS = 1;
