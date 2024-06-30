@@ -198,8 +198,10 @@ class PaymentController extends AdminController
             $coaCash = Payment::where("bkk_no", $id)->first()->coa_cash_code;
             $amount = floatval(Payment::where("bkk_no", $id)->first()->total_amount);
 
-
-            // dd($coaCash);
+       
+            if (!$check->isValidAmount(floatval($amount),$coaCash)){
+                throw new Exception("Insufficient Balance of COA $check->coaCode - $check->coaName , Remaining Balance is ".number_format($check->balance,2, ',', '.')." Will Be Decreased By Amount " .number_format($amount,2,',','.'));
+            }
 
             $journal = new AccountingController();
             $journal->journalPembayaran($id);
