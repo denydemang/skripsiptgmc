@@ -1,10 +1,6 @@
-import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showerror, showwarning } from '../jqueryconfirm.js';
 import { formatRupiah1 } from '../rupiahformatter.js';
-import { showconfirmdelete, showconfirmstart } from '../jqueryconfirm.js';
-import checkNotifMessage from '../checkNotif.js';
-import daterangeInitiator from '../daterangeinitiator.js';
 import validateInput from '../validateInput.js';
 import initiatedtp from '../datepickerinitiator.js';
 import managedate from '../managedate.js';
@@ -287,11 +283,11 @@ $(document).ready(function () {
                       <td class="p-1">${x.item_code}</td>
                       <td class="p-1">${x.item_name}</td>
                       <td class="p-1">${x.unit}</td>
-                      <td class="text-nowrap p-1">${parseFloat(x.last_qty)}</td>
-                      <td class="text-nowrap p-1"><input type="number" class="inputcurrentqty custom-input" style="font-size:13px" data-code="${
+                      <td class="text-nowrap p-1" style="text-align:right">${parseFloat(x.last_qty)}</td>
+                      <td class="text-nowrap p-1" style="text-align:right"><input type="number" class="inputcurrentqty custom-input" style="font-size:13px;text-align:right" data-code="${
                         x.item_code
                       }" value="${parseFloat(x.current_qty)}"></td>
-                      <td class="text-nowrap p-1">${parseFloat(x.sisa_qty)}</td>
+                      <td class="text-nowrap p-1" style="text-align:right">${parseFloat(x.sisa_qty)}</td>
                   </tr>`;
         counter++;
       });
@@ -314,18 +310,20 @@ $(document).ready(function () {
               <td
                   style="width:5%;overflow-wrap: break-word;word-wrap:break-word;white-space: normal;">
                   ${x.unit}</td>
-              <td style="width:15%;white-space:nowrap">
+              <td style="width:15%;white-space:nowrap;text-align:right">
                   ${formatRupiah1(x.price)}</td>
-              <td style="width:10%;white-space:nowrap">
+              <td style="width:10%;white-space:nowrap;text-align:right">
                   ${parseFloat(x.last_balance_qty)}
               </td>
-              <td style="width: 10%;white-space:nowrap">
-                  <input type="number" class="w-100 custom-input inputcurrentqtyupah" data-code="${x.upah_code}" value="${x.current_qty}">
+              <td style="width: 10%;white-space:nowrap;text-align:right">
+                  <input type="number" class="w-100 custom-input inputcurrentqtyupah" style="text-align:right" data-code="${
+                    x.upah_code
+                  }" value="${x.current_qty}">
               </td>
-              <td style="width: 10%;white-space:nowrap;">
+              <td style="width: 10%;white-space:nowrap;text-align:right">
                   ${parseFloat(x.balance_qty)}
               </td>
-              <td style="width: 20%;white-space: nowrap;">
+              <td style="width: 20%;white-space: nowrap;text-align:right">
                   ${formatRupiah1(x.current_nominal)}</td>
           </tr>
         
@@ -336,7 +334,7 @@ $(document).ready(function () {
         <tr>
 
           <td colspan="7" style="text-align:center"><b>TOTAL</b></td>
-          <td style="text-align:left"><b>${formatRupiah1(totalCurentNominal)}</b></td>
+          <td style="text-align:right"><b>${formatRupiah1(totalCurentNominal)}</b></td>
         </tr>
       
       `;

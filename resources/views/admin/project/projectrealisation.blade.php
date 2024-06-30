@@ -139,10 +139,10 @@
                                             <th class="col-1">No</th>
                                             <th class="col-2">Upah Code</th>
                                             <th class="col-2">Job</th>
-                                            <th class="col-1">Qty</th>
+                                            <th class="col-1" style="text-align:right">Qty</th>
                                             <th class="col-1">Unit</th>
-                                            <th class="col-2">Tarif</th>
-                                            <th class="col-3">Total</th>
+                                            <th class="col-2" style="text-align:right">Tarif</th>
+                                            <th class="col-3" style="text-align:right">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -195,7 +195,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-12" style="max-height:200px;margin-bottom:150px">
+                                            <div class="col-lg-12" style="max-height:200px;margin-bottom:120px">
                                                 <table class="w-100 tablemateriallist table-bordered table"
                                                     cellpadding="3" style="table-layout:auto; border-collapse: collapse">
                                                     <thead class="bg-primary text-white" style="font-size: 12px">
@@ -204,9 +204,9 @@
                                                             <th style="width:10%">Item Code</th>
                                                             <th style="width:30%">Item Name</th>
                                                             <th style="width:5%">Unit</th>
-                                                            <th style="width:20%">Last Balance Qty</th>
-                                                            <th style="width:15%">Current Qty</th>
-                                                            <th style="width:15%">Balance Qty</th>
+                                                            <th style="width:20%; text-align:right">Last Balance Qty</th>
+                                                            <th style="width:15%;text-align:right">Current Qty</th>
+                                                            <th style="width:15%;text-align:right">Balance Qty</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -232,14 +232,14 @@
                                                             <th style="width:10%">Upah Code</th>
                                                             <th style="width:20%">Upah Name</th>
                                                             <th style="width:5%">Unit</th>
-                                                            <th style="width:15%">Price</th>
-                                                            <th style="width:10%">
+                                                            <th style="width:15%;text-align:right">Price</th>
+                                                            <th style="width:10%;text-aligN:right">
                                                                 Last Balance Qty</th>
-                                                            <th style="width: 10%">
+                                                            <th style="width: 10%;text-align:right">
                                                                 Current Qty</th>
-                                                            <th style="width: 10%">
+                                                            <th style="width: 10%;text-align:right">
                                                                 Balance Qty</th>
-                                                            <th style="width: 20%">
+                                                            <th style="width: 20%;text-align:right">
                                                                 Current Nominal</th>
                                                         </tr>
                                                     </thead>
@@ -251,7 +251,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="row mt-5">
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="form-control-label">Description <span

@@ -204,10 +204,10 @@ $(document).ready(function () {
         <td class="col-1" style="white-space:normal;word-wrap: break-word;">${counterUpah}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.upah_code}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.upah_name}</td>
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty_used)}</td>
+        <td class="col-1" style="white-space:normal;word-wrap: break-word;text-align:right">${parseFloat(item.qty_used)}</td>
         <td class="col-1" style="white-space:normal;word-wrap: break-word;">${item.unit}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.price))}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.total))}</td>
+        <td class="col-2" style="white-space:normal;word-wrap: break-word;text-align:right">${formatRupiah1(parseFloat(item.price))}</td>
+        <td class="col-3" style="white-space:normal;word-wrap: break-word;text-align:right">${formatRupiah1(parseFloat(item.total))}</td>
       </tr>
   
       `;
@@ -223,7 +223,7 @@ $(document).ready(function () {
       <td class="col-1" style="white-space:normal;word-wrap: break-word;"></td>
       <td class="col-1" style="white-space:normal;word-wrap: break-word;"></td>
       <td class="col-2" style="white-space:normal;word-wrap: break-word;"><b>Total</b></td>
-      <td class="col-3" style="white-space:normal;word-wrap: break-word;"><b>${formatRupiah1(totalUpah)}</b></td>
+      <td class="col-3" style="white-space:normal;word-wrap: break-word;text-align:right"><b>${formatRupiah1(totalUpah)}</b></td>
     </tr>
     `;
     listUpah.html(htmlUpah);
