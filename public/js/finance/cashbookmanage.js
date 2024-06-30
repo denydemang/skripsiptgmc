@@ -407,7 +407,7 @@ $(document).ready(function () {
 
   // Ketika FOcusout  Didalam  inputAmountCash
   $(document).on('blur', '.inputamountcoalawan', function (event) {
-    let amount = $(this).val() == '' ? 0 : parseFloat($(this).val());
+    let amount = $(this).val() == '' ? 0 : parseFloat($(this).val()).toFixed(2);
     CoaExpenseOrOther.amount = amount;
     UpdateTableCOA();
   });
@@ -424,7 +424,7 @@ $(document).ready(function () {
 
   // Ketika FOcusout  Didalam  inputAmountCash
   $(document).on('blur', '.inputdebitadjustment', function (event) {
-    let amount = $(this).val() == '' ? 0 : parseFloat($(this).val());
+    let amount = $(this).val() == '' ? 0 : parseFloat($(this).val()).toFixed(2);
     CoaExpenseAdjustment.debit = amount;
     if (amount > 0) {
       CoaExpenseAdjustment.credit = 0;
@@ -444,7 +444,7 @@ $(document).ready(function () {
 
   // Ketika FOcusout  Didalam  inputAmountCash
   $(document).on('blur', '.inputcreditadjustment', function (event) {
-    let amount = $(this).val() == '' ? 0 : parseFloat($(this).val());
+    let amount = $(this).val() == '' ? 0 : parseFloat($(this).val()).toFixed(2);
     CoaExpenseAdjustment.credit = amount;
     if (amount > 0) {
       CoaExpenseAdjustment.debit = 0;
