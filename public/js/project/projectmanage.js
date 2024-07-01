@@ -166,6 +166,12 @@ $(document).ready(function () {
       showwarning('Transaction Date Cannot Be Empty');
       return false;
     }
+
+    if (parseToNominal(inputbudget.val()) == 0) {
+      inputbudget.focus();
+      showwarning('Project Amount Cannot Be Zero');
+      return false;
+    }
     if (customerCode.val() == null) {
       customerCode.focus();
       showwarning('Customer Code Cannot Be Empty');
