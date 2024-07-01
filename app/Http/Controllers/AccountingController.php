@@ -503,6 +503,7 @@ class AccountingController extends AdminController
         // Insert Persediaan Masuk Jurnal Detail
         foreach ($Variation_COA_Item as $coa){
 
+
             $totalUtang += round(floatval($coa->totalcogs), 2);
             $journalDetail  = New Journal_Detail();
             $journalDetail->voucher_no = $journal->voucher_no;

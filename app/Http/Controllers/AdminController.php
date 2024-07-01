@@ -35,6 +35,11 @@ class AdminController extends Controller
         return $terbilang_bulat . $terbilang_desimal;
     }
 
+    public function floorWithPrecision($number, $precision = 0) {
+        $factor = pow(10, $precision);
+        return floor($number * $factor) / $factor;
+    }
+
     public function terbilang_int($angka) {
         $angka = (string) $angka;
         $length = strlen($angka);

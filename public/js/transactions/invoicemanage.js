@@ -108,9 +108,9 @@ $(document).ready(function () {
   }
 
   function calculateAmountTrans() {
-    transAmount.total = parseToNominal(labeltotal.html());
+    transAmount.total = parseToNominal(labeltotal.html()).toFixed(2);
 
-    transAmount.ppnamount = transAmount.total * (transAmount.ppnpercent / 100);
+    transAmount.ppnamount = (parseFloat(transAmount.total) * (parseFloat(transAmount.ppnpercent) / 100)).toFixed(2);
 
     transAmount.grand_total = transAmount.total + transAmount.ppnamount;
     setTransAmount();
@@ -275,7 +275,7 @@ $(document).ready(function () {
     if ($(this).val() < 0 || $(this).val() == '') {
       $(this).val(0);
     }
-    updatePPNAmount(parseFloat($(this).val()));
+    updatePPNAmount(parseFloat($(this).val()).toFixed(2));
   });
 
   // Submit Button

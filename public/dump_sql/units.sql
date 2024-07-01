@@ -5,26 +5,23 @@
  Source Server Type    : MariaDB
  Source Server Version : 110300 (11.3.0-MariaDB-log)
  Source Host           : localhost:3306
- Source Schema         : skripsiptgmc2
+ Source Schema         : skripsiptgmc4
 
  Target Server Type    : MariaDB
  Target Server Version : 110300 (11.3.0-MariaDB-log)
  File Encoding         : 65001
 
- Date: 24/06/2024 14:15:52
+ Date: 01/07/2024 06:44:44
 */
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
 
--- ----------------------------
--- Table structure for units
--- ----------------------------
+
 -- ----------------------------
 -- Records of units
 -- ----------------------------
 INSERT INTO `units` VALUES ('btg', 'Batang', 'admin', NULL, '2024-06-23 20:04:37', '2024-06-23 20:04:37');
 INSERT INTO `units` VALUES ('dus', 'Dus', 'admin', NULL, '2024-06-23 20:04:52', '2024-06-23 20:04:52');
+INSERT INTO `units` VALUES ('kg', 'Kilogram', 'admin', NULL, '2024-07-01 06:44:19', '2024-07-01 06:44:23');
 INSERT INTO `units` VALUES ('lbr', 'Lembar', 'admin', NULL, '2024-06-23 20:04:23', '2024-06-23 20:04:23');
 INSERT INTO `units` VALUES ('m', 'Meter', 'admin', NULL, '2024-06-23 19:52:58', '2024-06-23 19:52:58');
 INSERT INTO `units` VALUES ('m²', 'Meter Persegi', 'admin', NULL, '2024-06-23 19:53:20', '2024-06-23 19:53:20');

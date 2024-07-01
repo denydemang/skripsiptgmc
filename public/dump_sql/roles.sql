@@ -14,8 +14,6 @@
  Date: 24/06/2024 14:03:02
 */
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Table structure for roles

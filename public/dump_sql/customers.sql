@@ -14,9 +14,6 @@
  Date: 30/06/2024 18:14:32
 */
 
-SET NAMES utf8mb4;
-SET FOREIGN_KEY_CHECKS = 0;
-
 -- ----------------------------
 -- Table structure for customers
 -- ----------------------------

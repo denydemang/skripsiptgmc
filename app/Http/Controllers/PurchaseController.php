@@ -352,9 +352,9 @@ class PurchaseController extends AdminController
     
                     $otherfee = floatval($data['other_fee']) / count($datapurchasedetails);
                     foreach($datapurchasedetails as $i){
-                        $stock = new StockController();
-                        $cogs = (floatval($i->sub_total) + $otherfee) / floatval($i->qty);
-                        $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), floatval($cogs));
+                        $stock = new StockController(); 
+                        $cogs = bcdiv((floatval($i->sub_total) + $otherfee) , floatval($i->qty), 4);
+                        $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), $cogs,2);
                     }
     
                     $purchase = new purchase();
