@@ -159,7 +159,9 @@ class ItemController extends AdminController
         try {
             Item::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_item.index")->with("success", "Data " . $id . " Successfully Deleted");
+            // return response()->redirectToRoute("r_item.index")->with("success", "Data " . $id . " Successfully Deleted");
+            return response()->json(['msg' => 'Data '.$id.' Successfully Deleted', 'status' => 'success', 'code' => 200]);
+
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             // return response()->redirectToRoute("r_item.index")->with("error", $th->getMessage());

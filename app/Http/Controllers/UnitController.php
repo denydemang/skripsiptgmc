@@ -15,7 +15,7 @@ class UnitController extends AdminController
     public function index(Request $request)
     {
 
-        
+
         $supplyData = [
             'title' => 'Units',
             'users' => Auth::user(),
@@ -140,7 +140,9 @@ class UnitController extends AdminController
         try {
             unit::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_unit.index")->with("success", "Data Successfully Deleted");
+            // return response()->redirectToRoute("r_unit.index")->with("success", "Data Successfully Deleted");
+            return response()->json(['msg' => 'Data '.$id.' Successfully Deleted', 'status' => 'success', 'code' => 200]);
+
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             // return response()->redirectToRoute("r_unit.index")->with("error", $th->getMessage());

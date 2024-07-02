@@ -33,14 +33,18 @@ class MasterMiddleware
         $currentRoute = $request->route()->getName();
         $ex_route = explode('.',$currentRoute);
         $routemurni = $ex_route[0];
-        // $routeaction = $ex_route[1];
+        $routeaction = $ex_route[1];
         $call_route_aksess = getRouteChecker_MDLR($roleUser, $routemurni);
 
 
         if (in_array($currentRoute, $call_route_aksess)) {
             return $next($request);
         } else {
-            abort(403, 'Access Forbidden! You Dont Have Permission Access ! ');
+            if ($routeaction=='destroy' || $routeaction=='deleteDataUser' || $routeaction=='deletecoa' || $routeaction=='deletecoasub') {
+                return response()->json(['msg' => '403 - Access Forbidden! You Dont Have Permission Access !', 'status' => 'error', 'code' => 403]);
+            } else {
+                abort(403, 'Access Forbidden! You Dont Have Permission Access ! ');
+            }
         }
 
     }

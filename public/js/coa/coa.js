@@ -304,9 +304,11 @@ $(document).ready(function () {
     try {
       const ajx = new AjaxRequest(urlRequest, method);
       const response = await ajx.getData();
-      if (response) {
+      if (response.code == 200) {
         iziSuccess('Success', `COA Code : ${code} And Its Children Successfuly Deleted `);
         getTreeCoa();
+      } else {
+        showwarning( response.msg);
       }
     } catch (error) {
       handleerror(error, code, 'COA');
@@ -319,9 +321,11 @@ $(document).ready(function () {
     try {
       const ajx = new AjaxRequest(urlRequest, method);
       const response = await ajx.getData();
-      if (response) {
+      if (response.code == 200) {
         iziSuccess('Success', `All Children Of COA ${code} (${name})  Successfuly Deleted `);
         getTreeCoa();
+      } else {
+        showwarning( response.msg);
       }
     } catch (error) {
       handleerror(error, code, 'COA');

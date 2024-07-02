@@ -177,17 +177,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     });
 
-    Route::controller(COAController::class)->group(function () {
 
-        Route::get("admin/coalist", 'getCOAView')->name('admin.coalist');
-        Route::get("admin/coa/gettreecoa", 'getTreeCOA')->name('admin.getTreeCOA');
-        Route::get("admin/coa/gettablesearch", 'getCOATableSearch')->name('admin.getCOATableSearch');
-        Route::post("admin/coa/add", 'addCoa')->name('admin.addCoa');
-        Route::post("admin/coa/edit/{id}", 'editcoa')->name('admin.editcoa');
-        Route::post("admin/coa/delete/{id}", 'deletecoa')->name('admin.deletecoa');
-        Route::post("admin/coa/delete/sub/{id}", 'deletecoasub')->name('admin.deletecoasub');
-
-    });
     // Route::controller(ItemController::class)->group(function () {
 
     //     Route::get('admin/item/gettableitemsearch', 'getTableItemSearch')->name('admin.getTableItemSearch');
@@ -218,7 +208,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             // Route::post('/admin/project/getdata', 'getDataProject')->name('admin.getDataProject');
             Route::post('/admin/users/update', 'updateUser')->name('admin.updateDataUser');
             Route::post('/admin/users/add', 'addUsers')->name('admin.addDataUsers');
-            Route::get('/admin/users/delete/{username}', 'deleteUser')->name('admin.deleteDataUser');
+            Route::delete('/admin/users/delete/{username}', 'deleteUser')->name('admin.deleteDataUser');
             Route::get('/admin/users/edit/{username}', 'editDataUsers')->name('admin.editUsers');
         });
 
@@ -327,6 +317,20 @@ Route::middleware(AuthMiddleware::class)->group(function () {
                 'destroy' => 'r_upah.destroy',
             ]);
         });
+
+        // -----------------    COA
+        Route::controller(COAController::class)->group(function () {
+
+            Route::get("admin/coalist", 'getCOAView')->name('admin.coalist');
+            Route::get("admin/coa/gettreecoa", 'getTreeCOA')->name('admin.getTreeCOA');
+            Route::get("admin/coa/gettablesearch", 'getCOATableSearch')->name('admin.getCOATableSearch');
+            Route::post("admin/coa/add", 'addCoa')->name('admin.addCoa');
+            Route::post("admin/coa/edit/{id}", 'editcoa')->name('admin.editcoa');
+            Route::post("admin/coa/delete/{id}", 'deletecoa')->name('admin.deletecoa');
+            Route::post("admin/coa/delete/sub/{id}", 'deletecoasub')->name('admin.deletecoasub');
+
+        });
+
     });
 
     // -----------------    Request Ajax

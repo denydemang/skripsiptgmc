@@ -125,7 +125,10 @@ class RoleController extends AdminController
         try {
             Role::where("id",$id )->delete();
 
-            return response()->redirectToRoute("r_role.index")->with("success", "Data $id Successfully Deleted");
+            // return response('dsdsd');
+            // return response()->json(['success' => "Data ".$id." Successfully Deleted"]);
+            return response()->json(['msg' => 'Data '.$id.' Successfully Deleted', 'status' => 'success', 'code' => 200]);
+            // return response()->redirectToRoute("r_role.index")->with("success", "Data $id Successfully Deleted");
         } catch (\Throwable $th) {
            return $this->errorException($th,"r_role.index");
         }

@@ -186,7 +186,9 @@ class SupplierController extends AdminController
         try {
             Supplier::where("code", $id)->delete();
 
-            return response()->redirectToRoute("r_supplier.index")->with("success", "Data " . $id . " Successfully Deleted");
+            // return response()->redirectToRoute("r_supplier.index")->with("success", "Data " . $id . " Successfully Deleted");
+            return response()->json(['msg' => 'Data '.$id.' Successfully Deleted', 'status' => 'success', 'code' => 200]);
+
         } catch (\Throwable $th) {
             // Session::flash('error', $th->getMessage());
             // return $this->errorException($th, "r_supplier.index");

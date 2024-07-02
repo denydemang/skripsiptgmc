@@ -2,6 +2,7 @@ import tableInitiator from "../tableinitiator.js";
 import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
+import { checkNotifForbidden } from "../checkNotifForbidden.js";
 
 
 $(document).ready(async function () {
@@ -42,23 +43,29 @@ $(document).ready(async function () {
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
 
-  var getDataProject = route('admin.getDataUsers');
-  const columns = [
-    { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
-    { data: 'username', name: 'username', title: 'Username', searchable: true },
-    { data: 'name', name: 'name', title: 'Name', searchable: true },
-    { data: 'role_name', name: 'role_name', title: 'ID Role', searchable: false },
-    { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true },
-    { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
-    { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
-  ];
-  const tableName = '.globalTabledata';
-  const method = 'post';
+  const fetchData = async () => {
+      var getDataProject = route('admin.getDataUsers');
+      const columns = [
+        { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
+        { data: 'username', name: 'username', title: 'Username', searchable: true },
+        { data: 'name', name: 'name', title: 'Name', searchable: true },
+        { data: 'role_name', name: 'role_name', title: 'ID Role', searchable: false },
+        { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true },
+        { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
+        { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
+      ];
+      const tableName = '.globalTabledata';
+      const method = 'post';
 
-  // INISIASI DATATABLE
-  // ---------------------------------------------------
-  const Table = new tableInitiator(method, tableName, columns, getDataProject);
-  Table.showTable();
+      // INISIASI DATATABLE
+      // ---------------------------------------------------
+      const Table = await new tableInitiator(method, tableName, columns, getDataProject);
+      Table.showTable();
+
+  }
+
+  fetchData();
+
 
 
     // Function Get Edit Data
@@ -94,6 +101,31 @@ $(document).ready(async function () {
       return null;
     }
   }
+
+  async function formdeleteData(tondo = '') {
+    // let token = $('meta[name="csrf-token"]').attr('content');
+    const urlRequest = route('admin.deleteDataUser', tondo);
+    $.ajax({
+        url: urlRequest,
+        type: 'DELETE',
+        data: {
+            "_token": $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+
+            if (response.code==200) {
+                checkNotifForbidden(response.code, response.msg);
+
+                $('.globalTabledata').DataTable().destroy();
+                fetchData();
+
+            } else {
+                checkNotifForbidden(response.code, response.msg);
+
+            }
+        }
+    });
+}
 
   // FN VALIDATE
   function validate() {
@@ -220,8 +252,9 @@ $(document).ready(async function () {
 
   // Function Delete Data
   function deleteData(tondo, name) {
-    const urlRequest = route('admin.deleteDataUser', tondo);
-    window.location.href = urlRequest;
+    formdeleteData(tondo);
+    // const urlRequest = route('admin.deleteDataUser', tondo);
+    // window.location.href = urlRequest;
   }
 
   // Click Delete Button

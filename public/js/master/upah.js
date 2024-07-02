@@ -2,6 +2,7 @@ import tableInitiator from "../tableinitiator.js";
 import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
+import { checkNotifForbidden } from './../checkNotifForbidden.js';
 
 $(document).ready(async function () {
     let modalTitle = $('.modal-title');
@@ -36,26 +37,30 @@ $(document).ready(async function () {
 
     //  Inisiasi Property Untuk Datatable
     // -------------------------------------------------
+    const fetchData = async () => {
+        var getDataProject = route('r_upah.index');
+        const columns = [
+            { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
+            { data: 'code', name: 'code', title: 'Code', searchable: true },
+            { data: 'job', name: 'job', title: 'Job', searchable: true },
+            { data: 'description', name: 'description', title: 'Description', searchable: false, orderable: false, width: '10%' },
+            { data: 'unit', name: 'unit', title: 'unit', searchable: true },
+            { data: 'price', name: 'price', title: 'Price', searchable: true },
+            { data: 'coa_code', name: 'coa_code', title: 'Coa Code', searchable: true },
+            { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
+            { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
+        ];
+        const tableName = '.globalTabledata';
+        const method = 'get';
 
-    var getDataProject = route('r_upah.index');
-    const columns = [
-        { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
-        { data: 'code', name: 'code', title: 'Code', searchable: true },
-        { data: 'job', name: 'job', title: 'Job', searchable: true },
-        { data: 'description', name: 'description', title: 'Description', searchable: false, orderable: false, width: '10%' },
-        { data: 'unit', name: 'unit', title: 'unit', searchable: true },
-        { data: 'price', name: 'price', title: 'Price', searchable: true },
-        { data: 'coa_code', name: 'coa_code', title: 'Coa Code', searchable: true },
-        { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
-        { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
-    ];
-    const tableName = '.globalTabledata';
-    const method = 'get';
+        // INISIASI DATATABLE
+        // ---------------------------------------------------
+        const Table = await new tableInitiator(method, tableName, columns, getDataProject);
+        Table.showTable();
 
-    // INISIASI DATATABLE
-    // ---------------------------------------------------
-    const Table = new tableInitiator(method, tableName, columns, getDataProject);
-    Table.showTable();
+    }
+
+    fetchData()
 
     // Function Get Edit Data
     // ------------------------------------------------------------
@@ -94,19 +99,26 @@ $(document).ready(async function () {
     async function formdeleteData(tondo = '') {
         // let token = $('meta[name="csrf-token"]').attr('content');
         const urlRequest = route('r_upah.destroy', tondo);
-        const method = 'DELETE';
-        const data = {
-            id: tondo,
-        };
+        $.ajax({
+            url: urlRequest,
+            type: 'DELETE',
+            data: {
+                "_token": $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
 
-        try {
-            const ajx = new AjaxRequest(urlRequest, method, data);
+                if (response.code==200) {
+                    checkNotifForbidden(response.code, response.msg);
 
-            return await ajx.formU_DeData();
-        } catch (error) {
-            console.error('Error:', error);
-            return null;
-        }
+                    $('.globalTabledata').DataTable().destroy();
+                    fetchData();
+
+                } else {
+                    checkNotifForbidden(response.code, response.msg);
+
+                }
+            }
+        });
     }
 
 
@@ -248,7 +260,6 @@ $(document).ready(async function () {
     // Function Delete Data
     function deleteData(tondo, name) {
         formdeleteData(tondo);
-        window.location.href = route('r_upah.index');
     }
 
     // Click Delete Button

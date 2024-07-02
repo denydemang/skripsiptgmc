@@ -2,6 +2,7 @@ import tableInitiator from '../tableinitiator.js';
 import checkNotifMessage from '../checkNotif.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
+import { checkNotifForbidden } from '../checkNotifForbidden.js';
 
 $(document).ready(async function () {
   let modalTitle = $('.modal-title');
@@ -50,26 +51,31 @@ $(document).ready(async function () {
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
+  const fetchData = async () => {
+      var getDataProject = route('admin.getitems');
+      const columns = [
+        { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
+        { data: 'code', name: 'code', title: 'Code', searchable: true },
+        { data: 'name', name: 'name', title: 'Name', searchable: true },
+        { data: 'unit_code', name: 'unit_code', title: 'unit_code', searchable: false, orderable: false, width: '10%' },
+        { data: 'min_stock', name: 'min_stock', title: 'Min Stock', searchable: true },
+        { data: 'max_stock', name: 'max_stock', title: 'Max Stock', searchable: true },
+        { data: 'category_code', name: 'category_code', title: 'Category', searchable: true },
+        { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
+        { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
+      ];
+      const tableName = '.globalTabledata';
+      const method = 'post';
 
-  var getDataProject = route('admin.getitems');
-  const columns = [
-    { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
-    { data: 'code', name: 'code', title: 'Code', searchable: true },
-    { data: 'name', name: 'name', title: 'Name', searchable: true },
-    { data: 'unit_code', name: 'unit_code', title: 'unit_code', searchable: false, orderable: false, width: '10%' },
-    { data: 'min_stock', name: 'min_stock', title: 'Min Stock', searchable: true },
-    { data: 'max_stock', name: 'max_stock', title: 'Max Stock', searchable: true },
-    { data: 'category_code', name: 'category_code', title: 'Category', searchable: true },
-    { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
-    { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
-  ];
-  const tableName = '.globalTabledata';
-  const method = 'post';
+      // INISIASI DATATABLE
+      // ---------------------------------------------------
+      const Table = new tableInitiator(method, tableName, columns, getDataProject);
+      Table.showTable();
 
-  // INISIASI DATATABLE
-  // ---------------------------------------------------
-  const Table = new tableInitiator(method, tableName, columns, getDataProject);
-  Table.showTable();
+  }
+
+  fetchData();
+
 
   // Function Get Edit Data
   // ------------------------------------------------------------
@@ -124,19 +130,26 @@ $(document).ready(async function () {
   async function formdeleteData(tondo = '') {
     // let token = $('meta[name="csrf-token"]').attr('content');
     const urlRequest = route('r_item.destroy', tondo);
-    const method = 'DELETE';
-    const data = {
-      id: tondo
-    };
+    $.ajax({
+        url: urlRequest,
+        type: 'DELETE',
+        data: {
+            "_token": $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
 
-    try {
-      const ajx = new AjaxRequest(urlRequest, method, data);
+            if (response.code==200) {
+                checkNotifForbidden(response.code, response.msg);
 
-      return await ajx.formU_DeData();
-    } catch (error) {
-      console.error('Error:', error);
-      return null;
-    }
+                $('.globalTabledata').DataTable().destroy();
+                fetchData();
+
+            } else {
+                checkNotifForbidden(response.code, response.msg);
+
+            }
+        }
+    });
   }
 
   // FN VALIDATE
@@ -285,7 +298,6 @@ $(document).ready(async function () {
   // Function Delete Data
   function deleteData(tondo, name) {
     formdeleteData(tondo);
-    window.location.href = route('r_item.index');
   }
 
   // Click Delete Button

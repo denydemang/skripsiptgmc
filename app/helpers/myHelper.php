@@ -63,7 +63,7 @@ if (! function_exists('automaticCode_H')) {
 if (! function_exists('getConditionRouteActions')) {
     function getConditionRouteActions($route, $ls_action) {
 
-        $ls_rotes_actions = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'users', 'getDataUsers', 'updateDataUser', 'addDataUsers', 'deleteDataUser', 'editUsers', 'getTableItemSearch', 'CustomerGetForModal', 'SupplierGetForModal', 'getroles', 'getsuppliers', 'getcustomers', 'getcategorys', 'getitems', 'getUnits'];
+        $ls_rotes_actions = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'users', 'getDataUsers', 'updateDataUser', 'addDataUsers', 'deleteDataUser', 'editUsers', 'getTableItemSearch', 'CustomerGetForModal', 'SupplierGetForModal', 'getroles', 'getsuppliers', 'getcustomers', 'getcategorys', 'getitems', 'getUnits', 'coalist', 'getTreeCOA', 'getCOATableSearch', 'addCoa', 'editcoa', 'deletecoa', 'deletecoasub'];
 
         if ($route == 'admin') {
 
@@ -119,15 +119,15 @@ if (! function_exists('getRouteChecker_MDLR')) {
 
         $ls_rotes_murni = ['admin', 'r_unit', 'r_item', 'r_category', 'r_customer', 'r_supplier', 'r_role', 'r_upah'];
 
-        // $ls_rotes_actions = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'users', 'getDataUsers', 'updateDataUser', 'addDataUsers', 'deleteDataUser', 'editUsers', 'getTableItemSearch', 'CustomerGetForModal', 'SupplierGetForModal', 'getroles', 'getsuppliers', 'getcustomers', 'getcategorys', 'getitems', 'getUnits'];
+        // $ls_rotes_actions = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'users', 'getDataUsers', 'updateDataUser', 'addDataUsers', 'deleteDataUser', 'editUsers', 'getTableItemSearch', 'CustomerGetForModal', 'SupplierGetForModal', 'getroles', 'getsuppliers', 'getcustomers', 'getcategorys', 'getitems', 'getUnits', 'coalist', 'getTreeCOA', 'getCOATableSearch', 'addCoa', 'editcoa', 'deletecoa', 'deletecoasub'];
 
         // 1 iki ignore
-        // iki block 245 8910
+        // iki block kecuali Admin 2,4,5 8,9,10 24,26,27
 
         $allow_route = [];
         switch ($role) {
             case 1: // Admin
-                $ls_action = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+                $ls_action = [0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
                 if (in_array($route, $ls_rotes_murni)) {
                     $allow_route = getConditionRouteActions($route, $ls_action);
                 }
@@ -135,7 +135,7 @@ if (! function_exists('getRouteChecker_MDLR')) {
             case 2: // Keuangan
                 if (in_array($route, $ls_rotes_murni)) {
                     if ($route == 'admin') {
-                        $ls_action = [6,7,12,13,14,15,16,17,18,19,20];
+                        $ls_action = [6,7,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
                         $allow_route = getConditionRouteActions($route, $ls_action);
                     } elseif ($route == 'r_unit') {
                         $ls_action = [0,3];
@@ -164,7 +164,7 @@ if (! function_exists('getRouteChecker_MDLR')) {
             case 3: // Logistik
                 if (in_array($route, $ls_rotes_murni)) {
                     if ($route == 'admin') {
-                        $ls_action = [0,2,3,4,5,6,7,12,13,14,15,16,17,18,19,20];
+                        $ls_action = [0,2,3,4,5,6,7,12,13,14,15,16,17,18,19,20,21,22,23];
                         $allow_route = getConditionRouteActions($route, $ls_action);
                     } elseif ($route == 'r_unit') {
                         $ls_action = [0,2,3,4,5];
@@ -193,7 +193,7 @@ if (! function_exists('getRouteChecker_MDLR')) {
             case 4: // Direktur
                 if (in_array($route, $ls_rotes_murni)) {
                     if ($route == 'admin') {
-                        $ls_action = [6,7,12,13,14,15,16,17,18,19,20];
+                        $ls_action = [6,7,12,13,14,15,16,17,18,19,20,21,22,23];
                         $allow_route = getConditionRouteActions($route, $ls_action);
                     } elseif ($route == 'r_unit') {
                         $ls_action = [0,3];
