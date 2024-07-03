@@ -166,6 +166,16 @@ $(document).ready(function () {
     }
   }
 
+  function updateDTPTransDateValue() {
+    let startTrans = inputstartdatetrans.val();
+    let lastTrans = inputlastdatetrans.val();
+
+    supplyData.startDate = startTrans;
+    supplyData.endDate = lastTrans;
+
+    reloadTable(method, tableName, columns, getDataProject, supplyData);
+  }
+
   function populateData(Material = [], upah = []) {
     // Populate Title Detail
     let codeProyek = Material[0].project_realisation_code;
