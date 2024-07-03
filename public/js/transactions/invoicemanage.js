@@ -108,11 +108,10 @@ $(document).ready(function () {
   }
 
   function calculateAmountTrans() {
-    transAmount.total = parseToNominal(labeltotal.html()).toFixed(2);
+    transAmount.total = parseFloat(parseToNominal(labeltotal.html())).toFixed(2);
 
     transAmount.ppnamount = (parseFloat(transAmount.total) * (parseFloat(transAmount.ppnpercent) / 100)).toFixed(2);
-
-    transAmount.grand_total = transAmount.total + transAmount.ppnamount;
+    transAmount.grand_total = parseFloat(transAmount.total) + parseFloat(transAmount.ppnamount);
     setTransAmount();
   }
 
