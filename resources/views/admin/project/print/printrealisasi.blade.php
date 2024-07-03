@@ -281,7 +281,7 @@
                     <tr>
                         <td class="no-wrap">{{ $loop->iteration }}</td>
                         <td>{{ $item->upah_code }}</td>
-                        <td class="no-wrap">{{ $item->upah_name }}</td>
+                        <td>{{ $item->upah_name }}</td>
                         <td class="no-wrap">{{ $item->unit }}</td>
                         <td class="no-wrap">{{ floatval($item->qty_used) }}</td>
                         <td class="no-wrap" style="text-align:right"> Rp.
