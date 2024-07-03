@@ -189,7 +189,7 @@
 
 	{{-- Modal Search --}}
 
-	@include('searchModal.customerSearch')
+	@include('searchModal.customersearch')
 
 	{{-- Notif Flash Message --}}
 	@include('flashmessage')

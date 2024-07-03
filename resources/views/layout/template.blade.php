@@ -25,10 +25,10 @@
 	<!-- Page plugins -->
 	<!-- Argon CSS -->
 	<link rel="stylesheet" href="{{ asset('/') }}assets/css/argon.css?v=1.0.0" type="text/css" />
-	<link rel="stylesheet" href="{{ asset('/') }}assets/Datatables/DataTables-2.0.3/css/dataTables.foundation.min.css"
+	<link rel="stylesheet" href="{{ asset('/') }}assets/DataTables/DataTables-2.0.3/css/dataTables.foundation.min.css"
 		type="text/css" />
 	<link rel="stylesheet"
-		href="{{ asset('/') }}assets/Datatables/FixedColumns-5.0.0/css/fixedColumns.foundation.min.css" type="text/css" />
+		href="{{ asset('/') }}assets/DataTables/FixedColumns-5.0.0/css/fixedColumns.foundation.min.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/daterangepicker-master/daterangepicker.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/fontawesome/css/fontawesome.min.css" type="text/css" />
 	<link rel="stylesheet" href="{{ asset('/') }}assets/izitoast/css/iziToast.min.css" type="text/css" />
@@ -211,11 +211,11 @@
 	<script src="{{ asset('/') }}assets/vendor/jquery/dist/jquery.min.js"></script>
 	<script src="{{ asset('/') }}assets/jstree/dist/jstree.min.js"></script>
 	<script src="{{ asset('/') }}assets/jstree/dist/jstreegrid.js"></script>
-	<script src="{{ asset('/') }}assets/Datatables/datatables.min.js"></script>
+	<script src="{{ asset('/') }}assets/DataTables/datatables.min.js"></script>
 
 	<script src="{{ asset('/') }}assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
-	<script src="{{ asset('/') }}assets/Datatables/fixedColumns-5.0.0/js/fixedColumns.dataTables.min.js"></script>
+	<script src="{{ asset('/') }}assets/DataTables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
+	<script src="{{ asset('/') }}assets/DataTables/fixedColumns-5.0.0/js/fixedColumns.dataTables.min.js"></script>
 	<script src="{{ asset('/') }}assets/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 	<script src="{{ asset('/') }}assets/vendor/js-cookie/js.cookie.js"></script>
 	<script src="{{ asset('/') }}assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>

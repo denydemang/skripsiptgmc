@@ -358,7 +358,7 @@
 
 
     {{-- MODAL FORM --}}
-    @include('searchModal.customerSearch')
+    @include('searchModal.customersearch')
 
     @include('searchModal.projectTypeSearchModal')
 

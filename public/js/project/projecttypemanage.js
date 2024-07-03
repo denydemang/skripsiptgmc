@@ -116,20 +116,22 @@ $(document).ready(function () {
     const tbody = $('.tablematerial tbody');
 
     let html = ``;
-
+    let counter = 0;
     tampungMaterial.forEach((item) => {
+      counter++;
       html += `
-      <tr class="row">
-        <td class="col-2"
+      <tr>
+        <td>${counter}</td>
+        <td
             style="white-space:normal;word-wrap: break-word;font-size:13px">
             ${item.code}</td>
-        <td class="col-3"
+        <td 
             style="white-space:normal;word-wrap: break-word;font-size:13px">
             ${item.name}</td>
-        <td class="col-1"
+        <td
             style="white-space:normal;word-wrap: break-word;font-size:13px">
             ${item.unit}</td>
-        <td class="col-1"
+        <td
             style="white-space:normal;word-wrap: break-word;font-size:13px">
             <button data-code="${item.code}"
                 class="btn btn-danger btndeletematerial btn-sm">X</button>
@@ -145,21 +147,23 @@ $(document).ready(function () {
     const tbody = $('.tableupah tbody');
 
     let html = ``;
-
+    let counter = 0;
     tampungUpah.forEach((item) => {
+      counter++;
       html += `
-     <tr class="row">
-        <td class="col-2 text-left"
+     <tr>
+        <td>${counter}</td>
+        <td text-left"
             style="white-space:normal;word-wrap: break-word;font-size: 12px">
             ${item.code}</td>
         <td
-            class="col-3 text-left"style="white-space:normal;word-wrap: break-word;font-size: 12px">
+            text-left"style="white-space:normal;word-wrap: break-word;font-size: 12px">
             ${item.job}</td>
         <td
-            class="col-1 text-left"style="white-space:normal;word-wrap: break-word;font-size: 12px">
+             text-left"style="white-space:normal;word-wrap: break-word;font-size: 12px">
             ${item.unit}</td>
         <td
-            class="col-2 text-left"style="white-space:normal;word-wrap: break-word;font-size: 12px">
+            text-left"style="white-space:normal;word-wrap: break-word;font-size: 12px">
            ${formatRupiah1(item.price)}</td>
         <td class="col-1"><button class="btn btn-danger btn-sm btndeleteupah"
                 data-code="${item.code}">X</button></td>

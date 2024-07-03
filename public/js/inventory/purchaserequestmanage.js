@@ -119,7 +119,7 @@ $(document).ready(function () {
     tampungItem.forEach((item) => {
       html += `
     
-      <tr class="row">
+      <tr>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.code}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.name}</td>
         <td class="col-2" style="white-space:normal;word-wrap: break-word;font-size:12px">${item.unit}</td>

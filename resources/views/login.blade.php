@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="Start your development with a Dashboard for Bootstrap 4." />
+    <meta name="description" content="Genta Multi Jayya Accounting Infomation System" />
     <meta name="author" content="Creative Tim" />
     <title>{{ $title }}</title>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('/') }}assets/favicon_gmj/apple-touch-icon.png">

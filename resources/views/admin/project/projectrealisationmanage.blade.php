@@ -289,8 +289,8 @@
 
     {{-- MODAL FORM --}}
 
-    @include('searchModal.customerSearch')
-    @include('searchModal.projectsearch')
+    @include('searchModal.customersearch')
+    @include('searchModal.projectSearch')
     {{-- @include('searchModal.coaSearch') --}}
 
 

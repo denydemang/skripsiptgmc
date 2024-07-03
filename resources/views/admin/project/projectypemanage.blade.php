@@ -21,6 +21,13 @@
             border-color: #007bff;
             box-shadow: 0 0 5px #007bff;
         }
+
+        .table-itemm thead th {
+            position: sticky;
+            top: 0;
+            background: #f3f4f5;
+            z-index: 999;
+        }
     </style>
     <div class="header bg-primary pb-6">
         <div class="datamateriallist"
@@ -114,14 +121,15 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <table style="width: 100%" class="table-sm tablematerial table">
+                                    <div class="col-lg-12 table-responsive" style="max-height: 250px">
+                                        <table style="width: 100%" class="table-sm tablematerial table-itemm table">
                                             <thead style="font-size: 8px">
-                                                <tr class="row">
-                                                    <th class="col-2 text-left" style="font-size: 12px">Item Code</th>
-                                                    <th class="col-3 text-left" style="font-size: 12px">Item Name</th>
-                                                    <th class="col-1 text-left" style="font-size: 12px">Unit</th>
-                                                    <th class="col-1 text-left" style="font-size: 12px">...</th>
+                                                <tr>
+                                                    <th style="width: 20px">No</th>
+                                                    <th class="text-left" style="font-size: 12px">Item Code</th>
+                                                    <th class="text-left" style="font-size: 12px">Item Name</th>
+                                                    <th class="text-left" style="font-size: 12px">Unit</th>
+                                                    <th class="text-left" style="font-size: 12px">...</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -148,15 +156,16 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-12 table-responsive table-itemm" style="max-height: 250px">
                                         <table style="width: 100%" class="table-sm tableupah table">
                                             <thead style="font-size: 6px">
-                                                <tr class="row">
-                                                    <th class="col-2 text-left" style="font-size: 12px">Upah Code</th>
-                                                    <th class="col-3 text-left" style="font-size: 12px">Job</th>
-                                                    <th class="col-1 text-left" style="font-size: 12px">Unit</th>
-                                                    <th class="col-2" style="font-size: 12px">Price</th>
-                                                    <th class="col-1" style="font-size: 12px">...</th>
+                                                <tr>
+                                                    <th style="width: 20px">No</th>
+                                                    <th class="text-left" style="font-size: 12px">Upah Code</th>
+                                                    <th class="text-left" style="font-size: 12px">Job</th>
+                                                    <th class="text-left" style="font-size: 12px">Unit</th>
+                                                    <th style="font-size: 12px">Price</th>
+                                                    <th style="font-size: 12px">...</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
