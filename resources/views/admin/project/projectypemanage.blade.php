@@ -24,7 +24,7 @@
 
         .table-itemm thead th {
             position: sticky;
-            top: 0;
+            top: -1px;
             background: #f3f4f5;
             z-index: 999;
         }

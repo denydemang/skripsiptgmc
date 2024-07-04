@@ -1,5 +1,13 @@
 @extends('layout.template')
 @section('content')
+    <style>
+        .table-itemm thead th {
+            position: sticky;
+            top: -1px;
+            background: #ebf3f6;
+            z-index: 999;
+        }
+    </style>
     <div class="header bg-primary pb-6">
         @php
             $role = $users->id_role;
@@ -150,37 +158,42 @@
                         <div class="card-header">
                             <h4>Stock Reminder</h4>
                         </div>
-                        <div class="card-body" style="max-height:200px;overflow-y:scroll">
-                            <table class="table-sm table-bordered w-100 table">
-                                <thead>
-                                    <tr>
-                                        <th>Item Code</th>
-                                        <th>Item Name</th>
-                                        <th>Category</th>
-                                        <th>Unit</th>
-                                        <th>Min Stock</th>
-                                        <th>Current Stock</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (count($stockReminder) > 0)
-                                        @foreach ($stockReminder as $item)
-                                            <tr>
-                                                <td>{{ $item->item_code }}</td>
-                                                <td>{{ $item->item_name }}</td>
-                                                <td>{{ $item->item_category }}</td>
-                                                <td>{{ $item->unit_code }}</td>
-                                                <td>{{ floatval($item->min_stock) }}</td>
-                                                <td>{{ floatval($item->current_stock) }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="6" style="text-align: center"> NO RECORDS</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                        <div class="card-body pb-5">
+                            <div class="row mt-2">
+                                <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                                    <table class="table-sm table-bordered w-100" style="font-size: 12px;font-weight:normal">
+                                        <thead>
+                                            <th>No</th>
+                                            <th>Item Code</th>
+                                            <th>Item Name</th>
+                                            <th>Category</th>
+                                            <th>Unit</th>
+                                            <th>Min Stock</th>
+                                            <th>Current Stock</th>
+                                        </thead>
+                                        <tbody>
+                                            @if (count($stockReminder) > 0)
+                                                @foreach ($stockReminder as $item)
+                                                    <tr>
+                                                        <td style="width:5%">{{ $loop->iteration }}</td>
+                                                        <td style="width:10%">{{ $item->item_code }}</td>
+                                                        <td style="width:30%;word-wrap:break-word;">{{ $item->item_name }}
+                                                        </td>
+                                                        <td style="width:20%">{{ $item->item_category }}</td>
+                                                        <td style="width:10%">{{ $item->unit_code }}</td>
+                                                        <td style="width:10%">{{ floatval($item->min_stock) }}</td>
+                                                        <td style="width:15%">{{ floatval($item->current_stock) }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="7" style="text-align: center"> NO RECORDS</td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,37 +204,47 @@
                         <div class="card-header">
                             <h4> Project On Progress</h4>
                         </div>
-                        <div class="card-body" style="max-height:200px;overflow-y:scroll">
-                            <table class="table-sm table-bordered w-100 table">
-                                <thead>
-                                    <tr>
-                                        <th>Project Code</th>
-                                        <th>Project Name</th>
-                                        <th>Start Date</th>
-                                        <th>Customer Name</th>
-                                        <th>Project Amount</th>
-                                        <th>Project Realisation</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (count($projectOnProgress) > 0)
-                                        @foreach ($projectOnProgress as $item)
-                                            <tr>
-                                                <td>{{ $item->code }}</td>
-                                                <td>{{ $item->name }}</td>
-                                                <td>{{ $item->start_date }}</td>
-                                                <td>{{ $item->customer_name }}</td>
-                                                <td>Rp {{ number_format($item->budget, 2, ',', '.') }}</td>
-                                                <td>Rp {{ number_format($item->realisation_amount, 2, ',', '.') }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="6" style="text-align: center"> NO RECORDS</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                        <div class="card-body pb-5">
+                            <div class="row mt-2">
+                                <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                                    <table class="table-sm table-bordered w-100" style="font-size: 11px">
+                                        <thead>
+                                            <th>No</th>
+                                            <th>Code</th>
+                                            <th>Name</th>
+                                            <th>Start Date</th>
+                                            <th>Customer Name</th>
+                                            <th>Project Amount</th>
+                                            <th>Project Realisation</th>
+                                        </thead>
+                                        <tbody>
+                                            @if (count($projectOnProgress) > 0)
+                                                @foreach ($projectOnProgress as $item)
+                                                    <tr>
+                                                        <td style="width:5%">{{ $loop->iteration }}</td>
+                                                        <td style="width:5%">{{ $item->code }}</td>
+                                                        <td style="width:25%;word-wrap:break-word;">{{ $item->name }}
+                                                        </td>
+                                                        <td style="width:10%">{{ $item->start_date }}</td>
+                                                        <td style="width:15%;word-wrap:break-word;">
+                                                            {{ $item->customer_name }}
+                                                        </td>
+                                                        <td style="width:20%;white-space:nowrap">
+                                                            {{ number_format($item->budget, 2, ',', '.') }}</td>
+                                                        <td style="width:20%;white-space:nowrap">
+                                                            {{ number_format($item->realisation_amount, 2, ',', '.') }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="7" style="text-align: center"> NO RECORDS</td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -236,31 +259,33 @@
                         <div class="card-header">
                             <h4>Daftar Piutang Yang Belum Terbayar</h4>
                         </div>
-                        <div class="card-body" style="max-height:200px;overflow-y:scroll">
-                            <table class="table-sm table-bordered w-100 table">
-                                <thead>
-                                    <tr>
-                                        <th>Code Customer</th>
-                                        <th>Nama Customer</th>
-                                        <th>Belum Terbayar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (count($piutangBelumBayar) > 0)
-                                        @foreach ($piutangBelumBayar as $item)
-                                            <tr>
-                                                <td>{{ $item->customer_code }}</td>
-                                                <td>{{ $item->customer_name }}</td>
-                                                <td>{{ number_format($item->total, 2, ',', '.') }}</td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="3" style="text-align: center"> NO RECORDS</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
+                        <div class="card-body pb-5">
+                            <div class="row mt-2">
+                                <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                                    <table class="table-sm table-bordered w-100" style="font-size: 12px">
+                                        <thead>
+                                            <th>Code Customer</th>
+                                            <th>Nama Customer</th>
+                                            <th>Belum Terbayar</th>
+                                        </thead>
+                                        <tbody>
+                                            @if (count($piutangBelumBayar) > 0)
+                                                @foreach ($piutangBelumBayar as $item)
+                                                    <tr>
+                                                        <td>{{ $item->customer_code }}</td>
+                                                        <td>{{ $item->customer_name }}</td>
+                                                        <td>{{ number_format($item->total, 2, ',', '.') }}</td>
+                                                    </tr>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="3" style="text-align: center"> NO RECORDS</td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -271,29 +296,31 @@
                         <div class="card-header">
                             <h4>Daftar Utang Yang Belum Terbayar</h4>
                         </div>
-                        <div class="card-body" style="max-height:200px;overflow-y:scroll">
-                            <table class="table-sm table-bordered w-100 table">
-                                <thead>
-                                    <tr>
-                                        <th>Code Supplier</th>
-                                        <th>Nama Supplier</th>
-                                        <th>Belum Terbayar</th>
-                                    </tr>
-                                </thead>
-                                @if (count($utangBelumBayar) > 0)
-                                    @foreach ($utangBelumBayar as $item)
-                                        <tr>
-                                            <td>{{ $item->supplier_code }}</td>
-                                            <td>{{ $item->supplier_name }}</td>
-                                            <td>{{ number_format($item->total, 2, ',', '.') }}</td>
-                                        </tr>
-                                    @endforeach
-                                @else
-                                    <tr>
-                                        <td colspan="3" style="text-align: center"> NO RECORDS</td>
-                                    </tr>
-                                @endif
-                            </table>
+                        <div class="card-body pb-5">
+                            <div class="row mt-2">
+                                <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                                    <table class="table-sm table-bordered w-100" style="font-size: 12px">
+                                        <thead>
+                                            <th>Code Supplier</th>
+                                            <th>Nama Supplier</th>
+                                            <th>Belum Terbayar</th>
+                                        </thead>
+                                        @if (count($utangBelumBayar) > 0)
+                                            @foreach ($utangBelumBayar as $item)
+                                                <tr>
+                                                    <td>{{ $item->supplier_code }}</td>
+                                                    <td>{{ $item->supplier_name }}</td>
+                                                    <td>{{ number_format($item->total, 2, ',', '.') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="3" style="text-align: center"> NO RECORDS</td>
+                                            </tr>
+                                        @endif
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

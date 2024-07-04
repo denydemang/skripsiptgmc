@@ -279,12 +279,12 @@ $(document).ready(function () {
     if (materialList.length > 0) {
       materialList.forEach((x) => {
         html += `   <tr>
-                      <td class="text-nowrap p-1" style="width:5%">${counter}</td>
-                      <td class="p-1" style="width:10%">${x.item_code}</td>
-                      <td class="p-1" style="width:50%">${x.item_name}</td>
-                      <td class="p-1" style="width:5%">${x.unit}</td>
-                      <td class="text-nowrap p-1" style="text-align:right;width:10%">${parseFloat(x.last_qty)}</td>
-                      <td class="text-nowrap p-1" style="text-align:right;width:10%"><input type="number" class="inputcurrentqty custom-input" style="font-size:13px;text-align:right" data-code="${
+                      <td class="text-nowrap p-1">${counter}</td>
+                      <td class="p-1">${x.item_code}</td>
+                      <td class="p-1">${x.item_name}</td>
+                      <td class="p-1">${x.unit}</td>
+                      <td class="text-nowrap p-1" style="text-align:right;">${parseFloat(x.last_qty)}</td>
+                      <td class="text-nowrap p-1" style="text-align:right"><input type="number" class="inputcurrentqty custom-input" style="font-size:13px;text-align:right" data-code="${
                         x.item_code
                       }" value="${parseFloat(x.current_qty)}"></td>
                       <td class="text-nowrap p-1" style="text-align:right;width:10%">${parseFloat(x.sisa_qty)}</td>
@@ -305,12 +305,12 @@ $(document).ready(function () {
           <tr>
               <td style="width:10%;white-space:nowrap">${x.upah_code}</td>
               <td
-                  style="width:20%;word-wrap:break-word;white-space: normal;"> ${x.upah_name}
+                  style="width:25%;word-wrap:break-word;white-space: normal;"> ${x.upah_name}
               </td>
               <td
                   style="width:5%;overflow-wrap: break-word;word-wrap:break-word;white-space: normal;">
                   ${x.unit}</td>
-              <td style="width:15%;white-space:nowrap;text-align:right">
+              <td style="width:10%;white-space:nowrap;text-align:right">
                   ${formatRupiah1(x.price)}</td>
               <td style="width:10%;white-space:nowrap;text-align:right">
                   ${parseFloat(x.last_balance_qty)}

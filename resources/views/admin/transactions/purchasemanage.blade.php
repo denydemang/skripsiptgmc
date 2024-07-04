@@ -24,7 +24,7 @@
 
         .table-itemm thead th {
             position: sticky;
-            top: 0;
+            top: -1px;
             background: #808283
         }
     </style>

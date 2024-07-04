@@ -60,11 +60,11 @@ $(document).ready(function () {
     // Populate Detail Material when view detail
     Material.forEach((item) => {
       htmlMaterial += `
-      <tr class="row">
-          <td class="col-1">${counterMaterial}</td>
-          <td class="col-3">${item.item_code}</td>
-          <td class="col-5"  style="white-space:normal;word-wrap: break-word;">${item.item_name}</td>
-          <td class="col-1">${item.unit_code}</td>
+      <tr>
+          <td>${counterMaterial}</td>
+          <td>${item.item_code}</td>
+          <td style="white-space:normal;word-wrap: break-word;">${item.item_name}</td>
+          <td>${item.unit_code}</td>
       </tr>
   
       `;
@@ -80,12 +80,12 @@ $(document).ready(function () {
     let counterUpah = 1;
     upah.forEach((item) => {
       htmlUpah += `
-      <tr class="row">
-        <td class="col-1">${counterUpah}</td>
-        <td class="col-2">${item.upah_code}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.job}</td>
-        <td class="col-1">${item.unit}</td>
-        <td class="col-3" style="text-align: right;white-space:nowrap ">${formatRupiah1(item.price)}
+      <tr >
+        <td>${counterUpah}</td>
+        <td>${item.upah_code}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.job}</td>
+        <td>${item.unit}</td>
+        <td style="text-align: right;white-space:nowrap ">${formatRupiah1(item.price)}
         </td>
       </tr>
       `;

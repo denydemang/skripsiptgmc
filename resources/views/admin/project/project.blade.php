@@ -1,5 +1,22 @@
 @extends('layout.template')
 @section('content')
+    <style>
+        .table-itemm thead th {
+            position: sticky;
+            top: -1px;
+            background: #85e85e
+        }
+
+        #modal-detailproject table td {
+            font-size: 12px;
+        }
+
+        .table-itemm2 thead th {
+            position: sticky;
+            top: -1px;
+            background: #897be0
+        }
+    </style>
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
             <div class="header-body">
@@ -211,39 +228,44 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-
-                        <h3 class="title-detail text-dark"></h3>
+                        <div class="col-lg-12">
+                            <h3 class="title-detail text-dark"></h3>
+                        </div>
                     </div>
                     <div class="row">
-                        <h3 class="text-dark">Material :</h3>
-                        <div class="col-12 mb-2" style="max-height:200px ;overflow-y: scroll">
-                            <table class="table-sm listbb table-wrap table">
+                        <div class="col-12">
+                            <h3 class="text-dark">Material :</h3>
+                        </div>
+                        <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                            <table class="table-sm listbb table-wrap table-bordered w-100">
                                 <thead>
-                                    <tr class="row" style="background-color: rgb(155, 230, 230)">
-                                        <th class="col-1">No</th>
-                                        <th class="col-3">Item Code</th>
-                                        <th class="col-3">Item Name</th>
-                                        <th class="col-2">Qty</th>
-                                        <th class="col-3">Unit</th>
+                                    <tr class="text-white" style="font-size:12px">
+                                        <th>No</th>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <th>Qty</th>
+                                        <th>Unit</th>
                                     </tr>
                                 <tbody>
 
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-dark mt-1">Upah BTKL :</h3>
-                        <div class="col-12" style="max-height:200px ;overflow-y: scroll">
+                        <div class="col-12 mt-5">
+                            <h3 class="text-dark mt-1">Upah BTKL :</h3>
+                        </div>
+                        <div class="col-12 table-responsive table-itemm2" style="max-height:200px">
                             <div>
-                                <table class="table-sm listupah table">
+                                <table class="table-sm listupah table-wrap table-bordered table">
                                     <thead>
-                                        <tr class="row" style="background-color: rgb(155, 230, 230)">
-                                            <th class="col-1">No</th>
-                                            <th class="col-2">Upah Code</th>
-                                            <th class="col-2">Job</th>
-                                            <th class="col-1">Qty</th>
-                                            <th class="col-1">Unit</th>
-                                            <th class="col-2">Tarif</th>
-                                            <th class="col-3">Total</th>
+                                        <tr class="text-white" style="font-size:12px">
+                                            <th>No</th>
+                                            <th>Upah Code</th>
+                                            <th>Job</th>
+                                            <th>Qty</th>
+                                            <th>Unit</th>
+                                            <th>Tarif</th>
+                                            <th>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody>

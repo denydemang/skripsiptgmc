@@ -21,6 +21,13 @@
             border-color: #007bff;
             box-shadow: 0 0 5px #007bff;
         }
+
+        .table-itemm thead th {
+            position: sticky;
+            top: -1px;
+            background: #e6eaec;
+            z-index: 999;
+        }
     </style>
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
@@ -237,19 +244,18 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12" style="max-height:350px ;overflow-y: scroll">
-                                        <table style="width: 100%;table-layout:auto" class="table-sm tablematerial table">
-                                            <thead style="font-size: 6px">
-                                                <tr>
-                                                    <th class="text-left" style="font-size: 12px">No</th>
-                                                    <th class="text-left" style="font-size: 12px">Item Code</th>
-                                                    <th class="text-left" style="font-size: 12px">Item Name</th>
-                                                    <th style="font-size: 12px">Unit</th>
-                                                    <th style="font-size: 12px;text-align:right">Qty</th>
-                                                    <th style="font-size: 12px;text-align:right">Available
-                                                        Stocks</th>
-                                                    <th style="font-size: 12px">...</th>
-                                                </tr>
+                                    <div class="col-lg-12 table-responsive table-itemm" style="max-height:350px">
+                                        <table style="width: 100%;table-layout:auto"
+                                            class="table-sm tablematerial table-bordered">
+                                            <thead>
+                                                <th class="text-left" style="font-size: 12px">No</th>
+                                                <th class="text-left" style="font-size: 12px">Item Code</th>
+                                                <th class="text-left" style="font-size: 12px">Item Name</th>
+                                                <th style="font-size: 12px">Unit</th>
+                                                <th style="font-size: 12px;text-align:right">Qty</th>
+                                                <th style="font-size: 12px;text-align:right">Available
+                                                    Stocks</th>
+                                                <th style="font-size: 12px">...</th>
                                             </thead>
                                             <tbody>
 
@@ -285,20 +291,19 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12" style="max-height:350px ;overflow-y: scroll">
-                                        <table style="width: 100%; table-layout:auto" class="table-sm tableupah table">
+                                    <div class="col-lg-12 table-responsive table-itemm" style="max-height:350px">
+                                        <table style="width: 100%; table-layout:auto"
+                                            class="table-sm tableupah table-bordered">
                                             <thead style="font-size: 12px">
-                                                <tr>
-                                                    <th class="text-left" style="font-size: 12px;">No</th>
-                                                    <th class="text-left" style="font-size: 12px;">Upah Code</th>
-                                                    <th class="text-left" style="font-size: 12px;">Job</th>
-                                                    <th class="col-1 text-left" style="font-size: 12px;">Unit
-                                                    </th>
-                                                    <th style="font-size: 12px;text-align:right">Qty</th>
-                                                    <th style="font-size: 12px;text-align:right">Price</th>
-                                                    <th style="font-size: 12px;text-align:right">Total</th>
-                                                    <th style="font-size: 12px;text-align:right">...</th>
-                                                </tr>
+                                                <th class="text-left" style="font-size: 12px;">No</th>
+                                                <th class="text-left" style="font-size: 12px;">Code</th>
+                                                <th class="text-left" style="font-size: 12px;">Job</th>
+                                                <th class="col-1 text-left" style="font-size: 12px;">Unit
+                                                </th>
+                                                <th style="font-size: 12px;text-align:right">Qty</th>
+                                                <th style="font-size: 12px;text-align:right">Price</th>
+                                                <th style="font-size: 12px;text-align:right">Total</th>
+                                                <th style="font-size: 12px;text-align:right">...</th>
                                             </thead>
                                             <tbody>
 

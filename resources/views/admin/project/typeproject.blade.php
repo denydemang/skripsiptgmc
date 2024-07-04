@@ -1,5 +1,18 @@
 @extends('layout.template')
 @section('content')
+    <style>
+        .table-itemm thead th {
+            position: sticky;
+            top: -1px;
+            background: #86d1f7
+        }
+
+        .table-itemm2 thead th {
+            position: sticky;
+            top: -1px;
+            background: #3de65c
+        }
+    </style>
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
             <div class="header-body">
@@ -136,36 +149,36 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-
-                        <h3 class="title-detail">TYPE002 - Pembangunan Gedung</h3>
-                    </div>
-                    <div class="row">
-                        <h3 class="text-dark">Material :</h3>
-                        <div class="col-12 mb-2" style="max-height:200px ;overflow-y: scroll">
-                            <table class="table-sm listbb table-wrap table">
+                        <div class="col-lg-12">
+                            <h3 class="title-detail mb-3">TYPE002 - Pembangunan Gedung</h3>
+                            <h3 class="text-dark">Material :</h3>
+                        </div>
+                        <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                            <table class="table-sm listbb table-wrap table-bordered" style="width: 100%">
                                 <thead>
-                                    <tr class="row bg-primary text-white">
-
-                                        <th class="col-1">No</th>
-                                        <th class="col-3">Item Code</th>
-                                        <th class="col-5">Item Name</th>
-                                        <th class="col-1">Unit</th>
+                                    <tr class="bg-primary text-white" style="font-size:12px">
+                                        <th>No</th>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <th>Unit</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-dark mt-1">Upah BTKL:</h3>
-                        <div class="col-12" style="max-height:200px ;overflow-y: scroll">
-                            <table class="table-sm listupah table">
+                        <div class="col-lg-12 mt-5">
+                            <h3 class="text-dark mt-1">Upah BTKL:</h3>
+                        </div>
+                        <div class="col-lg-12 table-responsive table-itemm2" style="max-height:200px">
+                            <table class="table-sm listupah table-wrap table-bordered" style="width: 100%">
                                 <thead>
-                                    <tr class="row" style="background-color: rgb(155, 230, 230)">
-                                        <th class="col-1">No</th>
-                                        <th class="col-2">Upah Code</th>
-                                        <th class="col-3">Job</th>
-                                        <th class="col-1">Unit</th>
-                                        <th class="col-3" style="text-align: right">Tarif</th>
+                                    <tr class="text-white" style="font-size:12px">
+                                        <th>No</th>
+                                        <th>Code</th>
+                                        <th>Job</th>
+                                        <th>Unit</th>
+                                        <th style="text-align: right">Tarif</th>
                                     </tr>
                                 </thead>
                                 <tbody>
