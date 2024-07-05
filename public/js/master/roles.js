@@ -1,6 +1,6 @@
 import tableInitiator from '../tableinitiator.js';
 import checkNotifMessage from '../checkNotif.js';
-import {checkNotifForbidden} from '../checkNotifForbidden.js';
+import { checkNotifForbidden } from '../checkNotifForbidden.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 
@@ -15,23 +15,23 @@ $(document).ready(function () {
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
+  const fetchData = async () => {
+    var getDataProject = route('admin.getroles');
+    const columns = [
+      // { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
+      { data: 'name', name: 'name', title: 'Name', searchable: true },
+      { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true }
+      // { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
+      // { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
+    ];
+    const tableName = '.globalTabledata';
+    const method = 'post';
 
-  var getDataProject = route('admin.getroles');
-  const columns = [
-    { data: 'name', name: 'name', title: 'Name', searchable: true },
-    { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true }
-    // { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
-    // { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
-  ];
-  const tableName = '.globalTabledata';
-  const method = 'post';
-
-      // INISIASI DATATABLE
-      // ---------------------------------------------------
-      const Table = await new tableInitiator(method, tableName, columns, getDataProject);
-      Table.showTable();
-
-  }
+    // INISIASI DATATABLE
+    // ---------------------------------------------------
+    const Table = new tableInitiator(method, tableName, columns, getDataProject);
+    Table.showTable();
+  };
 
   fetchData();
 
@@ -57,24 +57,21 @@ $(document).ready(function () {
     // let token = $('meta[name="csrf-token"]').attr('content');
     const urlRequest = route('r_role.destroy', tondo);
     $.ajax({
-        url: urlRequest,
-        type: 'DELETE',
-        data: {
-            "_token": $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(response) {
+      url: urlRequest,
+      type: 'DELETE',
+      data: {
+        _token: $('meta[name="csrf-token"]').attr('content')
+      },
+      success: function (response) {
+        if (response.code == 200) {
+          checkNotifForbidden(response.code, response.msg);
 
-            if (response.code==200) {
-                checkNotifForbidden(response.code, response.msg);
-
-                $('.globalTabledata').DataTable().destroy();
-                fetchData();
-
-            } else {
-                checkNotifForbidden(response.code, response.msg);
-
-            }
+          $('.globalTabledata').DataTable().destroy();
+          fetchData();
+        } else {
+          checkNotifForbidden(response.code, response.msg);
         }
+      }
     });
   }
 
