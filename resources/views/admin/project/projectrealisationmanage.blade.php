@@ -26,16 +26,28 @@
             box-shadow: 0 0 5px #007bff;
         }
 
-        .tablematerial th,
-        .tableupah th {
+        .tablemateriallist th,
+        .tableupahlist th {
             position: sticky;
-            top: 0;
+            top: -1px;
             color: white;
+            font-weight: bolder;
+            font-size: 12px;
+            padding: 6px;
             /* Menempatkan header tabel di bagian atas saat digulir */
-            z-index: 1;
-            border: 1px solid black;
-            background-color: #808283;
+            z-index: 999;
+            background-color: rgb(94, 114, 228);
             /* Mengatur z-index agar header muncul di atas konten */
+        }
+
+        .tablemateriallist td,
+        .tableupahlist td {
+            padding: 6px;
+            font-size: 14px;
+        }
+
+        .tableupahlist td input {
+            font-size: 14px;
         }
     </style>
     <div class="header bg-primary pb-6">
@@ -175,7 +187,7 @@
                                                 <tr>
                                                     <th>No Termin</th>
                                                     <th>Realisation Code</th>
-                                                    <th>Realisation Amount</th>
+                                                    <th style="text-align:right">Realisation Amount</th>
                                                     <th>Done (%)</th>
                                                 </tr>
                                             </thead>
@@ -195,18 +207,24 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-12" style="max-height:200px;margin-bottom:150px">
-                                                <table class="w-100 tablemateriallist table-bordered table"
-                                                    cellpadding="3" style="table-layout:auto; border-collapse: collapse">
-                                                    <thead class="bg-primary text-white" style="font-size: 12px">
+                                            <div class="col-lg-12 table-responsive"
+                                                style="max-height:400px;margin-bottom:120px">
+                                                <table class="w-100 tablemateriallist table-bordered w-100">
+                                                    <thead class="text-white" style="font-size: 12px;font-weight:normal">
                                                         <tr>
-                                                            <th style="width:5%">No</th>
+                                                            <th style="width:5%;">No</th>
                                                             <th style="width:10%">Item Code</th>
-                                                            <th style="width:30%">Item Name</th>
+                                                            <th style="width:50%">Item Name</th>
                                                             <th style="width:5%">Unit</th>
-                                                            <th style="width:20%">Last Balance Qty</th>
-                                                            <th style="width:15%">Current Qty</th>
-                                                            <th style="width:15%">Balance Qty</th>
+                                                            <th
+                                                                style="width:10%; text-align:right;white-space:normal;word-wrap: break-word">
+                                                                Last Balance Qty</th>
+                                                            <th
+                                                                style="width:10%;text-align:right;white-space:normal;word-wrap: break-word">
+                                                                Current Qty</th>
+                                                            <th
+                                                                style="width:10%;text-align:right;white-space:normal;word-wrap: break-word">
+                                                                Balance Qty</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -224,22 +242,22 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-12 w-100" style="max-height:200px">
+                                            <div class="col-12 w-100 table-responsive" style="max-height:400px">
                                                 <table class="table-sm table-bordered w-100 tableupahlist" cellpadding="3"
                                                     style="table-layout:auto; border-collapse: collapse">
                                                     <thead class="bg-primary text-white" style="font-size: 9px">
                                                         <tr>
                                                             <th style="width:10%">Upah Code</th>
-                                                            <th style="width:20%">Upah Name</th>
+                                                            <th style="width:25%">Upah Name</th>
                                                             <th style="width:5%">Unit</th>
-                                                            <th style="width:15%">Price</th>
-                                                            <th style="width:10%">
+                                                            <th style="width:10%;text-align:right">Price</th>
+                                                            <th style="width:10%;text-aligN:right">
                                                                 Last Balance Qty</th>
-                                                            <th style="width: 10%">
+                                                            <th style="width: 10%;text-align:right">
                                                                 Current Qty</th>
-                                                            <th style="width: 10%">
+                                                            <th style="width: 10%;text-align:right">
                                                                 Balance Qty</th>
-                                                            <th style="width: 20%">
+                                                            <th style="width: 20%;text-align:right">
                                                                 Current Nominal</th>
                                                         </tr>
                                                     </thead>
@@ -251,7 +269,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row mt-3">
+                                <div class="row mt-5">
                                     <div class="col-lg-6">
                                         <div class="form-group">
                                             <label class="form-control-label">Description <span
@@ -283,8 +301,8 @@
 
     {{-- MODAL FORM --}}
 
-    @include('searchModal.customerSearch')
-    @include('searchModal.projectsearch')
+    @include('searchModal.customersearch')
+    @include('searchModal.projectSearch')
     {{-- @include('searchModal.coaSearch') --}}
 
 

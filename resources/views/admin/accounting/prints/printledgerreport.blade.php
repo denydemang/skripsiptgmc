@@ -112,7 +112,7 @@
                         <tr>
                             <th colspan="6" style="padding: 0">
                                 <p style="font-weight:bold ;margin-left:8px"> {{ $coacode }} -
-                                    {{ $items[0]->coa_name }}
+                                    {{ $items[0]->name }}
                                 </p>
                             </th>
                         </tr>

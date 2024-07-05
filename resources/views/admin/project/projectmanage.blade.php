@@ -21,6 +21,13 @@
             border-color: #007bff;
             box-shadow: 0 0 5px #007bff;
         }
+
+        .table-itemm thead th {
+            position: sticky;
+            top: -1px;
+            background: #e6eaec;
+            z-index: 999;
+        }
     </style>
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
@@ -122,12 +129,12 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <div class="form-group">
-                                                <label class="form-control-label" for="example3cols1Input">Budget <span
-                                                        style="color: red">*</span></label>
+                                                <label class="form-control-label" for="example3cols1Input">Project Amount
+                                                    <span style="color: red">*</span></label>
                                                 <input type="text" class="form-control form-control-sm inputbudget"
                                                     id="example3cols1Input"
                                                     data-budget="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['budget'] }}"
-                                                    style="font-weight:bold;color:brown">
+                                                    style="font-weight:bold !important;color:brown">
                                             </div>
                                         </div>
                                     </div>
@@ -178,6 +185,14 @@
                                             data-customername="{{ $sessionRoute == 'admin.addProjectView' ? '' : $data['dataProject']['customer_name'] }}">
                                         </div>
                                     </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group">
+                                            <label class="form-control-label" for="example3cols1Input">Deposit Amount
+                                            </label>
+                                            <input type="text" class="form-control form-control-sm inputdepositamount"
+                                                id="example3cols1Input" readonly value="">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -224,21 +239,23 @@
                                                 @include('component.btnsearchcoa')
                                                 @include('component.btnadditem')
                                             </div>
+                                            <span class="text-danger text-bold isfetchingdata"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <table style="width: 100%" class="table-sm tablematerial table">
-                                            <thead style="font-size: 6px">
-                                                <tr class="row">
-                                                    <th class="col-2 text-left" style="font-size: 10px">Item Code</th>
-                                                    <th class="col-2 text-left" style="font-size: 10px">Item Name</th>
-                                                    <th class="col-2" style="font-size: 10px">Unit</th>
-                                                    <th class="col-2" style="font-size: 10px">Qty</th>
-                                                    <th class="col-2" style="font-size: 10px">Available Stocks</th>
-                                                    <th class="col-2" style="font-size: 10px">...</th>
-                                                </tr>
+                                    <div class="col-lg-12 table-responsive table-itemm" style="max-height:350px">
+                                        <table style="width: 100%;table-layout:auto"
+                                            class="table-sm tablematerial table-bordered">
+                                            <thead>
+                                                <th class="text-left" style="font-size: 12px">No</th>
+                                                <th class="text-left" style="font-size: 12px">Item Code</th>
+                                                <th class="text-left" style="font-size: 12px">Item Name</th>
+                                                <th style="font-size: 12px">Unit</th>
+                                                <th style="font-size: 12px;text-align:right">Qty</th>
+                                                <th style="font-size: 12px;text-align:right">Available
+                                                    Stocks</th>
+                                                <th style="font-size: 12px">...</th>
                                             </thead>
                                             <tbody>
 
@@ -254,7 +271,7 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <h5 class="text-primary">Upah</h5>
+                                        <h5 class="text-primary">Upah BTKL</h5>
                                         <div class="form-group">
                                             <div class="dataupah"
                                                 data-upah="{{ $sessionRoute == 'admin.addProjectView' ? '' : json_encode($data['dataUpah']) }}">
@@ -269,22 +286,24 @@
                                                 @include('component.btnsearchcoa')
                                                 @include('component.btnaddupah')
                                             </div>
+                                            <span class="text-danger text-bold isfetchingdata"></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-12">
-                                        <table style="width: 100%" class="table-sm tableupah table">
-                                            <thead style="font-size: 6px">
-                                                <tr class="row">
-                                                    <th class="col-2 text-left" style="font-size: 10px">Upah Code</th>
-                                                    <th class="col-2 text-left" style="font-size: 10px">Job</th>
-                                                    <th class="col-1 text-left" style="font-size: 10px">Unit</th>
-                                                    <th class="col-2" style="font-size: 10px">Qty</th>
-                                                    <th class="col-2" style="font-size: 10px">Price</th>
-                                                    <th class="col-2" style="font-size: 10px">Total</th>
-                                                    <th class="col-1" style="font-size: 10px">...</th>
-                                                </tr>
+                                    <div class="col-lg-12 table-responsive table-itemm" style="max-height:350px">
+                                        <table style="width: 100%; table-layout:auto"
+                                            class="table-sm tableupah table-bordered">
+                                            <thead style="font-size: 12px">
+                                                <th class="text-left" style="font-size: 12px;">No</th>
+                                                <th class="text-left" style="font-size: 12px;">Code</th>
+                                                <th class="text-left" style="font-size: 12px;">Job</th>
+                                                <th class="col-1 text-left" style="font-size: 12px;">Unit
+                                                </th>
+                                                <th style="font-size: 12px;text-align:right">Qty</th>
+                                                <th style="font-size: 12px;text-align:right">Price</th>
+                                                <th style="font-size: 12px;text-align:right">Total</th>
+                                                <th style="font-size: 12px;text-align:right">...</th>
                                             </thead>
                                             <tbody>
 
@@ -344,7 +363,7 @@
 
 
     {{-- MODAL FORM --}}
-    @include('searchModal.customerSearch')
+    @include('searchModal.customersearch')
 
     @include('searchModal.projectTypeSearchModal')
 

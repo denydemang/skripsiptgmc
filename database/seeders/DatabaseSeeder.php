@@ -5,6 +5,7 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 use App\Models\COA;
+use App\Models\TypeProjectDetail;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -25,13 +26,18 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             UsersTableSeeder::class,
             COASeeder::class,
-            JournalTypeSeeder::class,
             UpahSeeder::class,
+            JournalTypeSeeder::class,
             CategorySeeder::class,
             UnitSeeder::class,
             ItemSeeder::class,
             CustomerSeeder::class,
+            SupplierSeeder::class,
             PaymentTermSeeder::class,
+            TypeProjectSeeder::class,
+            TypeProjectDetailSeeder::class,
+            TypeProjectDetailBSeeder::class,
+            
         ]);
     }
 }

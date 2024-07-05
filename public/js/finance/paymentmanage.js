@@ -166,15 +166,19 @@ $(document).ready(function () {
       html += `
     
       <tr>
-        <td style="font-size: 10px; width:10%">${item.ref_no}</td>
-        <td style="font-size: 10px; width:10%">${item.transaction_date}
+        <td style="font-size:13px; width:10%">${item.ref_no}</td>
+        <td style="font-size:13px; width:10%">${item.transaction_date}
         </td>
-        <td style="font-size: 10px;width:10%">${item.due_date}</td>
-        <td style="font-size: 10px;width:10%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
-            data-code="${item.ref_no}" class="custom-input inputpaidamount" value="${formatRupiah1(item.paid_amount)}">
+        <td style="font-size:13px;width:10%">${item.due_date}</td>
+        <td style="font-size:13px;width:10%; white-space:nowrap;text-align:right">${formatRupiah1(item.unpaid_amount)}</td>
+        <td style="font-size:13px;width:15%;white-space:nowrap;text-align:right"><input type="text" style="text-align:right" data-unpaid_amount="${parseFloat(
+          item.unpaid_amount
+        )}"
+            data-code="${item.ref_no}" class="custom-input inputpaidamount" style="text-align:right" value="${formatRupiah1(
+        item.paid_amount
+      )}">
         </td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
+        <td style="font-size:13px;width:15%;white-space:nowrap;text-align:right">${formatRupiah1(item.balance)}</td>
       </tr>
       `;
 
@@ -186,9 +190,9 @@ $(document).ready(function () {
       html += `
         <tr>
           <td colspan="3" style="text-align:center"><b>Total</b></td>
-          <td><b>${formatRupiah1(totalUnpaid)}</b></td>
-          <td><b>${formatRupiah1(totalPaid)}</b></td>
-          <td><b>${formatRupiah1(totalBalance)}</b></td>
+          <td style="text-align:right"><b>${formatRupiah1(totalUnpaid)}</b></td>
+          <td style="text-align:right"><b>${formatRupiah1(totalPaid)}</b></td>
+          <td style="text-align:right"><b>${formatRupiah1(totalBalance)}</b></td>
         </tr>
       `;
     }

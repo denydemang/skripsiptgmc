@@ -146,8 +146,8 @@
                     <th>COA Code</th>
                     <th>Name</th>
                     <th>Description</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
+                    <th style="text-align: right">Debit</th>
+                    <th style="text-align: right">Credit</th>
                 </tr>
             </thead>
             <tbody>
@@ -157,8 +157,10 @@
                         <td class="no-wrap">{{ $coa->coa_code }}</td>
                         <td>{{ $coa->coa_name }}</td>
                         <td>{{ $coa->description }}</td>
-                        <td class="no-wrap">Rp. {{ number_format($coa->debit, 2, ',', '.') }}</td>
-                        <td class="no-wrap">Rp. {{ number_format($coa->kredit, 2, ',', '.') }}</td>
+                        <td class="no-wrap" style="text-align: right">Rp. {{ number_format($coa->debit, 2, ',', '.') }}
+                        </td>
+                        <td class="no-wrap" style="text-align: right">Rp.
+                            {{ number_format($coa->kredit, 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
                 <tr>

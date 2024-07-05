@@ -19,6 +19,7 @@ use App\Http\Controllers\PrintController;
 use App\Http\Controllers\ProfitLossController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ProjectRealisationController;
+use App\Http\Controllers\ProjectTypeController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\PurchaseRequestController;
 use App\Http\Controllers\ReceiptController;
@@ -93,19 +94,25 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         });
     });
 
-    Route::controller(ProjectController::class)->group(function () {
 
+    Route::controller(ProjectTypeController::class)->group(function(){
         Route::middleware(ProjectTypeMiddleware::class)->group(function(){
             Route::get('/admin/projecttype', 'getViewTypeProject')->name('admin.projecttype');
+            Route::get('/admin/projecttype/add', 'getViewManageTypeProject')->name('admin.addprojecttypeview');
+            Route::get('/admin/projecttype/edit/{id}', 'getViewManageTypeProject')->name('admin.editprojecttypeview');
             Route::post('/admin/projecttype/getdata', 'getDataTypeProject')->name('admin.getDataProjectType');
             Route::post('/admin/projecttype/getSearchtable', 'getSearchtable')->name('admin.getSearchtable');
-            Route::post('/admin/projecttype/update', 'updateProjectType')->name('admin.updateDataProjectType');
+            Route::post('/admin/projecttype/update/{id}', 'updateProjectType')->name('admin.updateDataProjectType');
             Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
             Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
+            Route::get('/admin/projecttype/material/{projectypecode}', 'getdataforproyek')->name('admin.getdataforproyek');
             Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
+
         });
 
+    });
 
+    Route::controller(ProjectController::class)->group(function () {
 
         Route::middleware(ProjectMiddleware::class)->group(function(){
 
@@ -307,7 +314,7 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         // -----------------    Upah
         Route::controller(UpahController::class)->group(function () {
-            Route::resource('/admin/upah', UpahController::class)->names([
+            Route::resource('/admin/upahtkl', UpahController::class)->names([
                 'index' => 'r_upah.index',
                 'create' => 'r_upah.create',
                 'store' => 'r_upah.store',

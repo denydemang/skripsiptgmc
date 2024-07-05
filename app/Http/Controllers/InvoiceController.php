@@ -104,7 +104,7 @@ class InvoiceController extends AdminController
             ->select('invoices.*','project_realisations.code as project_realisation_code' ,'projects.code as project_code', 'projects.name as project_name', 'customers.name as customer_name', 'customers.code as customer_code')
             ->whereBetween('invoices.transaction_date', [$startDate,$endDate])
             ->when($is_approve !== null , function($query) use($is_approve){
-                $query->where('is_approve', $is_approve);
+                $query->where('invoices.is_approve', $is_approve);
             })
             ->when($paidStatus !== null , function($query) use($paidStatus){
                     switch (intval($paidStatus)) {

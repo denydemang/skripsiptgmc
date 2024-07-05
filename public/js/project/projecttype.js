@@ -2,12 +2,17 @@ import tableInitiator from '../tableinitiator.js';
 import AjaxRequest from '../ajaxrequest.js';
 import { showconfirmdelete } from '../jqueryconfirm.js';
 import checkNotifMessage from '../checkNotif.js';
+import { formatRupiah1 } from '../rupiahformatter.js';
 $(document).ready(function () {
   let modalTitle = $('.modal-title');
+  let titledetail = $('.title-detail');
+  const listMaterial = $('.listbb tbody');
+  const listUpah = $('.listupah tbody');
   let CodeInput = $('.code');
   let NameInput = $('.name');
   let DescriptionInput = $('.description');
   const modalTypeProject = $('#modal-projecttype');
+  const modalDetailProject = $('#modal-detailproject');
   let updateMode = false;
 
   //  Inisiasi Property Untuk Datatable
@@ -47,46 +52,52 @@ $(document).ready(function () {
     }
   }
 
+  function populateData(TypeProject = {}, Material = [], upah = []) {
+    titledetail.html(`${TypeProject.code} - ${TypeProject.name}`);
+    let htmlMaterial = '';
+    let counterMaterial = 1;
+
+    // Populate Detail Material when view detail
+    Material.forEach((item) => {
+      htmlMaterial += `
+      <tr>
+          <td>${counterMaterial}</td>
+          <td>${item.item_code}</td>
+          <td style="white-space:normal;word-wrap: break-word;">${item.item_name}</td>
+          <td>${item.unit_code}</td>
+      </tr>
+  
+      `;
+      counterMaterial++;
+    });
+
+    listMaterial.html(htmlMaterial);
+
+    // --------------------------
+
+    // Populate Detail Upah when view detail
+    let htmlUpah = '';
+    let counterUpah = 1;
+    upah.forEach((item) => {
+      htmlUpah += `
+      <tr >
+        <td>${counterUpah}</td>
+        <td>${item.upah_code}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.job}</td>
+        <td>${item.unit}</td>
+        <td style="text-align: right;white-space:nowrap ">${formatRupiah1(item.price)}
+        </td>
+      </tr>
+      `;
+      counterUpah++;
+    });
+
+    listUpah.html(htmlUpah);
+  }
+
   function deleteData(code, name) {
     const urlRequest = route('admin.deleteDataProjectType', code);
     window.location.href = urlRequest;
-  }
-
-  function isFetchingData() {
-    let text = 'Fetching Data .....';
-    CodeInput.val(text);
-    NameInput.val(text);
-    DescriptionInput.val(text);
-  }
-  function populateForm(data) {
-    if (data || data != null) {
-      CodeInput.val(data.code);
-      NameInput.val(data.name);
-      DescriptionInput.val(data.description);
-    }
-  }
-  function validate() {
-    NameInput.removeClass('is-invalid');
-    DescriptionInput.removeClass('is-invalid');
-
-    if (NameInput.val() == '') {
-      NameInput.addClass('is-invalid');
-      NameInput.focus();
-      return false;
-    }
-    if (DescriptionInput.val() == '') {
-      DescriptionInput.addClass('is-invalid');
-      DescriptionInput.focus();
-      return false;
-    }
-    return true;
-  }
-
-  function clear() {
-    NameInput.removeClass('is-invalid');
-    DescriptionInput.removeClass('is-invalid');
-    NameInput.val('');
-    DescriptionInput.val('');
   }
 
   // CRUD AND EVENT
@@ -94,15 +105,10 @@ $(document).ready(function () {
 
   // Click Edit Button
   $(document).on('click', '.editbtn', async function () {
-    let Code = $(this).data('code');
-    modalTitle.html('Edit Project Type');
-    updateMode = true;
-    modalTypeProject.modal('show');
-    CodeInput.prop('readonly', true);
-    isFetchingData();
+    let code = $(this).data('code');
+    let url = route('admin.editprojecttypeview', code);
 
-    const respons = await getData(Code);
-    populateForm(respons);
+    window.location.href = url;
   });
 
   // Click Delete Button
@@ -111,40 +117,15 @@ $(document).ready(function () {
     showconfirmdelete(Code, Code, deleteData, 'Project Type :');
   });
 
-  // CLICK ADD Button
-  $(document).on('click', '.addbtn', function () {
-    modalTypeProject.modal('show');
-    modalTitle.html('Add New Project Type');
-    CodeInput.val('AUTO');
-    CodeInput.prop('readonly', true);
-    updateMode = false;
-  });
+  $(document).on('click', '.viewbtn', async function () {
+    let code = $(this).data('code');
+    titledetail.html('Loading....');
+    listUpah.html('Loading....');
+    listMaterial.html('Loading....');
 
-  // Submit Form
-  $(document).on('submit', '#formProjectType', function (e) {
-    e.preventDefault();
-
-    if (validate()) {
-      if (!updateMode) {
-        var addProjectTypeURL = route('admin.addDataProjectType');
-        $(this).attr('action', addProjectTypeURL);
-        $(this)[0].submit();
-      } else {
-        var editProjectTypeURL = route('admin.updateDataProjectType');
-        $(this).attr('action', editProjectTypeURL);
-        $(this)[0].submit();
-      }
-    }
-  });
-
-  // Close Modal
-  modalTypeProject.on('hidden.bs.modal', function (e) {
-    clear();
-  });
-
-  // Open Modal
-  modalTypeProject.on('shown.bs.modal', function (e) {
-    NameInput.focus();
+    modalDetailProject.modal('show');
+    const response = await getData(code);
+    populateData(response.projecttype, response.bahanBaku, response.upah);
   });
 
   // Trigger Toast

@@ -1,195 +1,204 @@
 @extends('layout.template')
 @section('content')
-	<div class="header bg-primary pb-6">
-		<div class="container-fluid">
-			<div class="header-body">
-				<div class="row align-items-center py-4">
-					<div class="col-lg-6 col-7">
-						<nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
-							<ol class="breadcrumb breadcrumb-links breadcrumb-dark">
-								<li class="breadcrumb-item">
-									<a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
-								</li>
-								<li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
-								<li class="breadcrumb-item active" aria-current="page">Purchase</li>
-							</ol>
-						</nav>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Page content -->
-	<div class="container-fluid mt--6">
-		<div class="row">
-			<div class="col-xl-12 col-lg-12">
-				<div class="row">
-					<div class="col">
-						<div class="card" style="min-height: 800px">
-							<!-- Card header -->
-							<div class="card-header">
-								<h3 class="mb-0">Purchase</h3>
-							</div>
-							<div class="card-body">
-								<div class="row">
-									<div class="col-lg-12 d-lg-flex justify-content-between">
-										<div>
-											<div class="d-lg-flex justify-content-beetwen">
-												<div class="mb-2 mr-2" style="width: 200px">
-													<h4>Status Approve</h4>
-													<select class="form-control" id="statusSelectApprove">
-														<option selected value="">All</option>
-														<option value="0">Not Approved</option>
-														<option value="1">Approved</option>
-													</select>
-												</div>
-												<div class="mb-2" style="width: 200px">
-													<h4>Paid status</h4>
-													<select class="form-control" id="statusSelectPaidStatus">
-														<option selected value="">All</option>
-														<option value="0">UnPaid</option>
-														<option value="1">FullPaid</option>
-														<option value="2">Outstanding</option>
-														<option value="3">Overdue</option>
-													</select>
-												</div>
-											</div>
-										</div>
-										<div>
+    <div class="header bg-primary pb-6">
+        <div class="container-fluid">
+            <div class="header-body">
+                <div class="row align-items-center py-4">
+                    <div class="col-lg-6 col-7">
+                        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+                            <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                                <li class="breadcrumb-item">
+                                    <a href="{{ route('dashboard') }}"><i class="fas fa-home"></i></a>
+                                </li>
+                                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Admin</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Purchase</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Page content -->
+    <div class="container-fluid mt--6">
+        <div class="row">
+            <div class="col-xl-12 col-lg-12">
+                <div class="row">
+                    <div class="col">
+                        <div class="card" style="min-height: 800px">
+                            <!-- Card header -->
+                            <div class="card-header">
+                                <h3 class="mb-0">Purchase</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-12 d-lg-flex justify-content-between">
+                                        <div>
+                                            <div class="d-lg-flex justify-content-beetwen">
+                                                <div class="mb-2 mr-2" style="width: 200px">
+                                                    <h4>Status Approve</h4>
+                                                    <select class="form-control" id="statusSelectApprove">
+                                                        <option selected value="">All</option>
+                                                        <option value="0">Not Approved</option>
+                                                        <option value="1">Approved</option>
+                                                    </select>
+                                                </div>
+                                                <div class="mb-2" style="width: 200px">
+                                                    <h4>Paid status</h4>
+                                                    <select class="form-control" id="statusSelectPaidStatus">
+                                                        <option selected value="">All</option>
+                                                        <option value="0">UnPaid</option>
+                                                        <option value="1">FullPaid</option>
+                                                        <option value="2">Outstanding</option>
+                                                        <option value="3">Overdue</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
 
-											<div class="mr-1">
-												<h4>Transaction Date</h4>
-												<div class="d-flex">
-													<div class="input-group date mr-2" id="dtpstarttrans" data-target-input="nearest">
-														<input type="text" class="form-control form-control-sm datetimepicker-input inputstartdatetrans"
-															data-target="#dtpstarttrans" style="cursor: pointer" readonly />
-														<div class="input-group-append" data-target="#dtpstarttrans" data-toggle="dtpstarttrans">
-															<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
-														</div>
-													</div>
-													<span class="mr-1">to </span>
-													<div class="input-group date" id="dtplasttrans" data-target-input="nearest">
-														<input type="text" style="cursor: pointer"
-															class="form-control form-control-sm datetimepicker-input inputlastdatetrans" data-target="#dtplasttrans"
-															readonly />
-														<div class="input-group-append" data-target="#dtplasttrans" data-toggle="dtplasttrans">
-															<div class="input-group-text" style="height: 32px"><i class="fa fa-calendar"></i></div>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-lg-2">
-										@include('component.supplierCode')
-									</div>
-									<div class="col-lg-4">
-										@include('component.supplierName')
-									</div>
-									<a style="padding-top:30px">
-										<button class="btn btn-sm btn-outline-success btnprintrecap mb-2"><i class="fas fa-print"></i> Print
-											Recap</button> </a>
-								</div>
-								<br>
-								<a href="{{ route('admin.addPurchaseView') }}">
-									<button class="btn btn-outline-primary btn-sm addbtn mb-2">
-										<i class="fas fa-plus"></i> ADD NEW
-									</button></a>
-								<div>
-									<table class="align-items-center table-flush purchasetable w-100 table">
-										<thead class="thead-light">
-											<tr>
-												<th scope="col">Actions</th>
-												<th scope="col">Purchase No</th>
-												<th scope="col">Purchase Request No</th>
-												<th scope="col">Transaction Date</th>
-												<th scope="col">Approved</th>
-												<th scope="col">Paid Status</th>
-												<th scope="col">Supplier Code</th>
-												<th scope="col">Supplier Name</th>
-												<th scope="col">Supplier Address</th>
-												<th scope="col">Supplier Phone</th>
-												<th scope="col">Total</th>
-												<th scope="col">Freight In</th>
-												<th scope="col">Percent PPN</th>
-												<th scope="col">PPN Amount</th>
-												<th scope="col">Grand Total</th>
-												<th scope="col">Paid Amount</th>
-												<th scope="col">UnPaid Amount</th>
-												<th scope="col">Description</th>
-												<th scope="col">Approved By</th>
-												<th scope="col">Payment Term</th>
-												<th scope="col">Due Date</th>
-												<th scope="col">Created By</th>
-												<th scope="col">Updated By</th>
-											</tr>
-										</thead>
-										<tbody class="list">
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		@include('layout.footer')
-	</div>
+                                            <div class="mr-1">
+                                                <h4>Transaction Date</h4>
+                                                <div class="d-flex">
+                                                    <div class="input-group date mr-2" id="dtpstarttrans"
+                                                        data-target-input="nearest">
+                                                        <input type="text"
+                                                            class="form-control form-control-sm datetimepicker-input inputstartdatetrans"
+                                                            data-target="#dtpstarttrans" style="cursor: pointer" readonly />
+                                                        <div class="input-group-append" data-target="#dtpstarttrans"
+                                                            data-toggle="dtpstarttrans">
+                                                            <div class="input-group-text" style="height: 32px"><i
+                                                                    class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                    <span class="mr-1">to </span>
+                                                    <div class="input-group date" id="dtplasttrans"
+                                                        data-target-input="nearest">
+                                                        <input type="text" style="cursor: pointer"
+                                                            class="form-control form-control-sm datetimepicker-input inputlastdatetrans"
+                                                            data-target="#dtplasttrans" readonly />
+                                                        <div class="input-group-append" data-target="#dtplasttrans"
+                                                            data-toggle="dtplasttrans">
+                                                            <div class="input-group-text" style="height: 32px"><i
+                                                                    class="fa fa-calendar"></i></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-2">
+                                        @include('component.supplierCode')
+                                    </div>
+                                    <div class="col-lg-4">
+                                        @include('component.supplierName')
+                                    </div>
+                                    <a style="padding-top:30px">
+                                        <button class="btn btn-sm btn-outline-success btnprintrecap mb-2"><i
+                                                class="fas fa-print"></i> Print
+                                            Recap</button> </a>
+                                </div>
+                                <br>
+                                <a href="{{ route('admin.addPurchaseView') }}">
+                                    <button class="btn btn-outline-primary btn-sm addbtn mb-2">
+                                        <i class="fas fa-plus"></i> ADD NEW
+                                    </button></a>
+                                <div>
+                                    <table class="align-items-center table-flush purchasetable w-100 table">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th scope="col">Actions</th>
+                                                <th scope="col">Purchase No</th>
+                                                <th scope="col">Purchase Request No</th>
+                                                <th scope="col">Transaction Date</th>
+                                                <th scope="col">Approved</th>
+                                                <th scope="col">Paid Status</th>
+                                                <th scope="col">Supplier Code</th>
+                                                <th scope="col">Supplier Name</th>
+                                                <th scope="col">Supplier Address</th>
+                                                <th scope="col">Supplier Phone</th>
+                                                <th scope="col">Total</th>
+                                                <th scope="col">Freight In</th>
+                                                <th scope="col">Percent PPN</th>
+                                                <th scope="col">PPN Amount</th>
+                                                <th scope="col">Grand Total</th>
+                                                <th scope="col">Paid Amount</th>
+                                                <th scope="col">UnPaid Amount</th>
+                                                <th scope="col">Description</th>
+                                                <th scope="col">Approved By</th>
+                                                <th scope="col">Payment Term</th>
+                                                <th scope="col">Due Date</th>
+                                                <th scope="col">Created By</th>
+                                                <th scope="col">Updated By</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="list">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @include('layout.footer')
+    </div>
 
 
-	{{-- MODAL FORM --}}
-	<div class="modal fade" id="modal-detailpurchase" tabindex="-1" role="dialog"
-		aria-labelledby="exampleModalLabel">
-		<div class="modal-dialog modal-lg text-dark" style="background: red !important" role="document">
-			<div class="modal-content" style="background: rgb(246, 248, 248)">
-				<div class="modal-header">
-					<h5 class="modal-title titleview"></h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body" >
-					<div class="row">
+    {{-- MODAL FORM --}}
+    <div class="modal fade" id="modal-detailpurchase" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog modal-lg text-dark" style="background: red !important" role="document">
+            <div class="modal-content" style="background: rgb(246, 248, 248)">
+                <div class="modal-header">
+                    <h5 class="modal-title titleview"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
 
-						<h3 class="title-detail text-dark"></h3>
-					</div>
-					<div class="row">
-						<h3 class="mt-1 text-dark">Detail Purchase Item :</h3>
-						<div class="w-100" style="max-height:300px ;overflow-y: scroll">
-							<table class="listbb w-100" border="1" style="border-collapse: collapse;font-style:12px;background-color:rgb(244, 246, 244)">
-								<thead style="background: rgb(194, 227, 240)">
-									<tr>
-										<th style="border-color: rgb(22, 28, 24);padding-left:10px"> No</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Item Code</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Item Name</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Qty</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Unit</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Price</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Sub Total</th>
-										<th style="border-color: rgb(22, 28, 24); padding-left:10px">Discount</th>
-										<th style="border-color: rgb(22, 28, 24);padding-left:10px">Total</th>
-									</tr>
-								<tbody>
+                        <h3 class="title-detail text-dark"></h3>
+                    </div>
+                    <div class="row">
+                        <h3 class="text-dark mt-1">Detail Purchase Item :</h3>
+                        <div class="w-100" style="max-height:300px ;overflow-y: scroll">
+                            <table class="listbb w-100" border="1"
+                                style="border-collapse: collapse;font-style:12px;background-color:rgb(244, 246, 244)">
+                                <thead style="background: rgb(194, 227, 240)">
+                                    <tr>
+                                        <th style="border-color: rgb(22, 28, 24);padding-left:10px"> No</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Item Code</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Item Name</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Qty</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Unit</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Price</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Sub Total</th>
+                                        <th style="border-color: rgb(22, 28, 24); padding-left:10px">Discount</th>
+                                        <th style="border-color: rgb(22, 28, 24);padding-left:10px">Total</th>
+                                    </tr>
+                                <tbody>
 
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-				</div>
-			</div>
-		</div>
-	</div>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </div>
+        </div>
+    </div>
 
-	{{-- Modal Search --}}
+    {{-- Modal Search --}}
 
-	@include('searchModal.suppliersearch')
+    @include('searchModal.suppliersearch')
 
-	{{-- Notif Flash Message --}}
-	@include('flashmessage')
-	<script src="{{ asset('/') }}js/transactions/purchase.js" type="module"></script>
+    {{-- Notif Flash Message --}}
+    @include('flashmessage')
+    <script src="{{ asset('/') }}js/transactions/purchase.js" type="module"></script>
 @endsection

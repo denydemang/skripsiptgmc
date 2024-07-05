@@ -503,12 +503,14 @@ class AccountingController extends AdminController
         // Insert Persediaan Masuk Jurnal Detail
         foreach ($Variation_COA_Item as $coa){
 
-            $totalUtang += round(floatval($coa->totalcogs), 2);
+            $nominal =  round(floatval($coa->totalcogs), 2) ==  (floatval($purchase->total) + floatval($purchase->other_fee)) ? round(floatval($coa->totalcogs), 2)  : (floatval($purchase->total) + floatval($purchase->other_fee));
+
+            $totalUtang += $nominal;
             $journalDetail  = New Journal_Detail();
             $journalDetail->voucher_no = $journal->voucher_no;
             $journalDetail->description = "Inventory IN Untuk Trans Pembelian: $purchase->purchase_no"  ;
             $journalDetail->coa_code = $coa->coa_code;
-            $journalDetail->debit = round(floatval($coa->totalcogs), 2);
+            $journalDetail->debit = $nominal;
             $journalDetail->kredit = 0;
             $journalDetail->created_by = Auth::user()->username;
             $journalDetail->save();

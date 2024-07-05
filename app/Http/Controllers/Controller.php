@@ -38,7 +38,7 @@ class Controller extends BaseController
                     $newCode = $keyWord . $digitDate . $decimalCode ; 
 
                 } else {
-                    $newCode = $keyWord . $this->getDateCode() . $decimalCode;
+                    $newCode = $keyWord . $this->getDateCode() . '001';
                 }
             
             

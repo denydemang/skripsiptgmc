@@ -132,7 +132,7 @@
 								</div>
 								<div class="row">
 									<div class="col-lg-4">
-										@include('component.customercode')
+										@include('component.customerCode')
 										<div class="datacustomercode"
 											data-customercode="{{ $sessionRoute == 'admin.addInvoiceView' ? '' : $data['invoices']['customer_code'] }}">
 										</div>
@@ -149,11 +149,11 @@
 										<div class="d-flex">
 											<input type="text" readonly class="form-control form-control-sm inputcoacodeforrevenue"
 												style="width: 45%" id="example3cols1Input"
-												value="{{ $sessionRoute == 'admin.addInvoiceView' ? '' : $data['invoices']['coa_revenue'] }}">
+												value="40.01">
 											<input type="text" readonly class="form-control coa-name form-control-sm inputcoanameforrevenue"
 												id="example3colInput" style="width: 55%"
-												value="{{ $sessionRoute == 'admin.addInvoiceView' ? '' : $data['invoices']['coa_name'] }}">
-											@include('component.btnsearchcoa')
+												value="Pendapatan Usaha">
+											{{-- @include('component.btnsearchcoa') --}}
 										</div>
 									</div>
 								</div>

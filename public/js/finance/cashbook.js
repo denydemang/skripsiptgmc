@@ -73,7 +73,7 @@ $(document).ready(function () {
   ];
 
   const columns3 = [
-    { data: 'COA', name: 'COA', title: 'COA', searchable: true },
+    { data: 'coa', name: 'coa', title: 'coa', searchable: true },
     { data: 'coa_name', name: 'coa_name', title: 'COA Name', searchable: true },
     { data: 'description', name: 'description', title: 'Description', searchable: true },
     { data: 'debit', name: 'debit', title: 'Debit', searchable: false },

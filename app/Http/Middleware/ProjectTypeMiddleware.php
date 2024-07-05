@@ -32,7 +32,7 @@ class ProjectTypeMiddleware
         $viewRoute = ['admin.projecttype'];
         $updateRoute = ['admin.updateDataProjectType'];
         $deleteRoute = ['admin.deleteDataProjectType'];
-        $createRoute = ['admin.addDataProjectType'];
+        $createRoute = ['admin.addprojecttypeview'];
         $approveRoute = [''];
         $printRoute = [''];
         $routeName = $request->route()->getName();

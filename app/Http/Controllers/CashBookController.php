@@ -87,9 +87,9 @@ class CashBookController extends AdminController
             $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
 
 
-            $cashbook = CashBook::join("COA", "cash_books.COA_Cash", "=", "COA.code")
+            $cashbook = CashBook::join("coa", "cash_books.COA_Cash", "=", "coa.code")
             ->whereBetween('transaction_date', [$startDate,$endDate])
-            ->select("cash_books.*", "COA.name as coa_name")
+            ->select("cash_books.*", "coa.name as coa_name")
             ->when($is_approve !== null , function($query) use($is_approve){
                 $query->where('is_approve', $is_approve);
             })
@@ -132,7 +132,7 @@ class CashBookController extends AdminController
                     $query->whereRaw("coa.code LIKE ?", ["%{$keyword}%"]);
                 })
                 ->filterColumn('coa_name', function($query, $keyword) {
-                    $query->whereRaw("Coa.name LIKE ?", ["%{$keyword}%"]);
+                    $query->whereRaw("coa.name LIKE ?", ["%{$keyword}%"]);
                 })
                 ->addColumn('action', function ($row) {
                     $html = '';
@@ -177,8 +177,8 @@ class CashBookController extends AdminController
     public function getTableCashBook1($code, Request $request, DataTables $dataTables ){
         if ($request->ajax()){
 
-            $cashbook = CashBook_Detail::join("COA", "cash_book_details.coa", "=", "COA.code")
-            ->select("cash_book_details.*", "COA.code as coa_code", "COA.name as coa_name")
+            $cashbook = CashBook_Detail::join("coa", "cash_book_details.coa", "=", "coa.code")
+            ->select("cash_book_details.*", "coa.code as coa_code", "coa.name as coa_name")
             ->where("cash_no", "=", $code);
 
             return $dataTables->of($cashbook)
@@ -202,8 +202,8 @@ class CashBookController extends AdminController
     public function getTableCashBook2($code, Request $request, DataTables $dataTables ){
         if ($request->ajax()){
 
-            $cashbook = CashBook_DetailB::join("COA", "cash_books_detail_b.coa", "=", "COA.code")
-            ->select("cash_books_detail_b.*", "COA.code as coa_code", "COA.name as coa_name")
+            $cashbook = CashBook_DetailB::join("coa", "cash_books_detail_b.coa", "=", "coa.code")
+            ->select("cash_books_detail_b.*", "coa.code as coa_code", "coa.name as coa_name")
             ->where("cash_no", "=", $code);
 
             return $dataTables->of($cashbook)
@@ -263,12 +263,11 @@ class CashBookController extends AdminController
                     throw new Exception("Insufficient Balance of COA $check->coaCode - $check->coaName , Remaining Balance is ".number_format($check->balance,2, ',', '.')." Will Be Decreased By Amount " .number_format($amount,2,',','.'));
                 }
             }
-            dd('alright');
 
             $journal = new AccountingController();
             $journal->journalCashBook($id);
 
-            // DB::commit();
+            DB::commit();
             return response()->redirectToRoute("admin.cashbook")->with("success", "Data Cashbook $id Successfully Approved");
         } catch (\Throwable $th) {
             DB::rollBack();

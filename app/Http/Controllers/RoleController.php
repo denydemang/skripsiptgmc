@@ -34,15 +34,6 @@ class RoleController extends AdminController
             // $users = User::query();
 
             return $dataTables->of($roles)
-                ->addColumn('action', function ($row) {
-
-                    return '
-                <div class="d-flex justify-content-center">
-                <button class="btn btn-sm btn-primary editbtn" data-id="' . $row->id . '" title="Edit"><i class="fa fa-edit"></i></button>
-                <button class="btn btn-sm btn-danger deletebtn" data-id="' . $row->id . '" title="Delete"><i class="fa fa-trash"></i></button>
-                </div>';
-                })
-                ->rawColumns(['action'])
                 ->addIndexColumn()
                 ->make(true);
         }

@@ -128,7 +128,7 @@
 
     {{-- @include('searchModal.coaSearch') --}}
 
-    @include('searchModal.customerSearch')
+    @include('searchModal.customersearch')
     {{-- Notif Flash Message --}}
 
     <script src="{{ asset('/') }}js/accounting/ledgerreport.js" type="module"></script>

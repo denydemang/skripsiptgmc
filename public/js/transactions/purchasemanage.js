@@ -145,11 +145,20 @@ $(document).ready(function () {
         total += parseFloat(x.sub_total);
       });
     }
-    transAmount.total = total;
 
-    transAmount.ppnamount = (transAmount.total + transAmount.otherfee) * (transAmount.ppnpercent / 100);
+    transAmount.total = total.toFixed(2);
 
-    transAmount.grand_total = transAmount.total + transAmount.otherfee + transAmount.ppnamount;
+    transAmount.ppnamount = (
+      (parseFloat(transAmount.total) + parseFloat(transAmount.otherfee)) *
+      (parseFloat(transAmount.ppnpercent) / 100)
+    ).toFixed(2);
+
+    transAmount.grand_total = (
+      parseFloat(transAmount.total) +
+      parseFloat(transAmount.otherfee) +
+      parseFloat(transAmount.ppnamount)
+    ).toFixed(2);
+
     setTransAmount();
   }
 
@@ -239,20 +248,34 @@ $(document).ready(function () {
       html += `
     
       <tr>
-        <td style="font-size: 10px;width:5%">${counter}</td>
-        <td style="font-size: 10px; width:5%">${item.item_code}</td>
-        <td style="font-size: 10px; width:15%">${item.item_name}
+        <td style="font-size:11px;font-weight:500;width:5%">${counter}</td>
+        <td style="font-size:11px;font-weight:500; width:5%">${item.item_code}</td>
+        <td style="font-size:11px;font-weight:500; width:15%">${item.item_name}
         </td>
-        <td style="font-size: 10px;width:5%">${item.unit_code}</td>
-        <td style="font-size: 10px;width:10%; white-space:nowrap"><input type="number" data-qty="${parseFloat(item.qty)}"
-            data-code="${item.item_code}" style="width: 100%" class="custom-input inputqtyitem" value="${parseFloat(item.qty)}"></td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-price="${parseFloat(item.price)}"
+        <td style="font-size:11px;font-weight:500;width:5%">${item.unit_code}</td>
+        <td style="font-size:11px;font-weight:500;width:10%; white-space:nowrap;text-align:right"><input type="number" data-qty="${parseFloat(
+          item.qty
+        )}"
+            data-code="${
+              item.item_code
+            }" style="width: 100%;font-size:11px;font-weight:500;text-align:right" class="custom-input inputqtyitem" value="${parseFloat(
+        item.qty
+      )}"></td>
+        <td style="font-size:11px;font-weight:500;width:15%;white-space:nowrap;text-align:right"><input type="text" style="font-size:11px;font-weight:500;white-space:nowrap;text-align:right" data-price="${parseFloat(
+          item.price
+        )}"
             data-code="${item.item_code}" class="custom-input inputpriceitem" value="${formatRupiah1(item.price)}">
         </td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap">${formatRupiah1(item.total)}</td>
-        <td style="font-size: 10px;width:15%;white-space:nowrap"><input type="text" data-discount="${parseFloat(item.discount)}"
-            data-code="${item.item_code}" class="custom-input inputdiscountitem" value="${formatRupiah1(item.discount)}"></td>
-        <td style="font-size: 10px;width:20%;white-space:nowrap">${formatRupiah1(item.sub_total)}</td>
+        <td style="font-size:11px;font-weight:500;width:15%;white-space:nowrap;text-align:right">${formatRupiah1(item.total)}</td>
+        <td style="font-size:11px;font-weight:500;width:15%;white-space:nowrap;text-align:right"><input type="text" data-discount="${parseFloat(
+          item.discount
+        )}"
+            data-code="${
+              item.item_code
+            }" style="font-size:11px;font-weight:500;white-space:nowrap;text-align:right" class="custom-input inputdiscountitem" value="${formatRupiah1(
+        item.discount
+      )}"></td>
+        <td style="font-size:11px;font-weight:500;width:20%;white-space:nowrap;text-align:right">${formatRupiah1(item.sub_total)}</td>
       </tr>
       `;
       counter++;
@@ -302,7 +325,7 @@ $(document).ready(function () {
             let qtyNew = parseFloat(amount);
             let totalNew = qtyNew * parseFloat(item.price);
             let subtotalNew = totalNew - parseFloat(item.discount);
-            return { ...item, qty: qtyNew, total: totalNew, sub_total: subtotalNew };
+            return { ...item, qty: qtyNew, total: totalNew.toFixed(2), sub_total: subtotalNew.toFixed(2) };
           } else {
             return item;
           }
@@ -316,7 +339,7 @@ $(document).ready(function () {
             let priceNew = parseFloat(amount);
             let totalNew = item.qty * priceNew;
             let subtotalNew = totalNew - parseFloat(item.discount);
-            return { ...item, price: priceNew, total: totalNew, sub_total: subtotalNew };
+            return { ...item, price: priceNew, total: totalNew.toFixed(2), sub_total: subtotalNew.toFixed(2) };
           } else {
             return item;
           }
@@ -329,7 +352,7 @@ $(document).ready(function () {
           if (item.item_code === code) {
             let discountNew = parseFloat(amount);
             let subtotalNew = item.total - discountNew;
-            return { ...item, discount: discountNew, sub_total: subtotalNew };
+            return { ...item, discount: discountNew, sub_total: subtotalNew.toFixed(2) };
           } else {
             return item;
           }
@@ -355,8 +378,8 @@ $(document).ready(function () {
     PostData.other_fee = transAmount.otherfee;
     PostData.paid_amount = null;
     PostData.payment_term_code = inputpaymentterm.val();
-    PostData.percen_ppn = transAmount.ppnpercent / 100;
-    PostData.ppn_amount = transAmount.ppnamount;
+    PostData.percen_ppn = parseFloat(transAmount.ppnpercent) / 100;
+    PostData.ppn_amount = parseFloat(transAmount.ppnamount);
     PostData.pr_no = prCode.val();
     PostData.supplier_code = supplierCode.val();
     PostData.total = transAmount.total;
@@ -468,7 +491,7 @@ $(document).ready(function () {
       $(this).val(dataQty);
     }
     let code = $(this).data('code');
-    calculateItem(code, parseFloat($(this).val()), 'updateqty');
+    calculateItem(code, parseFloat($(this).val()).toFixed(2), 'updateqty');
   });
 
   // Input Pada Price  item ketika pertama kali disorot
@@ -480,7 +503,10 @@ $(document).ready(function () {
   // Ketika Selesai Edit Price Item
   $(document).on('blur', '.inputpriceitem', function (e) {
     let code = $(this).data('code');
-    calculateItem(code, parseFloat($(this).val()), 'updateprice');
+    if ($(this).val() < 0 || $(this).val() == '') {
+      $(this).val(0);
+    }
+    calculateItem(code, parseFloat($(this).val()).toFixed(2), 'updateprice');
   });
 
   // Ketika Mengetikkan Didalam Input Price Item
@@ -498,7 +524,10 @@ $(document).ready(function () {
   // Ketika Selesai Edit discount Item
   $(document).on('blur', '.inputdiscountitem', function (e) {
     let code = $(this).data('code');
-    calculateItem(code, parseFloat($(this).val()), 'updatediscount');
+    if ($(this).val() < 0 || $(this).val() == '') {
+      $(this).val(0);
+    }
+    calculateItem(code, parseFloat($(this).val()).toFixed(2), 'updatediscount');
   });
 
   // Ketika Mengetikkan Didalam Input discount Item
@@ -509,13 +538,16 @@ $(document).ready(function () {
 
   // Input Pada Other Fee ketika pertama kali disorot
   $(document).on('focusin', '.inputotherfee', function (e) {
-    let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val());
+    let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val()).toFixed(2);
     $(this).val(X);
   });
 
   // Ketika Selesai Edit Other fee
   $(document).on('blur', '.inputotherfee', function (e) {
-    updateOtherFeeAmount(parseFloat($(this).val()));
+    if ($(this).val() < 0 || $(this).val() == '') {
+      $(this).val(0);
+    }
+    updateOtherFeeAmount(parseFloat($(this).val()).toFixed(2));
   });
 
   // Ketika Mengetikkan Didalam Input other fee
@@ -526,7 +558,7 @@ $(document).ready(function () {
 
   // Input Pada Percent PPN ketika pertama kali disorot
   $(document).on('focusin', '.inputpercentppn', function (e) {
-    let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val());
+    let X = parseToNominal($(this).val()) === 0 ? '' : parseToNominal($(this).val()).toFixed(2);
     $(this).val(X);
   });
 
@@ -534,7 +566,7 @@ $(document).ready(function () {
     if ($(this).val() < 0 || $(this).val() == '') {
       $(this).val(0);
     }
-    updatePPNAmount(parseFloat($(this).val()));
+    updatePPNAmount(parseFloat($(this).val()).toFixed(2));
   });
 
   // Submit Button

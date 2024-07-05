@@ -352,9 +352,9 @@ class PurchaseController extends AdminController
     
                     $otherfee = floatval($data['other_fee']) / count($datapurchasedetails);
                     foreach($datapurchasedetails as $i){
-                        $stock = new StockController();
-                        $cogs = (floatval($i->sub_total) + $otherfee) / floatval($i->qty);
-                        $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), floatval($cogs));
+                        $stock = new StockController(); 
+                        $cogs = bcdiv((floatval($i->sub_total) + $otherfee) , floatval($i->qty), 4);
+                        $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), $cogs,2);
                     }
     
                     $purchase = new purchase();
@@ -384,12 +384,12 @@ class PurchaseController extends AdminController
                         $purchase_details->purchase_no = $purchase->purchase_no;
                         $purchase_details->item_code = $i->item_code;
                         $purchase_details->unit_code = $i->unit_code;
-                        $purchase_details->qty = $i->qty;
-                        $purchase_details->price = $i->price;
+                        $purchase_details->qty = floatval($i->qty);
+                        $purchase_details->price = floatval($i->price);
 
-                        $purchase_details->total = $i->total;
-                        $purchase_details->discount = $i->discount;
-                        $purchase_details->sub_total = $i->sub_total;
+                        $purchase_details->total = floatval($i->total);
+                        $purchase_details->discount = floatval($i->discount);
+                        $purchase_details->sub_total = floatval($i->sub_total);
                         $purchase_details->created_by = Auth::user()->name;
                         $purchase_details->save();
                     }

@@ -1,4 +1,4 @@
-import tableInitiator from "../tableinitiator.js";
+import tableInitiator from '../tableinitiator.js';
 import checkNotifMessage from '../checkNotif.js';
 import {checkNotifForbidden} from '../checkNotifForbidden.js';
 import AjaxRequest from '../ajaxrequest.js';
@@ -10,22 +10,21 @@ $(document).ready(function () {
   const modalTypeProject = $('#modal-popup');
   let updateMode = false;
 
-//   Form DELETE Hidden
+  //   Form DELETE Hidden
   $('.delformHidden').hide();
 
   //  Inisiasi Property Untuk Datatable
   // -------------------------------------------------
-  const fetchData = async () => {
-      var getDataProject = route('admin.getroles');
-      const columns = [
-        { data: 'action', name: 'actions', title: 'Actions', searchable: false, orderable: false, width: '10%' },
-        { data: 'name', name: 'name', title: 'Name', searchable: true },
-        { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true },
-        { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
-        { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
-      ];
-      const tableName = '.globalTabledata';
-      const method = 'post';
+
+  var getDataProject = route('admin.getroles');
+  const columns = [
+    { data: 'name', name: 'name', title: 'Name', searchable: true },
+    { data: 'active_status', name: 'active_status', title: 'Active Status', searchable: true }
+    // { data: 'updated_by', name: 'Updated_By', title: 'Updated By', searchable: true },
+    // { data: 'created_by', name: 'Created_By', title: 'Created By', searchable: true }
+  ];
+  const tableName = '.globalTabledata';
+  const method = 'post';
 
       // INISIASI DATATABLE
       // ---------------------------------------------------
@@ -115,9 +114,9 @@ $(document).ready(function () {
       } else {
         var tondo = $('.id').val();
         var inputMethod = $('<input>').attr({
-            type: 'hidden',
-            name: '_method',
-            value: 'PUT'
+          type: 'hidden',
+          name: '_method',
+          value: 'PUT'
         });
 
         var form = $(this);
@@ -134,7 +133,6 @@ $(document).ready(function () {
   function isFetchingData() {
     let text = 'Fetching Data .....';
     NameInput.val(text);
-
   }
 
   // Define populate
@@ -181,5 +179,4 @@ $(document).ready(function () {
 
   // Trigger Toast
   checkNotifMessage();
-
 });

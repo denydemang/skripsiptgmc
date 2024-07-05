@@ -197,14 +197,20 @@ $(document).ready(function () {
         <td style="font-size: 12px; width:10%">${item.transaction_date}
         </td>
         <td style="font-size: 12px;width:10%">${item.due_date}</td>
-        <td style="font-size: 12px;width:15%; white-space:nowrap">${formatRupiah1(item.unpaid_amount)}</td>
-        <td style="font-size: 12px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
-            data-code="${item.ref_no}" class="custom-input inputpaidamount" value="${formatRupiah1(item.cash_amount)}">
+        <td style="font-size: 12px;width:15%; white-space:nowrap;text-align:right">${formatRupiah1(item.unpaid_amount)}</td>
+        <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><input type="text" style="text-align:right" data-unpaid_amount="${parseFloat(
+          item.unpaid_amount
+        )}"
+            data-code="${item.ref_no}" class="custom-input inputpaidamount" style="text-align:right;width:100%" value="${formatRupiah1(
+        item.cash_amount
+      )}">
         </td>
         <td style="font-size: 12px;width:15%;white-space:nowrap"><input type="text" data-unpaid_amount="${parseFloat(item.unpaid_amount)}"
-            data-code="${item.ref_no}" class="custom-input inputdepositamount" value="${formatRupiah1(item.deposit_amount)}">
+            data-code="${item.ref_no}" class="custom-input inputdepositamount" style="text-align:right;width:100%" value="${formatRupiah1(
+        item.deposit_amount
+      )}">
         </td>
-        <td style="font-size: 12px;width:15%;white-space:nowrap">${formatRupiah1(item.balance)}</td>
+        <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right">${formatRupiah1(item.balance)}</td>
       </tr>
       `;
 
@@ -217,10 +223,10 @@ $(document).ready(function () {
       html += `
         <tr>
           <td colspan="3" style="text-align:center;font-size: 12px;width:15%;white-space:nowrap"><b>Total</b></td>
-          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalUnpaid)}</b></td>
-          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalPaid)}</b></td>
-          <td style="font-size: 12px;width:15%;white-space:nowrap"><b>${formatRupiah1(totalDepo)}</b></td>
-          <td style="font-size: 12px;width:15%;white-spac   e:nowrap"><b>${formatRupiah1(totalBalance)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalUnpaid)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalPaid)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalDepo)}</b></td>
+          <td style="font-size: 12px;width:15%;white-space:nowrap;text-align:right"><b>${formatRupiah1(totalBalance)}</b></td>
         </tr>
       `;
     }
@@ -274,20 +280,41 @@ $(document).ready(function () {
         createHtmTBodyItem();
         break;
       case 'deposit_amount':
-        const editedDetail1 = tampungDetail.map((item) => {
-          if (item.ref_no === code) {
-            let deposit_amountNew = parseFloat(amount);
+        if (code == null) {
+          let counter = 1;
 
-            if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
-              deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+          const editedDetail1 = tampungDetail.map((item) => {
+            if (counter == 1) {
+              let deposit_amountNew = parseFloat(amount);
+
+              if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
+                deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+              }
+              let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
+              counter++;
+              return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
+            } else {
+              return item;
             }
-            let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
-            return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
-          } else {
-            return item;
-          }
-        });
-        tampungDetail = [...editedDetail1];
+          });
+          tampungDetail = [...editedDetail1];
+        } else {
+          const editedDetail1 = tampungDetail.map((item) => {
+            if (item.ref_no === code) {
+              let deposit_amountNew = parseFloat(amount);
+
+              if (deposit_amountNew + parseFloat(item.cash_amount) > parseFloat(item.unpaid_amount)) {
+                deposit_amountNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount);
+              }
+              let balanceNew = parseFloat(item.unpaid_amount) - parseFloat(item.cash_amount) - deposit_amountNew;
+              return { ...item, deposit_amount: deposit_amountNew, balance: balanceNew };
+            } else {
+              return item;
+            }
+          });
+          tampungDetail = [...editedDetail1];
+        }
+
         checkDepositAmount(code);
         break;
     }
@@ -441,6 +468,11 @@ $(document).ready(function () {
   $(document).on('keyup', '.inputdepositamount', function (event) {
     var object = $(this);
     inputOnlyNumber(object);
+  });
+
+  $(document).on('click', '.btnallocate', function () {
+    console.log(transAmount.deposit_amount);
+    calcInvoice(null, transAmount.deposit_amount, 'deposit_amount');
   });
 
   // Submit Button

@@ -180,12 +180,12 @@ $(document).ready(function () {
     // Populate Detail Material when view detail
     Material.forEach((item) => {
       htmlMaterial += `
-      <tr class="row">
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${counterMaterial}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.item_code}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.item_name}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty)}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;">${item.unit_code}</td>
+      <tr>
+        <td style="white-space:normal;word-wrap: break-word;">${counterMaterial}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.item_code}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.item_name}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty)}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.unit_code}</td>
       </tr>
   
       `;
@@ -202,14 +202,14 @@ $(document).ready(function () {
     let totalUpah = 0;
     upah.forEach((item) => {
       htmlUpah += `
-      <tr class="row">
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${counterUpah}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.upah_code}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${item.job}</td>
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty)}</td>
-        <td class="col-1" style="white-space:normal;word-wrap: break-word;">${item.unit}</td>
-        <td class="col-2" style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.price))}</td>
-        <td class="col-3" style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.total))}</td>
+      <tr>
+        <td style="white-space:normal;word-wrap: break-word;">${counterUpah}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.upah_code}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.job}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${parseFloat(item.qty)}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${item.unit}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.price))}</td>
+        <td style="white-space:normal;word-wrap: break-word;">${formatRupiah1(parseFloat(item.total))}</td>
       </tr>
   
       `;
@@ -218,14 +218,14 @@ $(document).ready(function () {
     });
 
     htmlUpah += `
-    <tr class="row">
-      <td class="col-1" style="white-space:normal;word-wrap: break-word;"></td>
-      <td class="col-2" style="white-space:normal;word-wrap: break-word;"></td>
-      <td class="col-2" style="white-space:normal;word-wrap: break-word;"></td>
-      <td class="col-1" style="white-space:normal;word-wrap: break-word;"></td>
-      <td class="col-1" style="white-space:normal;word-wrap: break-word;"></td>
-      <td class="col-2" style="white-space:normal;word-wrap: break-word;"><b>Total</b></td>
-      <td class="col-3" style="white-space:normal;word-wrap: break-word;"><b>${formatRupiah1(totalUpah)}</b></td>
+    <tr>
+      <td style="white-space:normal;word-wrap: break-word;"></td>
+      <td style="white-space:normal;word-wrap: break-word;"></td>
+      <td style="white-space:normal;word-wrap: break-word;"></td>
+      <td style="white-space:normal;word-wrap: break-word;"></td>
+      <td style="white-space:normal;word-wrap: break-word;"></td>
+      <td style="white-space:normal;word-wrap: break-word;"><b>Total</b></td>
+      <td style="white-space:normal;word-wrap: break-word;"><b>${formatRupiah1(totalUpah)}</b></td>
     </tr>
     `;
     listUpah.html(htmlUpah);

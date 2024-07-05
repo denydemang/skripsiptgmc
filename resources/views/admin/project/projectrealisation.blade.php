@@ -1,5 +1,22 @@
 @extends('layout.template')
 @section('content')
+    <style>
+        .table-itemm thead th {
+            position: sticky;
+            top: -1px;
+            background: #86d1f7
+        }
+
+        #modal-detailproject table td {
+            font-size: 12px;
+        }
+
+        .table-itemm2 thead th {
+            position: sticky;
+            top: -1px;
+            background: #897be0
+        }
+    </style>
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
             <div class="header-body">
@@ -99,7 +116,7 @@
 
     {{-- MODAL FORM --}}
     <div class="modal fade" id="modal-detailproject" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-        <div class="modal-dialog modal-lg modal-success" role="document">
+        <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title titleview"></h5>
@@ -109,21 +126,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-
-                        <h3 class="title-detail text-white"></h3>
+                        <div class="col-lg-12">
+                            <h3 class="title-detail"></h3>
+                        </div>
                     </div>
                     <div class="row">
                         <h3 class="text-white">Material :</h3>
-                        <div class="col-12 mb-2" style="max-height:200px ;overflow-y: scroll">
-                            <table class="table-sm listbb table-wrap table">
+                        <div class="col-lg-12 table-responsive table-itemm" style="max-height:200px">
+                            <table class="table-sm listbb table-wrap table-bordered w-100">
                                 <thead>
-                                    <tr class="row">
-
-                                        <th class="col-1">No</th>
-                                        <th class="col-3">Item Code</th>
-                                        <th class="col-3">Item Name</th>
-                                        <th class="col-2">Qty</th>
-                                        <th class="col-3">Unit</th>
+                                    <tr class="text-white" style="font-size:12px">
+                                        <th>No</th>
+                                        <th>Item Code</th>
+                                        <th>Item Name</th>
+                                        <th>Qty</th>
+                                        <th>Unit</th>
                                     </tr>
                                 <tbody>
 
@@ -131,24 +148,22 @@
                             </table>
                         </div>
                         <h3 class="mt-1 text-white">Upah :</h3>
-                        <div class="col-12" style="max-height:200px ;overflow-y: scroll">
-                            <div>
-                                <table class="table-sm listupah table">
-                                    <thead>
-                                        <tr class="row">
-                                            <th class="col-1">No</th>
-                                            <th class="col-2">Upah Code</th>
-                                            <th class="col-2">Job</th>
-                                            <th class="col-1">Qty</th>
-                                            <th class="col-1">Unit</th>
-                                            <th class="col-2">Tarif</th>
-                                            <th class="col-3">Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
+                        <div class="col-lg-12 table-responsive table-itemm2" style="max-height:200px">
+                            <table class="table-sm listupah table-wrap table-bordered w-100">
+                                <thead>
+                                    <tr class="text-white" style="font-size:12px">
+                                        <th>No</th>
+                                        <th>Code</th>
+                                        <th>Job</th>
+                                        <th style="text-align:right">Qty</th>
+                                        <th>Unit</th>
+                                        <th style="text-align:right">Tarif</th>
+                                        <th style="text-align:right">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
