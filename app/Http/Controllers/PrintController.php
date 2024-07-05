@@ -1157,11 +1157,11 @@ class PrintController extends AdminController
             mastercoa.name,
             case when substring(qry.Code,1,1) in('1', '5', '6', '9') then -- Aktiva, Dan Beban (default debit)
 
-            ifnull(mastercoa.beginning_balance,0) + ifnull(sum(Qry.BeginningDebit) - sum(Qry.BeginningCredit),0)
+            ifnull(mastercoa.beginning_balance,0) + ifnull(sum(qry.BeginningDebit) - sum(qry.BeginningCredit),0)
 
             else			-- Utang dan modal default kredit				
                     
-            ifnull(mastercoa.beginning_balance,0) + ifnull(sum(Qry.BeginningCredit) - sum(Qry.BeginningDebit),0)
+            ifnull(mastercoa.beginning_balance,0) + ifnull(sum(qry.BeginningCredit) - sum(qry.BeginningDebit),0)
 
             end as BeginningBalance,
             ifnull(sum(qry.CurrentDebit),0) as CurrentDebit,

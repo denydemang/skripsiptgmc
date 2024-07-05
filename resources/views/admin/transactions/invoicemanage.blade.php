@@ -132,7 +132,7 @@
 								</div>
 								<div class="row">
 									<div class="col-lg-4">
-										@include('component.customercode')
+										@include('component.customerCode')
 										<div class="datacustomercode"
 											data-customercode="{{ $sessionRoute == 'admin.addInvoiceView' ? '' : $data['invoices']['customer_code'] }}">
 										</div>

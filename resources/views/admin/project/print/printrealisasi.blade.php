@@ -247,7 +247,7 @@
                 @foreach ($dataBahanBaku as $item)
                     <tr>
                         <td class="no-wrap">{{ $loop->iteration }}</td>
-                        <td>{{ $item->item_code }}</td>
+                        <td style="word-wrap:break-word;width:20%">{{ $item->item_code }}</td>
                         <td class="no-wrap">{{ $item->name }}</td>
                         <td class="no-wrap">{{ floatval($item->qty_used) }}</td>
                         <td class="no-wrap" style="text-align:left">{{ $item->unit_code }}</td>
@@ -260,17 +260,17 @@
     </section>
 
     <section class="transaction">
-        <h5 style="text-decoration: underline">Detail Upah Realisation</h5>
+        <h5 style="text-decoration: underline">Detail Upah BTKL Realisation</h5>
         <table id="detail" style="font-size: 12px;width: 100%;table-layout:auto">
             <thead>
                 <tr>
-                    <th>No</th>
-                    <th>Upah Code</th>
-                    <th>Job</th>
-                    <th>Unit</th>
-                    <th>Qty</th>
-                    <th style="text-align: right">Price</th>
-                    <th style="text-align: right">Total</th>
+                    <th style="width: 5%">No</th>
+                    <th style="width:10%">Code</th>
+                    <th style="word-wrap:break-word;width:30%">Job</th>
+                    <th style="5%">Unit</th>
+                    <th style="10%">Qty</th>
+                    <th style="text-align: right;width:20%">Price</th>
+                    <th style="text-align: right;width:20%">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -279,18 +279,18 @@
                 @endphp
                 @foreach ($dataUpah as $item)
                     <tr>
-                        <td class="no-wrap">{{ $loop->iteration }}</td>
-                        <td>{{ $item->upah_code }}</td>
-                        <td>{{ $item->upah_name }}</td>
-                        <td class="no-wrap">{{ $item->unit }}</td>
-                        <td class="no-wrap">{{ floatval($item->qty_used) }}</td>
-                        <td class="no-wrap" style="text-align:right"> Rp.
+                        <td class="no-wrap" style="width: 5%">{{ $loop->iteration }}</td>
+                        <td class="no-wrap" style="width:10%">{{ $item->upah_code }}</td>
+                        <td style="word-wrap:break-word;width:30%">{{ $item->upah_name }}</td>
+                        <td class="no-wrap" style="5%">{{ $item->unit }}</td>
+                        <td class="no-wrap" style="10%">{{ floatval($item->qty_used) }}</td>
+                        <td class="no-wrap" style="text-align:right;width:20%"> Rp.
                             {{ number_format($item->price, 2, ',', '.') }}</td>
-                        <td class="no-wrap" style="text-align:right"> Rp.
+                        <td class="no-wrap" style="text-align:right;width:20%"> Rp.
                             {{ number_format($item->total, 2, ',', '.') }}</td>
                     </tr>
                     @php
-                        $total = +floatval($item->total);
+                        $total += floatval($item->total);
                     @endphp
                 @endforeach
                 <tr>

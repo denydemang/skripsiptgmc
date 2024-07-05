@@ -150,8 +150,6 @@ $(document).ready(function () {
 
     supplyData.dateNeedStart = dateNeedStart;
     supplyData.dateNeedEnd = dateNeedEnd;
-
-    reloadTable(method, tableName, columns, getPRTable, supplyData, setcellDateNeed);
   }
 
   function updateDTPTransDateValue() {
@@ -160,8 +158,6 @@ $(document).ready(function () {
 
     supplyData.startDate = startTrans;
     supplyData.endDate = lastTrans;
-
-    reloadTable(method, tableName, columns, getPRTable, supplyData);
   }
 
   function deleteData(code, name) {
@@ -208,6 +204,7 @@ $(document).ready(function () {
   // check perubahan value datepicker TRANS DATE
   $(document).on('change', '.datetimepicker-input', function () {
     updateDTPTransDateValue();
+    reloadTable(method, tableName, columns, getPRTable, supplyData, setcellDateNeed);
   });
 
   // change Select Approve Status Button
@@ -234,11 +231,13 @@ $(document).ready(function () {
   // check perubahan value datepicker DateNeed Start
   $(document).on('change', '.inputstartdateneed', function () {
     updateDTPSDateNeedValue();
+    reloadTable(method, tableName, columns, getPRTable, supplyData, setcellDateNeed);
   });
 
   // check perubahan value datepicker DateNeed End
   $(document).on('change', '.inputenddateneed', function () {
     updateDTPSDateNeedValue();
+    reloadTable(method, tableName, columns, getPRTable, supplyData, setcellDateNeed);
   });
 
   // Click Delete Button
