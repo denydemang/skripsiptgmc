@@ -14,7 +14,6 @@
  Date: 30/06/2024 17:01:01
 */
 
-SET NAMES utf8mb4;
 
 -- ----------------------------
 -- Records of categories
