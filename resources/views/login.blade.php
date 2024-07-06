@@ -94,6 +94,9 @@
                                             </span>
                                         </div>
                                     </div>
+                                    @error('password')
+                                        <small class="text-danger">Password Cannot Be Blank</small>
+                                    @enderror
                                 </div>
                                 {{-- <div class="form-group">
                                     <div class="input-group input-group-merge input-group-alternative">
