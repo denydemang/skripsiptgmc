@@ -143,15 +143,17 @@ $(document).ready(function () {
   function populateItem(data = {}) {
     if (checkItemExist(data.code)) {
       // incrementqty + 1
-      const editedItem = tampungItem.map((item) => {
-        if (item.code === data.code) {
-          let qtytotal = parseFloat(item.qty) + parseFloat(data.qty);
-          return { ...item, qty: qtytotal };
-        } else {
-          return item;
-        }
-      });
-      tampungItem = [...editedItem];
+
+      showwarning(`${data.code} Already Added In The List !`);
+      // const editedItem = tampungItem.map((item) => {
+      //   if (item.code === data.code) {
+      //     let qtytotal = parseFloat(item.qty) + parseFloat(data.qty);
+      //     return { ...item, qty: qtytotal };
+      //   } else {
+      //     return item;
+      //   }
+      // });
+      // tampungItem = [...editedItem];
     } else {
       // Direct Push
       tampungItem.push(data);
