@@ -69,7 +69,7 @@
                             <form class="mt-3" role="form" action="{{ url('login') }}" method="post">
                                 @csrf
                                 <div class="form-group mb-3">
-                                    <div class="input-group input-group-alternative">
+                                    <div class="input-group input-group-merge input-group-alternative">
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="ni ni-single-02"></i></span>
                                         </div>
@@ -85,13 +85,28 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
                                         </div>
+                                        <input class="form-control" id="password" placeholder="Password"
+                                            type="password" name="password" />
+                                        <div class="input-group-append">
+                                            <span class="input-group-text isvisiblepw">
+                                                <i class="fas fa-eye-slash" id="togglePassword"
+                                                    style="cursor: pointer;"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {{-- <div class="form-group">
+                                    <div class="input-group input-group-merge input-group-alternative">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                                        </div>
                                         <input class="form-control" placeholder="Password" type="password"
                                             name="password" />
                                     </div>
                                     @error('password')
                                         <small class="text-danger">Password Cannot Be Blank</small>
                                     @enderror
-                                </div>
+                                </div> --}}
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary my-4">Log in</button>
                                 </div>
@@ -108,8 +123,8 @@
             <div class="row align-items-center justify-content-xl-between">
                 <div class="col-xl-12 col-md-12">
                     <div class="text-center">
-                        &copy; 2024 <a href="https://emsregistrars.co.id/sertifikasi-iso/pt-genta-multi-jayya-619"
-                            class="font-weight-bold ml-1" target="_blank">PT Genta Multi
+                        &copy; 2024 <a href="http://gentagroup.cloud/home" class="font-weight-bold ml-1"
+                            target="_blank">PT Genta Multi
                             Jayya</a>
                     </div>
                 </div>
@@ -126,7 +141,26 @@
     <script src="{{ asset('/') }}assets/vendor/lavalamp/js/jquery.lavalamp.min.js"></script>
     <!-- Argon JS -->
     <script src="{{ asset('/') }}assets/js/argon.js?v=1.0.0"></script>
-    <script></script>
+    <script>
+        $(document).ready(function() {
+            $(document).on('click', '.isvisiblepw', function() {
+
+                const type = $('#password').attr('type') === 'password' ? 'text' : 'password';
+                $('#password').attr('type', type);
+
+                if ($('#password').attr('type') === 'password') {
+
+                    $('#togglePassword').removeClass("fa-eye")
+                    $('#togglePassword').addClass("fa-eye-slash")
+
+                } else {
+                    $('#togglePassword').removeClass("fa-eye-slash")
+                    $('#togglePassword').addClass("fa-eye")
+                }
+
+            });
+        });
+    </script>
 </body>
 
 
