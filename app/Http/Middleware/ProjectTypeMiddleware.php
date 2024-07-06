@@ -30,9 +30,9 @@ class ProjectTypeMiddleware
         $allowedPrintRoles = [$Direktur, $Admin];
 
         $viewRoute = ['admin.projecttype'];
-        $updateRoute = ['admin.updateDataProjectType'];
+        $updateRoute = ['admin.editprojecttypeview'];
         $deleteRoute = ['admin.deleteDataProjectType'];
-        $createRoute = ['admin.editprojecttypeview'];
+        $createRoute = ['admin.addprojecttypeview'];
         $approveRoute = [''];
         $printRoute = [''];
         $routeName = $request->route()->getName();
