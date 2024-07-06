@@ -195,12 +195,13 @@
             <style>
             .form-control {
                 font-size: 13px !important;
-                font-weight:400 !important;
+                font-weight:450 !important;
                 color: rgb(24, 23, 23);
+                font-family: Arial, Helvetica, sans-serif
             }
             .form-control:focus{
                 font-size: 13px !important;
-                font-weight: 400!important;
+                font-weight: 450!important;
                 color: rgb(9, 9, 9);
                 font-family: Arial, Helvetica, sans-serif
             }
