@@ -289,7 +289,7 @@
     </section>
 
     <section class="transaction">
-        <h5 style="text-decoration: underline">Detail Upah Project</h5>
+        <h5 style="text-decoration: underline">Detail Upah BTKL Project</h5>
         <table id="detail" style="font-size: 12px;width: 100%;table-layout:auto">
             <thead>
                 <tr>
