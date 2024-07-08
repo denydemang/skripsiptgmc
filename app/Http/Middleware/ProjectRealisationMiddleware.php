@@ -26,7 +26,7 @@ class ProjectRealisationMiddleware
         $allowedUpdateRoles = [$Admin];
         $allowedDeleteRoles = [$Admin];
         $allowedCreateRoles = [$Admin];
-        $allowedApproveRoles = [$Admin];
+        $allowedApproveRoles = [$Admin,$Direktur];
         $allowedPrintRoles = [$Direktur, $Admin];
 
         $viewRoute = ['admin.projectrealisationview'];

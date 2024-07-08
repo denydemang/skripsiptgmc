@@ -28,7 +28,7 @@ class PurchaseRequestMiddleware
         $allowedUpdateRoles = [$Admin,$Logistik];
         $allowedDeleteRoles = [$Admin,$Logistik];
         $allowedCreateRoles = [$Admin, $Logistik];
-        $allowedApproveRoles = [$Admin,$Logistik];
+        $allowedApproveRoles = [$Admin,$Direktur];
         $allowedPrintRoles = [$Direktur, $Admin, $Logistik];
 
         $viewRoute = ['admin.pr'];
