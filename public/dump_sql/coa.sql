@@ -29,7 +29,7 @@ INSERT INTO `coa` VALUES ('10.01.02.02', 'Bank BNI', 'Aktiva', '3', 'D', 'Detail
 INSERT INTO `coa` VALUES ('10.01.02.03', 'Bank BCA', 'Aktiva', '3', 'D', 'Detail', 250000000.0000, 'Admin', 'keuangan', '2024-03-29 14:14:07', '2024-07-05 23:37:03');
 INSERT INTO `coa` VALUES ('10.01.03', 'Piutang', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.03.01', 'Piutang Usaha', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', 'admin', '2024-03-29 14:14:07', '2024-06-30 22:12:07');
-INSERT INTO `coa` VALUES ('10.01.03.02', 'Cadangan Kerugian Piutang', 'Aktiva', '3', 'D', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
+INSERT INTO `coa` VALUES ('10.01.03.02', 'Cadangan Kerugian Piutang', 'Aktiva', '3', 'K', 'Detail', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.03.03', 'PPN Masukan', 'Aktiva', '3', 'D', 'Detail', 20000000.0000, 'Admin', 'keuangan', '2024-03-29 14:14:07', '2024-07-05 23:37:15');
 INSERT INTO `coa` VALUES ('10.01.04', 'Persediaan', 'Aktiva', '2', 'D', 'Header', 0.0000, 'Admin', NULL, '2024-03-29 14:14:07', '2024-03-29 14:14:07');
 INSERT INTO `coa` VALUES ('10.01.04.01', 'Persediaan Bahan Baku Material', 'Aktiva', '3', 'D', 'Detail', 4760445655.0000, 'Admin', 'keuangan', '2024-03-29 14:14:07', '2024-07-05 23:37:36');
