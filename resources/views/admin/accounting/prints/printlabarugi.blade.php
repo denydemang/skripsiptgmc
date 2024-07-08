@@ -93,8 +93,9 @@
         <div class="report-container">
             <div class="header">
                 <div class="title" style="text-align: center">
-                    <h2>LAPORAN LABA RUGI</h2>
-                    <h3 style="margin-top:-1px">Periode {{ $firstDate }} - {{ $lastDate }}</h3>
+                    <h2>PT GENTA MULTI JAYYA</h2>
+                    <h2 style="font-size:18px">LAPORAN LABA RUGI</h2>
+                    <h3 style="margin-top:5px">Periode {{ $firstDate }} - {{ $lastDate }}</h3>
                     <h3 style="margin-top:-10px">(Dalam Rupiah)</h3>
                 </div>
             </div>
@@ -105,7 +106,7 @@
                 @foreach ($coaData as $key => $item)
                     <div class="section">
                         <h3>{{ $key }}</h3>
-                        <table>
+                        <table style="width:100%">
                             @php
                                 $totalSub = 0;
                             @endphp
@@ -114,12 +115,12 @@
                                     $totalSub += floatval($i->Total);
                                 @endphp
                                 <tr>
-                                    <td class="kode">{{ $i->code }}</td>
-                                    <td>{{ $i->name }}</td>
-                                    <td class="nominal">
+                                    <td class="kode" style="width:20%;white-space:nowrap">{{ $i->code }}</td>
+                                    <td style="width:40%;white-space:normal;word-wrap: break-word;">{{ $i->name }}</td>
+                                    <td class="nominal" style="width:20%;white-space:nowrap">
                                         {{ number_format(floatval($i->Total) < 0 ? floatval($i->Total) * -1 : floatval($i->Total), 2, ',', '.') }}
                                     </td>
-                                    <td class="nominal"></td>
+                                    <td class="nominal" style="width:20%;white-space:nowrap"></td>
                                 </tr>
                             @endforeach
                             <tr class="total">
