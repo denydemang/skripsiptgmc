@@ -568,18 +568,18 @@ $(document).ready(function () {
       let amountInput = 0;
       if (x.item_code == code) {
         amountInput = parseFloat(amount);
-        let sisaQty = x.last_qty - amountInput;
+        let sisaQty = Math.round(parseFloat(x.last_qty - amountInput) * 100) / 100;
 
         if (currentTermin < totalTermin && sisaQty <= 0) {
           showwarning('Not Last Termin, Balance Qty Cannot Be Zero!');
           amountInput = 0;
-          sisaQty = x.last_qty - amountInput;
+          sisaQty = Math.round(parseFloat(x.last_qty - amountInput) * 100) / 100;
         }
 
         if (currentTermin == totalTermin && sisaQty < 0) {
           showwarning('Balance Qty Cannot be Minus !');
           amountInput = 0;
-          sisaQty = x.last_qty - amountInput;
+          sisaQty = Math.round(parseFloat(x.last_qty - amountInput) * 100) / 100;
         }
 
         return { ...x, current_qty: parseFloat(amountInput), sisa_qty: sisaQty };
@@ -599,20 +599,20 @@ $(document).ready(function () {
       let amountInput = 0;
       if (x.upah_code == code) {
         amountInput = parseFloat(amount);
-        let sisaQty = x.last_balance_qty - amountInput;
+        let sisaQty = Math.round(parseFloat(x.last_balance_qty - amountInput) * 100) / 100;
         let currentNominal = x.price * amountInput;
 
         if (currentTermin < totalTermin && sisaQty <= 0) {
           showwarning('Not Last Termin, Balance Qty Cannot Be Zero!');
           amountInput = 0;
-          sisaQty = x.last_balance_qty - amountInput;
+          sisaQty = Math.round(parseFloat(x.last_balance_qty - amountInput) * 100) / 100;
           currentNominal = 0;
         }
 
         if (currentTermin == totalTermin && sisaQty < 0) {
           showwarning('Balance Qty Cannot be Minus !');
           amountInput = 0;
-          sisaQty = x.last_balance_qty - amountInput;
+          sisaQty = Math.round(parseFloat(x.last_balance_qty - amountInput) * 100) / 100;
           currentNominal = 0;
         }
 

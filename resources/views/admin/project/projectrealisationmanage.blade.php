@@ -235,7 +235,8 @@
                                     </div>
                                     <div class="col-lg-12">
                                         <div class="d-lg-flex">
-                                            <h5 class="text-primary">UPAH LIST <span class="fetchingdata"></span></h5>
+                                            <h5 class="text-primary">UPAH BTKL LIST <span class="fetchingdata"></span>
+                                            </h5>
                                         </div>
                                         <div class="form-group">
                                             <div class="dataupah" data-upah="">

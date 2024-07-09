@@ -215,8 +215,8 @@
 	<script src="{{ asset('/') }}assets/DataTables/datatables.min.js"></script>
 
 	<script src="{{ asset('/') }}assets/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="{{ asset('/') }}assets/DataTables/fixedColumns-5.0.0/js/dataTables.fixedColumns.js"></script>
-	<script src="{{ asset('/') }}assets/DataTables/fixedColumns-5.0.0/js/fixedColumns.dataTables.min.js"></script>
+	<script src="{{ asset('assets/DataTables/FixedColumns-5.0.0/js/dataTables.fixedColumns.js') }}"></script>
+	<script src="{{ asset('assets/DataTables/FixedColumns-5.0.0/js/fixedColumns.dataTables.min.js') }}"></script>
 	<script src="{{ asset('/') }}assets/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
 	<script src="{{ asset('/') }}assets/vendor/js-cookie/js.cookie.js"></script>
 	<script src="{{ asset('/') }}assets/vendor/jquery.scrollbar/jquery.scrollbar.min.js"></script>
