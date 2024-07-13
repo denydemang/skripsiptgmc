@@ -1779,7 +1779,7 @@ class PrintController extends AdminController
             ->join("coa", "journal_details.coa_code", "=", "coa.code")
             ->where("journals.ref_no", $id)
             ->select("coa.name", "journals.*", "journal_details.*")
-            // ->orderBy("journal_details.debit", 'desc')
+            ->orderBy("id", 'asc')
             ->get();
 
             if (count($journal) == 0){

@@ -409,7 +409,7 @@ $(document).ready(function () {
                     <td>${x.no_termin}</td>
                     <td>${x.realisation_code}</td>
                     <td style="text-align:right">${formatRupiah1(x.realisation_amount)}</td>
-                    <td>${x.percentage}</td>
+                    <td style="text-align:right">${x.percentage} %</td>
                 </tr>`;
 
         total += x.realisation_amount;
@@ -423,9 +423,7 @@ $(document).ready(function () {
             <td style="text-align:right"><input type="text" class="inputrealisationamount custom-input" style="font-size:13px;text-align:right" value="${formatRupiah1(
               postData.realisation_amount
             )}"></td>
-            <td><input type="number" min="1" class="custom-input inputpercentage" max="100" style="font-size:13px" value="${
-              postData.percent_realisation
-            }"></td>
+            <td style="text-align:right">${postData.percent_realisation} %</td>
         </tr>
         <tr>
             <td colspan="2" style="text-align: center"><b>TOTAL REALISATION</b>
@@ -474,6 +472,7 @@ $(document).ready(function () {
     let total = 0;
     let total1 = 0;
     let allowedAmount = 0;
+    let currentPercentage = 0;
     let currentTermin = parseFloat(labelcurrenttermin.html());
     let totalTermin = parseFloat(labeltotaltermin.html());
     let project_amount = parseFloat(parseToNominal(inputtotalproject.val()));
@@ -490,71 +489,80 @@ $(document).ready(function () {
           if (total1 >= project_amount) {
             showwarning(`Exceed Maximum Amount!`);
             postData.realisation_amount = 0;
+
+            currentPercentage = Math.round(((total + postData.realisation_amount) / project_amount) * 100);
+            postData.percent_realisation = currentPercentage;
             createTableRealisasiList();
             return;
           }
           postData.realisation_amount = amount;
+          currentPercentage = Math.round(((total + postData.realisation_amount) / project_amount) * 100);
+          postData.percent_realisation = currentPercentage;
           createTableRealisasiList();
         } else {
           if (project_amount != total1) {
             showwarning('Last Termin Should Be Full !');
             allowedAmount = project_amount - total;
             postData.realisation_amount = allowedAmount;
+            currentPercentage = Math.round(((total + postData.realisation_amount) / project_amount) * 100);
+            postData.percent_realisation = currentPercentage;
             createTableRealisasiList();
             return;
           }
           postData.realisation_amount = amount;
+          currentPercentage = Math.round(((total + postData.realisation_amount) / project_amount) * 100);
+          postData.percent_realisation = currentPercentage;
           createTableRealisasiList();
         }
         break;
 
-      case 'percentage':
-        let listPercent = [];
-        if (realisationList.length > 0) {
-          realisationList.forEach((x) => {
-            listPercent.push(x.percentage);
-          });
-        }
+      // case 'percentage':
+      //   let listPercent = [];
+      //   if (realisationList.length > 0) {
+      //     realisationList.forEach((x) => {
+      //       listPercent.push(x.percentage);
+      //     });
+      //   }
 
-        if (currentTermin == totalTermin) {
-          if (amount != 100) {
-            showwarning('Last Termin Should 100%');
-            allowedAmount = 100;
-            postData.percent_realisation = allowedAmount;
-            createTableRealisasiList();
-            return;
-          }
-          postData.percent_realisation = amount;
-          createTableRealisasiList();
-          return;
-        }
+      //   if (currentTermin == totalTermin) {
+      //     if (amount != 100) {
+      //       showwarning('Last Termin Should 100%');
+      //       allowedAmount = 100;
+      //       postData.percent_realisation = allowedAmount;
+      //       createTableRealisasiList();
+      //       return;
+      //     }
+      //     postData.percent_realisation = amount;
+      //     createTableRealisasiList();
+      //     return;
+      //   }
 
-        if (currentTermin < totalTermin) {
-          if (amount >= 100) {
-            showwarning('Not Last Termin Should Be Less Than 100%');
-            allowedAmount = 0;
-            postData.percent_realisation = allowedAmount;
-            createTableRealisasiList();
-            return;
-          }
+      //   if (currentTermin < totalTermin) {
+      //     if (amount >= 100) {
+      //       showwarning('Not Last Termin Should Be Less Than 100%');
+      //       allowedAmount = 0;
+      //       postData.percent_realisation = allowedAmount;
+      //       createTableRealisasiList();
+      //       return;
+      //     }
 
-          if (listPercent.length > 0) {
-            if (amount <= listPercent[listPercent.length - 1]) {
-              showwarning('Percentage Must Be More Than Last Percentage!');
-              allowedAmount = 0;
-              postData.percent_realisation = allowedAmount;
-              createTableRealisasiList();
-              return;
-            }
-            postData.percent_realisation = amount;
-            createTableRealisasiList();
-            return;
-          }
-          postData.percent_realisation = amount;
-          createTableRealisasiList();
-        }
+      //     if (listPercent.length > 0) {
+      //       if (amount <= listPercent[listPercent.length - 1]) {
+      //         showwarning('Percentage Must Be More Than Last Percentage!');
+      //         allowedAmount = 0;
+      //         postData.percent_realisation = allowedAmount;
+      //         createTableRealisasiList();
+      //         return;
+      //       }
+      //       postData.percent_realisation = amount;
+      //       createTableRealisasiList();
+      //       return;
+      //     }
+      //     postData.percent_realisation = amount;
+      //     createTableRealisasiList();
+      //   }
 
-        break;
+      //   break;
 
       default:
         break;
@@ -688,7 +696,7 @@ $(document).ready(function () {
       populateData(projectCode);
     }
   });
-  $(document).on('blur', '.inputrealisationamount, .inputpercentage, .inputcurrentqty, .inputcurrentqtyupah', function () {
+  $(document).on('blur', '.inputrealisationamount, .inputcurrentqty, .inputcurrentqtyupah', function () {
     let code = $(this).data('code');
     if ($(this).val() == '') {
       $(this).val(0);
@@ -697,9 +705,9 @@ $(document).ready(function () {
       case $(this).hasClass('inputrealisationamount'):
         calculateRealisation(parseFloat($(this).val()), 'amount');
         break;
-      case $(this).hasClass('inputpercentage'):
-        calculateRealisation(parseFloat($(this).val()), 'percentage');
-        break;
+      // case $(this).hasClass('inputpercentage'):
+      //   calculateRealisation(parseFloat($(this).val()), 'percentage');
+      //   break;
       case $(this).hasClass('inputcurrentqty'):
         updateMaterialList(code, parseFloat($(this).val()));
         break;
