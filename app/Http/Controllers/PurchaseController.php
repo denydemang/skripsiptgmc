@@ -354,6 +354,7 @@ class PurchaseController extends AdminController
                     foreach($datapurchasedetails as $i){
                         $stock = new StockController(); 
                         $cogs = bcdiv((floatval($i->sub_total) + $otherfee) , floatval($i->qty), 4);
+                        
                         $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), $cogs,2);
                     }
     

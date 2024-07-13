@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Advanced_Receipt;
+use App\Models\COA;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,6 +26,7 @@ class AdvanceReceiptController extends AdminController
     public function getViewAdvancedReceiptManage(Request $request, $code=null){
 
         $data= [];
+        $data['ArCOA'] = COA::where("code", "20.01.02.01")->first();
         if ($code){ //If In Update Mode
 
 
