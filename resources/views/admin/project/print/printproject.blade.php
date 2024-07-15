@@ -269,18 +269,24 @@
                     <th>No</th>
                     <th>Item Code</th>
                     <th>Item Name</th>
-                    <th>Qty</th>
                     <th>Unit</th>
+                    <th style="word-break: break-all;word-wrap:break-word;text-align: right">Qty Estimated</th>
+                    <th style="word-break: break-all;word-wrap:break-word;text-align: right">Qty Used</th>
+                    <th style="word-break: break-all;word-wrap:break-word;text-align: right">Different</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($bahanBaku as $item)
                     <tr>
-                        <td class="no-wrap">{{ $loop->iteration }}</td>
-                        <td>{{ $item->item_code }}</td>
-                        <td class="no-wrap">{{ $item->name }}</td>
-                        <td class="no-wrap">{{ floatval($item->qty) }}</td>
-                        <td class="no-wrap" style="text-align:left">{{ $item->unit_code }}</td>
+                        <td class="no-wrap" style="width:5%">{{ $loop->iteration }}</td>
+                        <td class="no-wrap" style="width:15%">{{ $item->item_code }}</td>
+                        <td style="word-break: break-all;word-wrap:break-word;width:35%">{{ $item->item_name }}</td>
+                        <td class="no-wrap" style="text-align:right;width:10%">{{ $item->unit_code }}</td>
+                        <td class="no-wrap" style="text-align: right;width:15%">{{ floatval($item->qty_estimated) }}
+                        </td>
+                        <td class="no-wrap" style="text-align: right;width:15%">{{ floatval($item->qty_used) }}</td>
+                        <td class="no-wrap" style="text-align: right;width:15%">{{ floatval($item->qty_remaining) }}
+                        </td>
                     </tr>
                 @endforeach
 
@@ -296,35 +302,52 @@
                     <th>No</th>
                     <th>Upah Code</th>
                     <th>Job</th>
-                    <th>Unit</th>
-                    <th>Qty</th>
-                    <th style="text-align: right">Price</th>
-                    <th style="text-align: right">Total</th>
+                    <th style="text-align: right">Estimated</th>
+                    <th style="text-align: right">Realisation</th>
                 </tr>
             </thead>
             <tbody>
                 @php
-                    $total = 0;
+                    $totalEstimated = 0;
+                    $totalRealisation = 0;
                 @endphp
                 @foreach ($upah as $item)
                     <tr>
                         <td class="no-wrap">{{ $loop->iteration }}</td>
                         <td>{{ $item->upah_code }}</td>
-                        <td>{{ $item->upah_name }}</td>
-                        <td class="no-wrap">{{ $item->unit }}</td>
-                        <td class="no-wrap">{{ floatval($item->qty) }}</td>
-                        <td class="no-wrap" style="text-align:right">Rp. {{ number_format($item->price, 2, ',', '.') }}
+                        <td>{{ $item->job_name }}</td>
+                        <td class="no-wrap" style="text-align:right">Rp.
+                            {{ number_format($item->amount_estimated, 2, ',', '.') }}
                         </td>
                         <td class="no-wrap" style="text-align:right"> Rp.
-                            {{ number_format($item->total, 2, ',', '.') }}</td>
+                            {{ number_format($item->amount_realised, 2, ',', '.') }}</td>
                     </tr>
                     @php
-                        $total += floatval($item->total);
+                        $totalEstimated += floatval($item->amount_estimated);
+                        $totalRealisation += floatval($item->amount_realised);
                     @endphp
                 @endforeach
                 <tr>
-                    <td colspan="6" style="text-align: center"><b>Total</b></td>
-                    <td class="no-wrap" style="text-align: right"><b>Rp. {{ number_format($total, 2, ',', '.') }}</b>
+                    <td colspan="3" style="text-align: center"><b>Total</b></td>
+                    <td class="no-wrap" style="text-align: right"><b>Rp.
+                            {{ number_format($totalEstimated, 2, ',', '.') }}</b>
+                    </td>
+                    <td class="no-wrap" style="text-align: right"><b>Rp.
+                            {{ number_format($totalRealisation, 2, ',', '.') }}</b>
+                    </td>
+                </tr>
+                <tr>
+                    @php
+                        $keterangan = '';
+                        if ($totalEstimated > $totalRealisation) {
+                            $keterangan = '(Surplus)';
+                        } elseif ($totalEstimated < $totalRealisation) {
+                            $keterangan = '(Defisit)';
+                        }
+                    @endphp
+                    <td colspan="3" style="text-align: center"><b>Different {{ $keterangan }}</b></td>
+                    <td colspan="2" class="no-wrap" style="text-align: right"><b>Rp.
+                            {{ number_format($totalEstimated - $totalRealisation, 2, ',', '.') }}</b>
                     </td>
                 </tr>
             </tbody>

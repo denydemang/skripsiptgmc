@@ -79,14 +79,85 @@ class PrintController extends AdminController
 
         $projectrealisation = ProjectRealisation::where("project_code", $id)->orderBy('realisation_date', 'asc')->orderBy("code", "asc")->get();
 
-        $dataBahanBaku = Project_Detail::join("items", "project_details.item_code", '=', 'items.code')
-        ->where('project_details.project_code', $id)
-        ->get();
-        $dataUpah = ProjectDetailB::join("upah", 'project_detail_b.upah_code', '=', 'upah.code')
-            ->select('upah.job as upah_name','project_detail_b.*' )
-            ->where("project_detail_b.project_code" ,$id)
-            ->get();
+        $dataBahanBaku =  DB::select("
+            
+        SELECT
+        pd.project_code,
+        pd.item_code,
+        i.name as item_name,
+        pd.unit_code,
+        pd.qty as qty_estimated,
+        IFNULL(qry.total_qty,0) as qty_used,
+        (pd.qty - IFNULL(qry.total_qty,0)) as qty_remaining
+        FROM
+        project_details pd
 
+        LEFT JOIN
+        (
+        SELECT
+        pr.project_code,
+        pdr.item_code,
+        sum(IFNULL(pdr.qty_used,0)) as total_qty
+
+        FROM
+        project_realisations pr LEFT JOIN project_detail_realisations pdr 
+        ON pr.`code` = pdr.project_realisation_code
+
+        GROUP BY pr.project_code, pdr.item_code) qry
+
+        ON pd.project_code = qry.project_code AND pd.item_code = qry.item_code
+
+        INNER JOIN items i
+        ON i.`code` = pd.item_code
+
+        GROUP BY pd.project_code,pd.item_code,i.name ,pd.qty ,pd.unit_code, qry.total_qty
+        Having pd.project_code = ?
+    
+        ", [$id]);
+
+        $dataUpah = DB::select("
+        SELECT
+        qry.project_code,
+        qry.upah_code,
+        qry.job_name,
+        (qry.price * qry.balance_awal) as amount_estimated,
+        (qry.price * qry.total_used) as amount_realised
+        from
+        (   SELECT
+            pdb.project_code,
+            pdb.upah_code,
+            u.job as job_name,
+            pdb.unit,
+            pdb.price,
+            pdb.qty as balance_awal,
+            IFNULL(qry.total_qty,0) as total_used,
+            (pdb.qty - IFNULL(qry.total_qty,0)) as last_balance
+            FROM
+            project_detail_b pdb
+
+            LEFT JOIN
+            (
+            SELECT
+            pr.project_code,
+            pdbr.upah_code,
+            sum(IFNULL(pdbr.qty_used,0)) as total_qty
+
+            FROM
+            project_realisations pr LEFT JOIN project_detail_b_realisations pdbr 
+            ON pr.`code` = pdbr.project_realisation_code 
+
+            GROUP BY pr.project_code, pdbr.upah_code) qry
+
+            ON pdb.project_code = qry.project_code AND pdb.upah_code = qry.upah_code 
+
+            INNER JOIN upah u
+            ON u.`code` = pdb.upah_code
+
+            GROUP BY pdb.project_code,pdb.upah_code,u.job,pdb.unit,pdb.price, pdb.qty, qry.total_qty
+            Having pdb.project_code = ?
+        ) qry
+        
+        ", [$id]);
         $data['project'] = $project;
         $data['bahanBaku'] = $dataBahanBaku;
         $data['upah'] = $dataUpah;
