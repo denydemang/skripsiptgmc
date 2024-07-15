@@ -36,6 +36,7 @@ class PrintController extends AdminController
         ->where("projects.code", $id)
         ->where("journals.journal_type_code", "!=", "jp")
         ->where("journal_details.description", "not like", "%Realisasi%")
+        ->orderBy("id", "asc")
         ->get();
 
         if (count($journal) == 0){
@@ -301,22 +302,36 @@ class PrintController extends AdminController
 
 
 
+
         $ITEMIN = Stock::join("items", "items.code", "=", "stocks.item_code")
-        ->select('stocks.item_date', 'stocks.ref_no' , DB::raw("'Pembelian' As keterangan"),
+        ->select('stocks.item_date', 'stocks.ref_no' , 
+        DB::raw("
+        CASE 
+            WHEN SUBSTR(stocks.ref_no, 1, 3) = 'PRC' THEN 'Pembelian' 
+            WHEN SUBSTR(stocks.ref_no, 1, 4) = 'PRJR' THEN 'Sisa Material Proyek'
+            ELSE '-'
+        End As keterangan 
+        "),
         'stocks.item_code' , "items.name as item_name", 'stocks.unit_code' , 'stocks.actual_stock as qty' , 'stocks.cogs',DB::raw('stocks.actual_stock * stocks.cogs as total_cogs'))
         ->where("stocks.item_code", $itemCode)
         ->whereBetween('stocks.item_date', [$startDate, $lastDate]);
 
 
         $ITEMOUT = Stocks_Out::join("items", "items.code", "=", "stocks_out.item_code")
-        ->select('stocks_out.item_date','stocks_out.ref_no' , DB::raw("'Pemakaian Proyek' As keterangan"),
+        ->select('stocks_out.item_date','stocks_out.ref_no' ,
+        DB::raw("
+        CASE 
+            WHEN SUBSTR(stocks_out.ref_no, 1, 3) = 'PRJ' THEN 'Pemakaian Proyek' 
+            ELSE '-'
+        End As keterangan
+        "),
         'stocks_out.item_code' , "items.name as item_name", 'stocks_out.unit_code', 'stocks_out.qty', 'stocks_out.cogs' , DB::raw('stocks_out.qty * stocks_out.cogs as total_cogs'))
         ->where("stocks_out.item_code", $itemCode)
         ->whereBetween("stocks_out.item_date",  [$startDate, $lastDate]);
 
 
         $UNIONALLRESULT = $ITEMIN->UnionALL($ITEMOUT)
-                        ->orderBy('item_date', 'asc')->get();
+                        ->orderBy('item_date', 'asc')->orderBy('ref_no' ,'asc')->get();
 
 
         $data = [
