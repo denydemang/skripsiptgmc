@@ -246,6 +246,7 @@
                                     'admin.profitloss',
                                     'admin.balancesheet',
                                     'admin.capitalchange',
+                                    'admin.hpp',
                                     // 'admin.addPaymentView',
                                     // 'admin.editPaymentView',
                                     // 'admin.cashbook',
@@ -291,6 +292,10 @@
                                     </li>
                                     <li class="nav-item {{ $sessionRoute == 'admin.balancesheet' ? 'active' : '' }}">
                                         <a href="{{ route('admin.balancesheet') }}" class="nav-link">Balance Sheet
+                                            Report</a>
+                                    </li>
+                                    <li class="nav-item {{ $sessionRoute == 'admin.hpp' ? 'active' : '' }}">
+                                        <a href="{{ route('admin.hpp') }}" class="nav-link">HPP
                                             Report</a>
                                     </li>
                                 </ul>

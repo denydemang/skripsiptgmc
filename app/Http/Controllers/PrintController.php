@@ -1412,7 +1412,7 @@ class PrintController extends AdminController
 
     public function journalrecap(string $startDate, string $endDate, $isposting = null, $journaltype= null){
 
-       
+    
         try {
             
             $journal = Journal::join('journal_details as jd', 'journals.voucher_no', '=', 'jd.voucher_no')
@@ -1852,6 +1852,69 @@ class PrintController extends AdminController
         try {
             //code...
     
+        } catch (\Throwable $th) {
+            abort(400);
+        }
+    }
+
+    public function printhpp(string $startDate, string $endDate){
+
+        try {
+            //code...
+
+            $result = DB::select(
+                "
+                    Select 'standar' As grup, 'Biaya Material' as keterangan, ifnull(SUM(debit),0) as nominal from journal_details jd
+                    INNER JOIN journals j ON j.voucher_no = jd.voucher_no
+                    where (jd.coa_code = '50.01' OR (jd.coa_code = '10.01.04.01' AND jd.description like '%Persediaan Masuk Sisa Realisasi%') ) AND j.transaction_date Between ? AND ? AND j.posting_status = 1
+
+                    UNION ALL
+
+                    Select 'standar' As grup, 'Biaya TKL' as keterangan, ifnull(SUM(debit),0) as nominal from journal_details jd
+                    INNER JOIN journals j ON j.voucher_no = jd.voucher_no
+                    where (jd.coa_code = '50.02' OR (jd.coa_code = '20.01.01.03' AND jd.description like '%Pengurangan Utang Gaji Untuk Upah Yang Tidak Terealisasi%') ) AND j.transaction_date Between ? AND ? AND j.posting_status = 1
+
+                    UNION ALL
+                    Select 'standar' as grup, 'Biaya Operasional' as keterangan, ifnull(SUM(debit),0) as nominal from journal_details jd
+                    INNER JOIN journals j ON j.voucher_no = jd.voucher_no
+                    where coa_code = '50.03' AND j.transaction_date Between ? AND ? AND j.posting_status = 1
+
+                    UNION ALL
+
+                    Select 'real' As grup, 'Biaya Material' as keterangan, ifnull(SUM(debit),0) as nominal from journal_details jd
+                    INNER JOIN journals j ON j.voucher_no = jd.voucher_no
+                    where coa_code = '50.01' AND j.transaction_date Between ? AND ? AND j.posting_status = 1
+
+                    UNION ALL
+
+                    Select 'real' as grup ,'Biaya TKL' as keterangan, ifnull(SUM(debit),0)as nominal from journal_details jd
+                    INNER JOIN journals j ON j.voucher_no = jd.voucher_no
+                    where coa_code = '50.02' AND j.transaction_date Between ? AND ? AND j.posting_status = 1
+
+                    UNION ALL
+
+                    Select 'real' as grup, 'Biaya Operasional' as keterangan, ifnull(SUM(debit),0) as nominal from journal_details jd
+                    INNER JOIN journals j ON j.voucher_no = jd.voucher_no
+                    where coa_code = '50.03' AND j.transaction_date Between ? AND ? AND j.posting_status = 1
+                
+                " , [$startDate,$endDate,$startDate,$endDate,$startDate,$endDate,$startDate,$endDate,$startDate,$endDate,$startDate,$endDate]
+            
+                );
+
+                $groupedData = collect($result)->groupBy('grup');
+        
+                $data = [
+                    'coaData' => $groupedData,
+                    'firstDate' => Carbon::parse($startDate)->format("d/m/Y"),
+                    'lastDate' => Carbon::parse($endDate)->format("d/m/Y")
+                ];
+
+
+                $pdf = App::make('dompdf.wrapper');
+                $pdf->setPaper('A4', 'potrait');
+                $pdf->loadview("admin.accounting.prints.printhpp",$data);
+                return $pdf->stream("HPP($startDate-$endDate).pdf", array("Attachment" => false));
+
         } catch (\Throwable $th) {
             abort(400);
         }

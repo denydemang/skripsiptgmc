@@ -10,6 +10,7 @@ use App\Http\Controllers\COAController;
 use App\Http\Controllers\CredentialController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\HPPController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\JournalController;
@@ -38,6 +39,7 @@ use App\Http\Middleware\CapitalChangemiddleware;
 use App\Http\Middleware\CashbookMiddleware;
 use App\Http\Middleware\DashBoardMiddleware;
 use App\Http\Middleware\GuestMiddleware;
+use App\Http\Middleware\HPPMiddleware;
 use App\Http\Middleware\IINmiddleware;
 use App\Http\Middleware\InvoiceMiddleware;
 use App\Http\Middleware\IOUTMiddleware;
@@ -721,6 +723,18 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
     });
 
+    Route::controller(HPPController::class)->group(function(){
+
+        Route::middleware(HPPMiddleware::class)->group(function(){
+            //Get View
+            Route::get('/admin/hpp', 'getViewHPP')->name('admin.hpp');
+
+            // Print
+            Route::get('/admin/hpp/print', 'printhpp')->name('admin.printhpp');
+        });
+
+    });
+    
 
     // ------------------------------------------
 
