@@ -470,7 +470,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::middleware(StockCardMiddleware::class)->group(function(){
 
             Route::get('/admin/stockcard', 'getViewStockCard')->name('admin.stockcard');
-            Route::get('/admin/stockscard/print', 'printstockcard')->name('admin.printstockcard');
+            // Route::get('/admin/stockscard/print', 'printstockcard')->name('admin.printstockcard');
+            Route::get('/admin/stockscard/print', 'printstockcardAVG')->name('admin.printstockcard');
             Route::post('/admin/stockcard/gettable', 'getTableStockCard')->name('admin.tablestockcard');
         });
 

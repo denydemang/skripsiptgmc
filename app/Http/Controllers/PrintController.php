@@ -375,6 +375,8 @@ class PrintController extends AdminController
             ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code')
             ->get();
 
+        
+
         $data = [
             'stocckData' => $stock,
         ];
@@ -509,6 +511,95 @@ class PrintController extends AdminController
         $pdf = App::make('dompdf.wrapper');
         $pdf->setPaper('A3', 'landscape');
         $pdf->loadview("admin.inventory.print.printstockcard" , $data);
+        return $pdf->stream("StockCard.pdf", array("Attachment" => false));
+    }
+
+    public function printstockcardavg( $startDate , $lastDate , $itemCode){
+
+        $item = Item::where("code" , $itemCode)->first();
+
+        if(!$item){
+            abort(404);
+        }
+
+        $BeginningBalance = StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
+        ->join('categories', "categories.code", "=", "items.category_code")
+        ->join('units', "units.code", "=", "items.unit_code")
+        ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 
+        'units.code as unit_code',
+        DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as balance_qty'),
+        DB::raw('ifnull((sum(stocksavg.total_in) - sum(stocksavg.total_out)) / (sum(stocksavg.actual_stock) - sum(stocksavg.used_stock)) ,0) as cogs'),
+        DB::raw('ifnull(sum(stocksavg.total_in) - sum(stocksavg.total_out) ,0) as total')
+        )
+        ->where("items.code",$itemCode )
+        ->where("stocksavg.item_date", "<", $startDate)
+        ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code')
+        ->first();
+
+
+        $detailTrans =  
+        DB::select("
+            SELECT 
+            *
+            from
+            (
+            SELECT
+            s.id,
+            'IIN' as type,
+            iin.iinno as trans_no,
+            iin.ref_no as reftrans,
+            s.item_code,
+            CAST(s.item_date as date) as item_date,
+            CASE
+            WHEN iin.ref_no LIKE '%PRC%' THEN 'Pembelian'
+            WHEN iin.ref_no LIKE '%PRJR%' THEN 'Sisa Material Proyek'
+            ELSE 'Stock Awal'
+            END AS description,
+            ifnull(s.actual_stock ,0 )as qty,
+            ifnull(iin.cogs, 0) as price,
+            ifnull(iin.total, 0) as total
+            FROM
+            stocksavg s INNER JOIN stocksin_avg iin
+            on s.ref_no = iin.iinno and s.item_code = iin.item_code
+
+            UNION ALL
+
+            SELECT
+            s.id,
+            'IOUT' as type,
+            iout.ioutno as trans_no,
+            iout.ref_no as reftrans,
+            s.item_code,
+            CAST(s.item_date as date) as item_date,
+            CASE
+            WHEN iout.ref_no LIKE '%PRJ%' THEN 'Pemakaian Proyek'
+            ELSE 'Stock Awal'
+            END AS description,
+            ifnull(s.used_stock ,0 )as qty,
+            ifnull(iout.cogs, 0) as price,
+            iout.total as total
+            FROM
+            stocksavg s INNER JOIN stocksout_avg iout
+            on s.ref_no = iout.ioutno and s.item_code = iout.item_code
+            ) qry
+
+            where qry.item_date BETWEEN :startDate And :lastDate
+            AND qry.item_code = :itemCode
+            ORDER BY qry.item_date asc , qry.id asc
+        ",["startDate"=> $startDate, "lastDate"=> $lastDate , "itemCode" => $itemCode ]);
+
+
+        $data = [
+            'itemDesc' =>  $item ,
+            'startDate' => $startDate,
+            'lastDate' => $lastDate,
+            'begginningstock' => $BeginningBalance,
+            'detailTrans' => $detailTrans
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A3', 'landscape');
+        $pdf->loadview("admin.inventory.print.printstockcardavg", $data);
         return $pdf->stream("StockCard.pdf", array("Attachment" => false));
     }
 

@@ -231,6 +231,34 @@ class StockController extends Controller
         return $printcontroller->printstockcard($startDate, $endDate, $itemcode);
     }
 
+    public function printstockcardAVG(Request $request){
+
+        $startDate = $request->get('startdate');
+        $endDate = $request->get('enddate');
+        $itemcode= $request->get('itemcode');
+
+
+        try {
+            //code...
+            if( !Carbon::createFromFormat('Y-m-d', $startDate) ){
+                abort(404);
+            }
+            if( !Carbon::createFromFormat('Y-m-d', $endDate) ){
+                abort(404);
+            }
+            if (!$startDate || !$endDate || !$itemcode){
+                abort(404);
+            }
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printstockcardavg($startDate, $endDate, $itemcode);
+    }
+
     public function getTableInventoryIn(Request $request, DataTables $dataTables){
 
         if ($request->ajax()){
