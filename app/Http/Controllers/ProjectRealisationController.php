@@ -8,6 +8,8 @@ use App\Models\Project_Detail_Realisations;
 use App\Models\ProjectRealisation;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksInAVG;
+use App\Models\StocksOutAVG;
 use Carbon\Carbon;
 use Database\Seeders\ProjectRelationSeed;
 use Exception;
@@ -352,6 +354,9 @@ class ProjectRealisationController extends AdminController
 
                 $Project->update();
         
+                
+                $IINMAX = StocksInAVG::where("iinno", "like", "IIN%")->orderBy("iinno", "desc")->lockforUpdate()->first();
+                $iinno = $this->automaticCode('IIN' ,$IINMAX, true, 'iinno');
                 foreach ($detailA as $key => $value) {
 
                     $PDR = new Project_Detail_Realisations();
@@ -364,11 +369,17 @@ class ProjectRealisationController extends AdminController
                     if (intval($data['termin']) ==  intval($defaultTermin) && $value->sisa_qty > 0 ){
                         
                         $PDR->qty_additional =$value->sisa_qty;
-                        $stocksOut = Stocks_Out::where('ref_no',$PR->project_code)->where("item_code", $PDR->item_code )->first();
+                        // $stocksOut = Stocks_Out::where('ref_no',$PR->project_code)->where("item_code", $PDR->item_code )->first();
                         
                         $stockController = new StockController();
 
-                        $stockController->stockin($PDR->project_realisation_code,$PDR->item_code,$PDR->unit_code,$PR->realisation_date,$value->sisa_qty,floatval($stocksOut->cogs));
+                        // $stockController->stockin($PDR->project_realisation_code,$PDR->item_code,$PDR->unit_code,$PR->realisation_date,$value->sisa_qty,floatval($stocksOut->cogs));
+                        // $price = StocksOutAVG::where("ref_no",$PR->project_code)->("item_code", $value->item_code)->first()->cogs;
+                        $price = StocksOutAVG::where("ref_no",$PR->project_code)->where("item_code", $value->item_code)->first()->cogs;
+                        // $qty = StocksOutAVG::where("ref_no",$PR->project_code)->where("item_code", $value->item_code)->first()->qty;
+                        $totalcogs = floatval($value->sisa_qty) * floatval($price);
+
+                        $stockController->stockinAVG($iinno ,$PDR->project_realisation_code,$PDR->item_code,$PDR->unit_code,$PR->realisation_date, $price, floatval($value->sisa_qty),$totalcogs);
 
                     } else {
                         $PDR->qty_additional = floatval(0);

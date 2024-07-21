@@ -21,6 +21,7 @@ use App\Models\Purchase;
 use App\Models\Purchase_Detail;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksAVG;
 use App\Models\StocksOutAVG;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -198,11 +199,11 @@ class AccountingController extends AdminController
 
         $Variation_COA_ProjectDetail = Project_Detail_Realisations::join("items",'project_detail_realisations.item_code', '=', 'items.code')
         ->join("categories", "items.category_code", "=", 'categories.code')
-        ->join("stocks" , function ($join){
-            $join->on("stocks.item_code", "=", "items.code")
-            ->on("stocks.ref_no", "=", "project_detail_realisations.project_realisation_code");
+        ->join("stocksin_avg" , function ($join){
+            $join->on("stocksin_avg.item_code", "=", "items.code")
+            ->on("stocksin_avg.ref_no", "=", "project_detail_realisations.project_realisation_code");
         })
-        ->select("categories.coa_code",DB::raw("SUM(stocks.actual_stock * stocks.cogs) as totalcogs"))
+        ->select("categories.coa_code",DB::raw("sum(stocksin_avg.total) as totalcogs"))
         ->where("project_detail_realisations.project_realisation_code", $ref_no)
         ->groupBy("categories.coa_code")
         ->get();
@@ -230,22 +231,23 @@ class AccountingController extends AdminController
 
         // Perhitungan Beban Material
         $totalCogs = 0;
-        foreach ($projectDetailA as $item){
-            $cogs = Stocks_Out::where("ref_no", $projectrealisation->project_code)->where('item_code', $item->item_code)->first()->cogs;
-            $totalCogs +=  floatval($item->qty_used) * floatval($cogs);
-        }
+        // foreach ($projectDetailA as $item){
+            
+        // }
+
+        $totalCogs = StocksOutAVG::selectRaw("sum(total) as total")->where("ref_no", $projectrealisation->project_code)->first()->total;
 
         // Insert Beban Material Jurnal Detail
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;
         $journalDetail->description = "Beban Material Untuk Realisasi Proyek $projectrealisation->code" ;
         $journalDetail->coa_code = $project->coa_expense;
-        $journalDetail->debit = $totalCogs;
+        $journalDetail->debit = floatval($totalCogs);
         $journalDetail->kredit = 0;
         $journalDetail->created_by = Auth::user()->username;
         $journalDetail->save();
 
-        // Insert Sisa Material Diakhir Termin (Menambah Stock) Journal Detail
+        //Insert Sisa Material Diakhir Termin (Menambah Stock) Journal Detail
         $totalCOGSSisaQty = 0;
         if (count($Variation_COA_ProjectDetail) > 0){
 
@@ -261,8 +263,15 @@ class AccountingController extends AdminController
                 $journalDetail->save();
             }
         }
-
-
+        // $totalCOGSSisaQty = 
+        // $journalDetail  = New Journal_Detail();
+        // $journalDetail->voucher_no = $journal->voucher_no;
+        // $journalDetail->description = "Persediaan Masuk Sisa Realisasi Proyek Termin Terakhir $projectrealisation->code" ;
+        // $journalDetail->coa_code = $item->coa_code;
+        // $journalDetail->debit =floatval($item->totalcogs);
+        // $journalDetail->kredit = 0;
+        // $journalDetail->created_by = Auth::user()->username;
+        // $journalDetail->save();
 
         // Insert Proyek Dalam Proses Journal Detail
         $journalDetail  = New Journal_Detail();
