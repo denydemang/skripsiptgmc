@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\StocksAVG;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -174,20 +175,25 @@ class ItemController extends AdminController
 
         if ($request->Ajax()) {
 
-            $items = Item::leftjoin('stocks', "items.code", "=", "stocks.item_code")
-                ->leftjoin('categories', 'items.category_code', '=', 'categories.code')
-                ->select(
-                    'items.code',
-                    'items.name',
-                    'items.unit_code',
-                    'categories.code as category_code',
-                    'categories.name as category_name',
-                    'items.min_stock',
-                    'items.max_stock',
-                    DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks')
-                )
-                ->groupBy('items.code', 'items.name', 'items.unit_code', 'categories.code', 'categories.name', 'items.min_stock', 'items.max_stock');
+            // $items = Item::leftjoin('stocks', "items.code", "=", "stocks.item_code")
+            //     ->leftjoin('categories', 'items.category_code', '=', 'categories.code')
+            //     ->select(
+            //         'items.code',
+            //         'items.name',
+            //         'items.unit_code',
+            //         'categories.code as category_code',
+            //         'categories.name as category_name',
+            //         'items.min_stock',
+            //         'items.max_stock',
+            //         DB::raw('IFNULL(SUM(stocks.actual_stock - stocks.used_stock), 0) As stocks')
+            //     )
+            //     ->groupBy('items.code', 'items.name', 'items.unit_code', 'categories.code', 'categories.name', 'items.min_stock', 'items.max_stock');
 
+                $items = StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
+                ->join('categories', "categories.code", "=", "items.category_code")
+                ->join('units', "units.code", "=", "items.unit_code")
+                ->select('items.code' ,'items.name',  'units.code as unit_code','categories.code as category_code', 'categories.name as category_name', 'items.min_stock', 'items.max_stock', DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as stocks'))
+                ->groupBy('items.code', 'items.name' ,'categories.code','categories.name' ,'units.code', 'items.min_stock','items.max_stock');
             return $dataTables->of($items)
                 ->addColumn('action', function ($row) {
 
