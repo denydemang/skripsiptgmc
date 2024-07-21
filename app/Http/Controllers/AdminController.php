@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use App\Models\Project;
 use App\Models\Purchase;
 use App\Models\Stock;
+use App\Models\StocksAVG;
 use App\Models\Supplier;
 use Carbon\Carbon;
 use Exception;
@@ -110,13 +111,13 @@ class AdminController extends Controller
                             ->whereColumn('purchases.grand_total', '>', 'purchases.paid_amount')
                             ->groupBy('suppliers.code', 'suppliers.name')->get();
         
-        $stockReminder =  Stock::Rightjoin("items", "stocks.item_code", "=", "items.code")
+        $stockReminder =  StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
         ->join('categories', "categories.code", "=", "items.category_code")
         ->join('units', "units.code", "=", "items.unit_code")
         ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 'items.min_stock',
-        'units.code as unit_code', DB::raw('ifnull(sum(stocks.actual_stock) - sum(stocks.used_stock) ,0) as current_stock'))
+        'units.code as unit_code', DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as current_stock'))
         ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code', 'items.min_stock')
-        ->havingRaw('IFNULL(sum(stocks.actual_stock) - sum(stocks.used_stock), 0) <= (items.min_stock + 1)')->get();
+        ->havingRaw('IFNULL(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock), 0) <= (items.min_stock + 1)')->get();
 
 
         $projectDone = Project::whereColumn('budget', '<=', 'realisation_amount')->where('project_status', 1)->count();

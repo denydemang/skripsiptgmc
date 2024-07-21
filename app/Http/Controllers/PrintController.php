@@ -405,6 +405,25 @@ class PrintController extends AdminController
         return $pdf->stream("ReminderStock.pdf", array("Attachment" => false));
     }
 
+    public function printStockReminderAVG(){
+        $stock = StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
+        ->join('categories', "categories.code", "=", "items.category_code")
+        ->join('units', "units.code", "=", "items.unit_code")
+        ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 'items.min_stock',
+        'units.code as unit_code', DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as current_stock'))
+        ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code', 'items.min_stock')
+        ->havingRaw('IFNULL(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock), 0) <= (items.min_stock + 1)')->get();
+
+        $data = [
+            'stocckData' => $stock,
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->loadview("admin.inventory.print.printreminderstock", $data);
+        return $pdf->stream("ReminderStock.pdf", array("Attachment" => false));
+    }
+
     public function printstockcard( $startDate , $lastDate , $itemCode){
 
         $item = Item::where("code" , $itemCode)->first();

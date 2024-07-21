@@ -197,6 +197,11 @@ class StockController extends Controller
         $printcontroller = new PrintController();
         return $printcontroller->printStockReminder();
     }
+    public function printstockreminderavg(){
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printStockReminderAVG();
+    }
     
     public function printstockcard(Request $request){
 
@@ -530,6 +535,47 @@ class StockController extends Controller
             'units.code as unit_code', DB::raw('ifnull(sum(stocks.actual_stock) - sum(stocks.used_stock) ,0) as current_stock'))
             ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code', 'items.min_stock')
             ->havingRaw('IFNULL(sum(stocks.actual_stock) - sum(stocks.used_stock), 0) <= (items.min_stock + 1)');
+
+
+            return $dataTables->of($stock)
+                ->editColumn('min_stock', function($row) {
+                    return floatval($row->min_stock);
+                })
+                ->editColumn('current_stock', function($row) {
+                    return floatval($row->current_stock);
+                })
+                ->filterColumn('item_name', function($query, $keyword) {
+                    $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_code', function($query, $keyword) {
+                    $query->whereRaw("items.code LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('unit_code', function($query, $keyword) {
+                    $query->whereRaw("units.code LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_category', function($query, $keyword) {
+                    $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->addIndexColumn()
+                ->make(true);
+                
+                
+        } else {
+            abort(404);
+        }
+    }
+    public function getTableStockReminderAVG(Request $request, DataTables $dataTables){
+
+        if ($request->ajax()){
+
+            
+            $stock = StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->join('units', "units.code", "=", "items.unit_code")
+            ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 'items.min_stock',
+            'units.code as unit_code', DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as current_stock'))
+            ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code', 'items.min_stock')
+            ->havingRaw('IFNULL(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock), 0) <= (items.min_stock + 1)');
 
 
             return $dataTables->of($stock)

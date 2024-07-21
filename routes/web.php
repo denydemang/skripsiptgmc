@@ -460,8 +460,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::middleware(StockReminderMiddleware::class)->group(function(){
 
             Route::get('/admin/stockreminder', 'getViewStockReminder')->name('admin.stockreminder');
-            Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
-            Route::get('/admin/stocks/printstockreminder', 'printstockreminder')->name('admin.printstockreminder');
+            // Route::post('/admin/stockreminder/gettable', 'getTableStockReminder')->name('admin.tablestockreminder');
+            Route::post('/admin/stockreminder/gettable', 'getTableStockReminderAVG')->name('admin.tablestockreminder');
+            // Route::get('/admin/stocks/printstockreminder', 'printstockreminder')->name('admin.printstockreminder');
+            Route::get('/admin/stocks/printstockreminder', 'printstockreminderavg')->name('admin.printstockreminder');
         });
 
 
