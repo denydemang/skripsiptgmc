@@ -113,9 +113,9 @@
                     <th>Item Code</th>
                     <th>Item Name</th>
                     <th>Unit</th>
-                    <th>Qty IN</th>
-                    <th>Price</th>
-                    <th>Total</th>
+                    <th style="text-align: right">Qty IN</th>
+                    <th style="text-align: right">Price</th>
+                    <th style="text-align: right">Total</th>
                 </tr>
             </thead>
             <tbody>
@@ -131,9 +131,11 @@
                             <td class="no-wrap">{{ $item->item_code }}</td>
                             <td>{{ $item->item_name }}</td>
                             <td>{{ $item->unit_code }}</td>
-                            <td class="no-wrap">{{ floatval($item->qty) }}</td>
-                            <td class="no-wrap">Rp. {{ number_format($item->cogs, 2, ',', '.') }}</td>
-                            <td class="no-wrap">Rp. {{ number_format($item->total, 2, ',', '.') }}</td>
+                            <td class="no-wrap" style="text-align: right">{{ floatval($item->qty) }}</td>
+                            <td class="no-wrap" style="text-align: right">Rp.
+                                {{ number_format($item->cogs, 2, ',', '.') }}</td>
+                            <td class="no-wrap" style="text-align: right">Rp.
+                                {{ number_format($item->total, 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 @endforeach

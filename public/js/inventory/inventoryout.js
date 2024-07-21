@@ -36,6 +36,7 @@ $(document).ready(function () {
   const tableName = '.iouttable';
   const method = 'post';
   const columns = [
+    { data: 'ioutno', name: 'ioutno', title: 'IOT No', searchable: true, orderable: true },
     { data: 'item_date', name: 'item_date', title: 'Date Item OUT', searchable: true, orderable: true },
     { data: 'ref_no', name: 'ref_no', title: 'Reference', searchable: true, orderable: false },
     { data: 'item_code', name: 'item_code', title: 'Item Code', searchable: true, orderable: true },
@@ -44,6 +45,7 @@ $(document).ready(function () {
     { data: 'unit_code', name: 'unit_code', title: 'Unit Code', searchable: true, orderable: false },
     { data: 'qty', name: 'qty', title: 'Quantity OUT', searchable: false, orderable: false },
     { data: 'cogs', name: 'cogs', title: 'COGS', searchable: false, orderable: false },
+    { data: 'total', name: 'total', title: 'Total', searchable: false, orderable: false },
     { data: 'coa_code', name: 'coa_code', title: 'COA code', searchable: false, orderable: false }
   ];
 

@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
 use App\Models\StocksInAVG;
+use App\Models\StocksOutAVG;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -152,6 +153,33 @@ class StockController extends Controller
         return $printcontroller->printIOUT($firstDate, $lastDate);
     }
 
+    public function printIOUTAVG(Request $request){
+
+        $firstDate = $request->get('firstDate');
+        $lastDate = $request->get('lastDate');
+
+        try {
+            //code...
+            if( !Carbon::createFromFormat('Y-m-d', $firstDate) ){
+                abort(404);
+            }
+            if( !Carbon::createFromFormat('Y-m-d', $lastDate) ){
+                abort(404);
+            }
+            if (empty($firstDate)){
+                abort(404);
+            }
+            if (empty($lastDate)){
+                abort(404);
+            }
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printIOUTAVG($firstDate, $lastDate);
+    }
+
     public function printstock(){
 
         $printcontroller = new PrintController();
@@ -272,10 +300,10 @@ class StockController extends Controller
                     return floatval($row->qty);
                 })
                 ->editColumn('cogs', function($row) {
-                    return "Rp " .number_format($row->cogs,2, '.');
+                    return "Rp " .number_format($row->cogs,2,',', '.');
                 })
                 ->editColumn('total', function($row) {
-                    return "Rp " .number_format($row->total,2, '.');
+                    return "Rp " .number_format($row->total,2,',', '.');
                 })
                 ->filterColumn('item_name', function($query, $keyword) {
                     $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
@@ -330,7 +358,50 @@ class StockController extends Controller
                     return floatval($row->qty);
                 })
                 ->editColumn('cogs', function($row) {
-                    return "Rp " .number_format($row->cogs,2, '.');
+                    return "Rp " .number_format($row->cogs,2, ',','.');
+                })
+                ->filterColumn('item_name', function($query, $keyword) {
+                    $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_category', function($query, $keyword) {
+                    $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->addIndexColumn()
+                ->make(true);
+                
+                
+        } else {
+            abort(404);
+        }
+    }
+    public function getTableInventoryOutAVG(Request $request, DataTables $dataTables){
+
+        if ($request->ajax()){
+
+
+            $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
+            $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
+        
+            
+            $stock = StocksOutAVG::join("items", "stocksout_avg.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->select('stocksout_avg.id','stocksout_avg.ioutno', 'stocksout_avg.item_date', 'stocksout_avg.ref_no', 
+            'stocksout_avg.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+            'stocksout_avg.unit_code', 'stocksout_avg.qty', 'stocksout_avg.cogs', 'stocksout_avg.total', 'categories.coa_code')
+            ->whereBetween('stocksout_avg.item_date', [$startDate,$endDate]);
+
+            return $dataTables->of($stock)
+                ->editColumn('item_date', function($row) {
+                    return Carbon::parse($row->item_date)->format('d/m/Y');
+                })
+                ->editColumn('qty', function($row) {
+                    return floatval($row->qty);
+                })
+                ->editColumn('cogs', function($row) {
+                    return "Rp " .number_format($row->cogs,2,",", '.' );
+                })
+                ->editColumn('total', function($row) {
+                    return "Rp " .number_format($row->total,2,',', '.');
                 })
                 ->filterColumn('item_name', function($query, $keyword) {
                     $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);

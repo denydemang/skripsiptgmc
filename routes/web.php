@@ -442,8 +442,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         Route::middleware(IOUTMiddleware::class)->group(function(){
             Route::get('/admin/inventoryout', 'getViewInventoryOUT')->name('admin.iout');
-            Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
-            Route::post('/admin/inventoryout/gettable', 'getTableInventoryOut')->name('admin.tableout');
+            // Route::get('/admin/inventoryout/printiout', 'printIOUT')->name('admin.printIOUT');
+            Route::get('/admin/inventoryout/printiout', 'printIOUTAVG')->name('admin.printIOUT');
+            // Route::post('/admin/inventoryout/gettable', 'getTableInventoryOut')->name('admin.tableout');
+            Route::post('/admin/inventoryout/gettable', 'getTableInventoryOutAVG')->name('admin.tableout');
         });
 
 
