@@ -434,8 +434,9 @@ Route::middleware(AuthMiddleware::class)->group(function () {
         Route::middleware(IINmiddleware::class)->group(function(){
 
             Route::get('/admin/inventoryin', 'getViewInventoryIN')->name('admin.iin');
-            Route::get('/admin/inventoryin/printiin', 'printIIN')->name('admin.printIIN');
-            Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
+            Route::get('/admin/inventoryin/printiin', 'printIINAVG')->name('admin.printIIN');
+            // Route::post('/admin/inventoryin/gettable', 'getTableInventoryIn')->name('admin.tableiin');
+            Route::post('/admin/inventoryin/gettable', 'getTableInventoryInAVG')->name('admin.tableiin');
         });
 
 

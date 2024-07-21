@@ -6,6 +6,7 @@ use App\Models\COA;
 use App\Models\Item;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksInAVG;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -99,6 +100,29 @@ class StockController extends Controller
 
         $printcontroller = new PrintController();
         return $printcontroller->printIIN($firstDate, $lastDate);
+    }
+    public function printIINAVG(Request $request){
+
+        $firstDate = $request->get('firstDate');
+        $lastDate = $request->get('lastDate');
+
+        try {
+            //code...
+            if( !Carbon::createFromFormat('Y-m-d', $firstDate) ){
+                abort(404);
+            }
+            if( !Carbon::createFromFormat('Y-m-d', $lastDate) ){
+                abort(404);
+            }
+            if (empty($firstDate)){
+                abort(404);
+            }
+        } catch (\Throwable $th) {
+            abort(404);
+        }
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printIINAVG($firstDate, $lastDate);
     }
 
     public function printIOUT(Request $request){
@@ -224,6 +248,64 @@ class StockController extends Controller
         }
     }
 
+    public function getTableInventoryInAVG(Request $request, DataTables $dataTables){
+
+        if ($request->ajax()){
+
+
+            $startDate =Carbon::createFromFormat('d/m/Y', $request->startDate)->format('Y-m-d');
+            $endDate = Carbon::createFromFormat('d/m/Y', $request->endDate)->format('Y-m-d');
+        
+            
+            $stock = StocksInAVG::join("items", "stocksin_avg.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->select('stocksin_avg.id', 'stocksin_avg.iinno', 'stocksin_avg.ref_no','stocksin_avg.item_date',
+            'stocksin_avg.item_code' ,'items.name as item_name', 'categories.name as item_category', 
+            'stocksin_avg.unit_code', 'stocksin_avg.qty', 'stocksin_avg.cogs', 'stocksin_avg.total','categories.coa_code')
+            ->whereBetween('stocksin_avg.item_date', [$startDate,$endDate]);
+            
+            return $dataTables->of($stock)
+                ->editColumn('item_date', function($row) {
+                    return Carbon::parse($row->item_date)->format('d/m/Y');
+                })
+                ->editColumn('qty', function($row) {
+                    return floatval($row->qty);
+                })
+                ->editColumn('cogs', function($row) {
+                    return "Rp " .number_format($row->cogs,2, '.');
+                })
+                ->editColumn('total', function($row) {
+                    return "Rp " .number_format($row->total,2, '.');
+                })
+                ->filterColumn('item_name', function($query, $keyword) {
+                    $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_category', function($query, $keyword) {
+                    $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->addColumn('action', function ($row) {
+                    $html = '';
+
+                    if ($row->ref_no == 'Stock Awal'){
+                        $html = '
+                            <div class="d-flex justify-content-center">
+                            <button class="btn btn-sm btn-primary editbtn" data-code="'.$row->id.'" title="Edit"><i class="fa fa-edit"></i></button>
+                            <button class="btn btn-sm btn-danger deletebtn" data-code="'.$row->id.'" title="Delete"><i class="fa fa-trash"></i></button>
+                            </div>';
+                    }       
+                    
+                    
+                    return $html;
+                })
+                ->rawColumns(['action'])
+                ->addIndexColumn()
+                ->make(true);
+                
+                
+        } else {
+            abort(404);
+        }
+    }
     public function getTableInventoryOut(Request $request, DataTables $dataTables){
 
         if ($request->ajax()){

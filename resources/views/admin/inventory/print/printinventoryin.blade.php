@@ -108,28 +108,32 @@
         <table id="detail">
             <thead>
                 <tr>
+                    <th>IIN No</th>
                     <th>Ref Transaction</th>
                     <th>Item Code</th>
                     <th>Item Name</th>
                     <th>Unit</th>
                     <th>Qty IN</th>
-                    <th>COGS</th>
+                    <th>Price</th>
+                    <th>Total</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($stocckData as $tanggal => $items)
                     <tr>
-                        <td colspan="6" class="headerdate"><b>Date In :
+                        <td colspan="8" class="headerdate"><b>Date In :
                                 {{ \Carbon\Carbon::parse($tanggal)->format('d/m/Y') }}</b></td>
                     </tr>
                     @foreach ($items as $item)
                         <tr>
+                            <td class="no-wrap">{{ $item->iinno }}</td>
                             <td class="no-wrap">{{ $item->ref_no }}</td>
                             <td class="no-wrap">{{ $item->item_code }}</td>
                             <td>{{ $item->item_name }}</td>
                             <td>{{ $item->unit_code }}</td>
-                            <td class="no-wrap">{{ floatval($item->actual_stock) }}</td>
+                            <td class="no-wrap">{{ floatval($item->qty) }}</td>
                             <td class="no-wrap">Rp. {{ number_format($item->cogs, 2, ',', '.') }}</td>
+                            <td class="no-wrap">Rp. {{ number_format($item->total, 2, ',', '.') }}</td>
                         </tr>
                     @endforeach
                 @endforeach

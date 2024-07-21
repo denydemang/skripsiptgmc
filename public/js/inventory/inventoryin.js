@@ -36,14 +36,16 @@ $(document).ready(function () {
   const tableName = '.iintable';
   const method = 'post';
   const columns = [
+    { data: 'iinno', name: 'iinno', title: 'IIN No', searchable: true, orderable: true },
     { data: 'item_date', name: 'item_date', title: 'Date Item In', searchable: true, orderable: true },
     { data: 'ref_no', name: 'ref_no', title: 'Reference', searchable: true, orderable: false },
     { data: 'item_code', name: 'item_code', title: 'Item Code', searchable: true, orderable: true },
     { data: 'item_name', name: 'item_name', title: 'Item Name', searchable: true, orderable: true },
     { data: 'item_category', name: 'item_category', title: 'Category', searchable: true, orderable: false },
     { data: 'unit_code', name: 'unit_code', title: 'Unit Code', searchable: true, orderable: false },
-    { data: 'actual_stock', name: 'actual_stock', title: 'Quantity IN', searchable: false, orderable: false },
-    { data: 'cogs', name: 'cogs', title: 'COGS', searchable: false, orderable: false },
+    { data: 'qty', name: 'qty', title: 'Qty', searchable: false, orderable: false },
+    { data: 'cogs', name: 'cogs', title: 'Price', searchable: false, orderable: false },
+    { data: 'total', name: 'total', title: 'Total', searchable: false, orderable: false },
     { data: 'coa_code', name: 'coa_code', title: 'COA code', searchable: false, orderable: false }
   ];
 

@@ -19,6 +19,7 @@ use App\Models\Purchase;
 use App\Models\Purchase_Request;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksInAVG;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -250,6 +251,30 @@ class PrintController extends AdminController
         'stocks.item_code' ,'items.name as item_name', 'categories.name as item_category',
         'stocks.unit_code', 'stocks.actual_stock', 'stocks.cogs', 'categories.coa_code')
         ->whereBetween('stocks.item_date', [$firstDate,$lastDate])->get();
+
+        $groupedData = collect($stock)->groupBy('item_date');
+
+        $data = [
+            'stocckData' => $groupedData,
+            'firstDate' => Carbon::parse($firstDate)->format("d/m/Y"),
+            'lastDate' => Carbon::parse($lastDate)->format("d/m/Y")
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->loadview("admin.inventory.print.printinventoryin", $data);
+        return $pdf->stream("IIN-($firstDate to $lastDate).pdf", array("Attachment" => false));
+    }
+    public function printIINAVG($firstDate, $lastDate){
+
+
+
+        $stock = StocksInAVG::join("items", "stocksin_avg.item_code", "=", "items.code")
+        ->join('categories', "categories.code", "=", "items.category_code")
+        ->select('stocksin_avg.id', DB::raw('DATE(stocksin_avg.item_date) as item_date'),'stocksin_avg.iinno', 'stocksin_avg.ref_no',
+        'stocksin_avg.item_code' ,'items.name as item_name', 'categories.name as item_category',
+        'stocksin_avg.unit_code', 'stocksin_avg.qty', 'stocksin_avg.cogs','stocksin_avg.total', 'categories.coa_code')
+        ->whereBetween('stocksin_avg.item_date', [$firstDate,$lastDate])->get();
 
         $groupedData = collect($stock)->groupBy('item_date');
 
