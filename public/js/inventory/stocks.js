@@ -42,7 +42,8 @@ $(document).ready(function () {
     { data: 'unit_code', name: 'unit_code', title: 'Unit Code', searchable: true, orderable: false },
     { data: 'actual_stock', name: 'actual_stock', title: 'Stock IN', searchable: false, orderable: false },
     { data: 'used_stock', name: 'used_stock', title: 'Stock Out', searchable: false, orderable: false },
-    { data: 'available_stock', name: 'available_stock', title: 'Available Stock', searchable: false, orderable: false }
+    { data: 'available_stock', name: 'available_stock', title: 'Available Stock', searchable: false, orderable: false },
+    { data: 'cogs', name: 'cogs', title: 'COGS', searchable: false, orderable: false }
   ];
 
   function ShowTable(method, tableName, columns, url, data = {}) {

@@ -451,8 +451,10 @@ Route::middleware(AuthMiddleware::class)->group(function () {
 
         Route::middleware(StocksMiddleware::class)->group(function(){
             Route::get('/admin/stocks', 'getViewStocks')->name('admin.stocks');
-            Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
-            Route::get('/admin/stocks/printstocks', 'printstock')->name('admin.printstock');
+            // Route::post('/admin/stocks/gettable', 'getTableStocks')->name('admin.tablestocks');
+            Route::post('/admin/stocks/gettable', 'getTableStocksAVG')->name('admin.tablestocks');
+            // Route::get('/admin/stocks/printstocks', 'printstock')->name('admin.printstock');
+            Route::get('/admin/stocks/printstocks', 'printstockavg')->name('admin.printstock');
         });
 
         Route::middleware(StockReminderMiddleware::class)->group(function(){

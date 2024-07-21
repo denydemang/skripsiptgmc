@@ -19,6 +19,7 @@ use App\Models\Purchase;
 use App\Models\Purchase_Request;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksAVG;
 use App\Models\StocksInAVG;
 use App\Models\StocksOutAVG;
 use Carbon\Carbon;
@@ -360,7 +361,29 @@ class PrintController extends AdminController
         $pdf->loadview("admin.inventory.print.printrecapstock", $data);
         return $pdf->stream("RecapStock.pdf", array("Attachment" => false));
     }
+    public function printStockAVG(){
 
+        $stock = StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->join('units', "units.code", "=", "items.unit_code")
+            ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 
+            'units.code as unit_code', DB::raw('ifnull(sum(stocksavg.actual_stock),0) as actual_stock'), DB::raw('ifnull(sum(stocksavg.used_stock),0) as used_stock'), 
+            DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as available_stock'),
+            DB::raw('ifnull(sum(stocksavg.total_in) - sum(stocksavg.total_out) ,0) as total'),
+            DB::raw('ifnull((sum(stocksavg.total_in) - sum(stocksavg.total_out)) / (sum(stocksavg.actual_stock) - sum(stocksavg.used_stock)) ,0) as cogs')
+            )
+            ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code')
+            ->get();
+
+        $data = [
+            'stocckData' => $stock,
+        ];
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf->setPaper('A4', 'landscape');
+        $pdf->loadview("admin.inventory.print.printrecapstock", $data);
+        return $pdf->stream("RecapStock.pdf", array("Attachment" => false));
+    }
     public function printStockReminder(){
 
         $stock = Stock::Rightjoin("items", "stocks.item_code", "=", "items.code")

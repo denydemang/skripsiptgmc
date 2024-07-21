@@ -6,6 +6,7 @@ use App\Models\COA;
 use App\Models\Item;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksAVG;
 use App\Models\StocksInAVG;
 use App\Models\StocksOutAVG;
 use Carbon\Carbon;
@@ -184,6 +185,11 @@ class StockController extends Controller
 
         $printcontroller = new PrintController();
         return $printcontroller->printStock();
+    }
+    public function printstockavg(){
+
+        $printcontroller = new PrintController();
+        return $printcontroller->printStockAVG();
     }
 
     public function printstockreminder(){
@@ -441,6 +447,55 @@ class StockController extends Controller
                 })
                 ->editColumn('available_stock', function($row) {
                     return floatval($row->available_stock);
+                })
+                ->filterColumn('item_name', function($query, $keyword) {
+                    $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_code', function($query, $keyword) {
+                    $query->whereRaw("items.code LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('unit_code', function($query, $keyword) {
+                    $query->whereRaw("units.code LIKE ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('item_category', function($query, $keyword) {
+                    $query->whereRaw("categories.name LIKE ?", ["%{$keyword}%"]);
+                })
+                ->addIndexColumn()
+                ->make(true);
+                
+                
+        } else {
+            abort(404);
+        }
+    }
+    public function getTableStocksAVG(Request $request, DataTables $dataTables){
+
+        if ($request->ajax()){
+
+            
+            $stock = StocksAVG::Rightjoin("items", "stocksavg.item_code", "=", "items.code")
+            ->join('categories', "categories.code", "=", "items.category_code")
+            ->join('units', "units.code", "=", "items.unit_code")
+            ->select('items.code as item_code' ,'items.name as item_name', 'categories.name as item_category', 
+            'units.code as unit_code', DB::raw('ifnull(sum(stocksavg.actual_stock),0) as actual_stock'), DB::raw('ifnull(sum(stocksavg.used_stock),0) as used_stock'), 
+            DB::raw('ifnull(sum(stocksavg.actual_stock) - sum(stocksavg.used_stock) ,0) as available_stock'),
+            DB::raw('ifnull(sum(stocksavg.total_in) - sum(stocksavg.total_out) ,0) as total'),
+            DB::raw('ifnull((sum(stocksavg.total_in) - sum(stocksavg.total_out)) / (sum(stocksavg.actual_stock) - sum(stocksavg.used_stock)) ,0) as cogs')
+            )
+            ->groupBy('items.code', 'items.name' ,'categories.name' ,'units.code');
+
+            return $dataTables->of($stock)
+                ->editColumn('actual_stock', function($row) {
+                    return floatval($row->actual_stock);
+                })
+                ->editColumn('used_stock', function($row) {
+                    return floatval($row->used_stock);
+                })
+                ->editColumn('available_stock', function($row) {
+                    return floatval($row->available_stock);
+                })
+                ->editColumn('cogs', function($row) {
+                    return number_format($row->cogs, 2, ',', '.');
                 })
                 ->filterColumn('item_name', function($query, $keyword) {
                     $query->whereRaw("items.name LIKE ?", ["%{$keyword}%"]);
