@@ -698,6 +698,53 @@ class StockController extends Controller
 
 
     }
+
+    public function stockoutAVG($IOUTNO,$unit_code, $itemcode = "",$qty = 0, $transdate='', $transcode){
+
+        try {
+
+            DB::beginTransaction();
+            $stock_remaining = StocksAVG::query()->selectRaw('IFNULL(SUM(actual_stock) - SUM(used_stock), 0 ) AS Remaining_Stock')->where("item_code", $itemcode)->first()->Remaining_Stock;
+            $cogs = StocksAVG::query()->selectRaw('ifnull((sum(stocksavg.total_in) - sum(stocksavg.total_out)) / (sum(stocksavg.actual_stock) - sum(stocksavg.used_stock)) ,0) as cogs')->where("item_code", $itemcode)->first()->cogs;
+            if(floatval($stock_remaining) == 0 || floatval($stock_remaining) < floatval($qty) ){
+                throw new Exception("Insufficient Stock Of Supplies");
+            }
+            $IIN = new StocksOutAVG();
+            $IIN->ioutno = $IOUTNO;
+            $IIN->ref_no = $transcode;
+            $IIN->item_code = $itemcode;
+            $IIN->unit_code = $unit_code;
+            $IIN->item_date = $transdate;
+            $IIN->qty = $qty;
+            $IIN->cogs = round($cogs,4);
+            $IIN->total = round($qty * floatval($cogs),4);
+            $IIN->created_by = Auth::user()->username;
+            $IIN->save();
+            
+            // $stock->iinno = $iinno;
+            $stock = new StocksAVG();
+
+            $stock->ref_no = $IOUTNO;
+            $stock->item_code = $itemcode;
+            $stock->unit_code = $unit_code;
+            $stock->item_date = $transdate;
+            $stock->actual_stock =0;
+            $stock->used_stock =  $qty;
+            $stock->total_in = 0;
+            $stock->total_out = $IIN->total;
+            $stock->created_by= Auth::user()->username;
+            $stock->save();
+
+            DB::commit();
+
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw new \Exception($th->getMessage());
+            
+        }
+
+
+    }
     public function refreshstock($itemcode = "",$qty = 0, $transdate='', $transcode){
         try {
             $stockout =  Stocks_Out::where('ref_no', $transcode)->where("item_code", $itemcode)->get();
@@ -800,6 +847,13 @@ class StockController extends Controller
             $stocks = StocksAVG::where("id" , ">", $maxID)->where("item_code", $item_code)->where("used_stock", ">", 0)->get();
     
             return count($stocks) == 0;
+        } else {
+            $ioutno = StocksOutAVG::where("ref_no", $refno)->first()->ioutno;
+            $maxID = StocksAVG::where("ref_no" , $ioutno)->where("item_code" , $item_code)->orderBy("id", "desc")->first()->id;
+    
+            $stocks = StocksAVG::where("id" , ">", $maxID)->where("item_code", $item_code)->where("used_stock", ">", 0)->get();
+    
+            return count($stocks) == 0;
         }
     
     }
@@ -823,6 +877,25 @@ class StockController extends Controller
         }
     }
 
+    public function revertstockoutAVG(string $IOUTNO, string $refno, string $item_code, string $unit_code,string $item_date, float $qty){
+        try {
+            DB::beginTransaction();
+
+            if (!$this->isAllowedUpdateDeleteAVG($refno, $item_code , "OUT")){
+                throw new Exception("Cannot Update Or Delete Transaction Already Used!");
+            }
+
+            $ioutno = StocksOutAVG::where("ref_no", $refno)->first()->ioutno;
+            StocksOutAVG::where("ref_no", $refno)->where("item_code", $item_code)->delete();
+            StocksAVG::where("ref_no", $ioutno)->where("item_code", $item_code)->delete();
+            $this->stockoutAVG($IOUTNO,$unit_code,$item_code ,$qty, $item_date, $refno);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw new \Exception($th->getMessage());
+        }
+    }
+
     public function deleteStockINAVG(string $refno){
 
         try {
@@ -838,6 +911,28 @@ class StockController extends Controller
             $IINNo = StocksInAVG::where("ref_no", $refno)->first()->iinno;
             StocksInAVG::where("ref_no", $refno)->delete();
             StocksAVG::where("ref_no", $IINNo)->delete();
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollback();
+            throw new \Exception($th->getMessage());
+        }
+
+    }
+    public function deleteStockOUTAVG(string $refno){
+
+        try {
+            DB::beginTransaction();
+            $ioutno = StocksOutAVG::where("ref_no", $refno)->first()->ioutno;
+            $stocks = StocksAVG::where("ref_no", $ioutno)->get();
+
+            foreach($stocks as $s){
+                if (!$this->isAllowedUpdateDeleteAVG($refno, $s->item_code , "OUT")){
+                    throw new Exception("Cannot Update Or Delete Transaction Already Used!");
+                }
+            }
+            $ioutno = StocksOutAVG::where("ref_no", $refno)->first()->ioutno;
+            StocksOutAVG::where("ref_no", $refno)->delete();
+            StocksAVG::where("ref_no", $ioutno)->delete();
             DB::commit();
         } catch (\Throwable $th) {
             DB::rollback();

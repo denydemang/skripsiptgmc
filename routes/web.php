@@ -107,7 +107,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::post('/admin/projecttype/update/{id}', 'updateProjectType')->name('admin.updateDataProjectType');
             Route::get('/admin/projecttype/delete/{id}', 'deleteProjectType')->name('admin.deleteDataProjectType');
             Route::post('/admin/projecttype/add', 'addProjectType')->name('admin.addDataProjectType');
-            Route::get('/admin/projecttype/material/{projectypecode}', 'getdataforproyek')->name('admin.getdataforproyek');
+            // Route::get('/admin/projecttype/material/{projectypecode}', 'getdataforproyek')->name('admin.getdataforproyek');
+            Route::get('/admin/projecttype/material/{projectypecode}', 'getdataforproyekavg')->name('admin.getdataforproyek');
             Route::get('/admin/projecttype/getDataRaw/{id}', 'getDataTypeProjectRaw')->name('admin.getDataTypeProjectRaw');
 
         });
@@ -135,7 +136,8 @@ Route::middleware(AuthMiddleware::class)->group(function () {
             Route::post('/admin/project/add', 'addProject')->name('admin.addprojects');
             Route::post('/admin/project/edit/{id}', 'editProject')->name('admin.editproject');
             Route::post('/admin/project/detail/getDataRaw/{id}', 'getDataDetailProjectRaw')->name('admin.getDataDetailProjectRaw');
-            Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
+            // Route::post('/admin/project/start/{id}', 'startProject')->name('admin.startProject');
+            Route::post('/admin/project/start/{id}', 'startProjectAVG')->name('admin.startProject');
 
             // Print
             Route::get('/admin/project/printjournal/{code}', 'printjournal')->name('admin.printjournal');

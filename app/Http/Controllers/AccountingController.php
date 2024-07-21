@@ -21,6 +21,7 @@ use App\Models\Purchase;
 use App\Models\Purchase_Detail;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksOutAVG;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +61,83 @@ class AccountingController extends AdminController
 
         // Insert Proyek Dalam Proses Journal Detail
         $cogsMaterial = Stocks_Out::where("ref_no", $ref_no)->selectRaw('SUM(qty * cogs) as total')->first();
+        $cogsMaterial = floatval($cogsMaterial->total);
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description = "Proyek Dalam Proses Untuk Pengerjaan Project Code : ". $project->code ;
+        $journalDetail->coa_code = "10.01.04.02";
+        $journalDetail->debit = $cogsMaterial;
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+
+        // Insert Persediaan Keluar Jurnal Detail
+        foreach ($Variation_COA_ProjectDetail as $coa){
+            $journalDetail  = New Journal_Detail();
+            $journalDetail->voucher_no = $journal->voucher_no;
+            $journalDetail->description = "Inventory Out Untuk Pengerjaan Project Code: $project->code"  ;
+            $journalDetail->coa_code = $coa->coa_code;
+            $journalDetail->debit = 0;
+            $journalDetail->kredit = floatval($coa->totalcogs);
+            $journalDetail->created_by = Auth::user()->username;
+            $journalDetail->save();
+        }
+
+        $totalutanggajitkl = 0;
+        foreach ($Variation_COA_ProjectDetailB as $coa){
+            $totalutanggajitkl+= floatval($coa->totalcogs);
+        }
+       // Insert Proyek Dalam Proses Journal Detail
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description = "Proyek Dalam Proses Untuk Pengerjaan Project Code: $project->code"  ;
+        $journalDetail->coa_code = "10.01.04.02";
+        $journalDetail->debit =  $totalutanggajitkl;
+        $journalDetail->kredit = 0;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+        // Insert Utang Gaji TKL
+        $journalDetail  = New Journal_Detail();
+        $journalDetail->voucher_no = $journal->voucher_no;
+        $journalDetail->description = "Utang Gaji TKL Untuk Pengerjaan Project Code : ". $project->code ;
+        $journalDetail->coa_code = $project->coa_payable;
+        $journalDetail->debit = 0;
+        $journalDetail->kredit = $totalutanggajitkl;
+        $journalDetail->created_by = Auth::user()->username;
+        $journalDetail->save();
+    }
+    public function journalstartprojectAVG($ref_no, $type_journal, $project){
+
+        $supplyModel = Journal::where("voucher_no", 'like', "%".$type_journal."%")->orderBy("voucher_no", "desc")->lockForUpdate()->first();
+        $AutomaticCode = $this->automaticCode($type_journal, $supplyModel,true,"voucher_no");
+        $Variation_COA_ProjectDetailB = ProjectDetailB::join("upah", "project_detail_b.upah_code", "=", "upah.code")
+        ->select("upah.coa_code" , DB::raw("sum(total) as totalcogs"))
+        ->where("project_detail_b.project_code", $ref_no)
+        ->groupBy("upah.coa_code")
+        ->get();
+        $Variation_COA_ProjectDetail = Project_Detail::join("items",'project_details.item_code', '=', 'items.code')
+        ->join("categories", "items.category_code", "=", 'categories.code')
+        ->join("stocksout_avg" , function ($join){
+            $join->on("stocksout_avg.item_code", "=", "items.code")
+            ->on("stocksout_avg.ref_no", "=", "project_details.project_code");
+        })
+        ->select("categories.coa_code",DB::raw("SUM(stocksout_avg.total) as totalcogs"))
+        ->where("project_details.project_code", $ref_no)
+        ->groupBy("categories.coa_code")
+        ->get();
+
+        // Insert Header Journal
+        $journal = New Journal();
+        $journal->voucher_no = $AutomaticCode;
+        $journal->transaction_date = Carbon::now();
+        $journal->ref_no = $ref_no;
+        $journal->journal_type_code = "JU";
+        $journal->posting_status = 0;
+        $journal->created_by =Auth::user()->username;
+        $journal->save();
+
+        // Insert Proyek Dalam Proses Journal Detail
+        $cogsMaterial = StocksOutAVG::where("ref_no", $ref_no)->selectRaw('SUM(total) as total')->first();
         $cogsMaterial = floatval($cogsMaterial->total);
         $journalDetail  = New Journal_Detail();
         $journalDetail->voucher_no = $journal->voucher_no;

@@ -12,6 +12,7 @@ use App\Models\Project_Detail_Realisations;
 use App\Models\ProjectDetailB;
 use App\Models\Stock;
 use App\Models\Stocks_Out;
+use App\Models\StocksOutAVG;
 use App\Models\Type_Project;
 use App\Models\Upah;
 use Carbon\Carbon;
@@ -54,8 +55,8 @@ class ProjectController extends AdminController
                 abort(404);
             }
             $project_detail = new ProjectDetailController();
-            $project_detail = $project_detail->getDetail($code);
-            $dataBahanBaku = $project_detail->get();            
+            $dataBahanBaku = $project_detail->getDetail($code);
+            // $dataBahanBaku = $project_detail;            
 
             $project_detail_b = new ProjectDetailBController();
             $project_detail_b = $project_detail_b->getDetailB($code);
@@ -153,8 +154,8 @@ class ProjectController extends AdminController
                 abort(404);
             }
             $project_detail = new ProjectDetailController();
-            $project_detail = $project_detail->getDetail($code);
-            $dataBahanBaku = $project_detail->get();
+            $dataBahanBaku = $project_detail->getDetail($code);
+            // $dataBahanBaku = $project_detail->get();
             
 
             $project_detail_b = new ProjectDetailBController();
@@ -499,8 +500,10 @@ class ProjectController extends AdminController
                 $stock =  new StockController();
                 $project = Project::where('code', $id)->first();
 
+                $IOUTNO =  StocksOutAVG::where("ref_no",$project->code)->first()->ioutno;
+
                 foreach($dataprojectdetails as $i){
-                    $stock->refreshstock($i->item_code,floatval($i->qty), $data['transaction_date'], $id);
+                    $stock->revertstockoutAVG($IOUTNO ,$project->code, $i->item_code, $i->unit_code ,$data['transaction_date'] ,floatval($i->qty));
                 }
 
                 if ($data['file']){
@@ -587,9 +590,11 @@ class ProjectController extends AdminController
                 $data['code'] =  $project_code;
 
                 $stock =  new StockController();
+                $IOUTMAX = StocksOutAVG::where("ioutno", "like", "IOT%")->orderBy("ioutno", "desc")->lockforUpdate()->first();
+                $IOUTNO = $this->automaticCode('IOT' ,$IOUTMAX, true, 'ioutno');
 
                 foreach($dataprojectdetails as $i){
-                    $stock->stockout($i->item_code,$i->qty, $data['transaction_date'], $project_code);
+                    $stock->stockoutAVG($IOUTNO,$i->unit_code,$i->item_code,$i->qty, $data['transaction_date'], $project_code);
                 }
 
                 if ($data['file']){
@@ -664,11 +669,13 @@ class ProjectController extends AdminController
         try {
             DB::beginTransaction();
             $project = Project::where("code", $code)->first();
-            $stockcontroller =new  StockController();
-            $stockcontroller->revertstock($code);
+            $stock = new StockController();
+            $stock->deleteStockOUTAVG($code);
             Project::where("code",$code )->delete();
             $filecontroller = new FileController();
             $filecontroller->deleteFile($project->project_document);
+
+            
             DB::commit();
 
             return response()->redirectToRoute("admin.project")->with("success", "Data $code Successfully Deleted");
@@ -686,8 +693,8 @@ class ProjectController extends AdminController
 
         if ($request->ajax()){
             $project_detail = new ProjectDetailController();
-            $project_detail = $project_detail->getDetail($id);
-            $dataBahanBaku = $project_detail->get();
+            $dataBahanBaku = $project_detail->getDetail($id);
+            // $dataBahanBaku = $project_detail->get();
             
 
             $project_detail_b = new ProjectDetailBController();
@@ -718,6 +725,41 @@ class ProjectController extends AdminController
                 $project = Project::where("code", $code)->first();
                 $accounting = new AccountingController();
                 $accounting->journalstartproject($code, "JU", $project);
+
+                // Update status project
+                $project->project_status = 1;
+                $project->start_date = Carbon::now();
+                $project->update();
+    
+            
+    
+                DB::commit();
+                Session::flash('success',  "Project : $project->code Succesfully Started");
+                return json_encode(true);
+    
+    
+            } catch (\Throwable $th) {
+                DB::rollBack();
+                throw new \Exception($th->getMessage());
+            }
+
+        } else {
+            abort(404);
+        }
+
+
+    }
+    public function startProjectAVG($code, Request $request){
+
+        if($request->ajax()){
+
+            try {
+                DB::beginTransaction();
+    
+            
+                $project = Project::where("code", $code)->first();
+                $accounting = new AccountingController();
+                $accounting->journalstartprojectAVG($code, "JU", $project);
 
                 // Update status project
                 $project->project_status = 1;
