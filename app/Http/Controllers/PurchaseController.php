@@ -7,6 +7,8 @@ use App\Models\Purchase;
 use App\Models\Purchase_Detail;
 use App\Models\Purchase_Request;
 use App\Models\Stock;
+use App\Models\StocksAVG;
+use App\Models\StocksInAVG;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -255,12 +257,15 @@ class PurchaseController extends AdminController
         public function deletepurchase($id){
             try {
                 DB::beginTransaction();
+
+                $stock = new StockController();
+                $stock->deleteStockINAVG($id);
                 $purchase = Purchase::where("purchase_no",$id )->first();
                 Purchase_Request::where("pr_no", $purchase->pr_no)->update([
                     "is_purchased" => 0
                 ]);
 
-                Stock::where("ref_no", $id)->delete();
+                // Stock::where("ref_no", $id)->delete();
                 Purchase::where("purchase_no",$id )->delete();
                 DB::commit();
                 
@@ -351,11 +356,14 @@ class PurchaseController extends AdminController
                     $data['purchase_no'] =  $purchase_no;
     
                     $otherfee = floatval($data['other_fee']) / count($datapurchasedetails);
+                    $IINMAX = StocksInAVG::where("iinno", "like", "IIN%")->orderBy("iinno", "desc")->lockforUpdate()->first();
+                    $IINNO = $this->automaticCode('IIN' ,$IINMAX, true, 'iinno');
                     foreach($datapurchasedetails as $i){
                         $stock = new StockController(); 
-                        $cogs = bcdiv((floatval($i->sub_total) + $otherfee) , floatval($i->qty), 4);
-                        
-                        $stock->stockin($purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), $cogs,2);
+                        $cogs = round((floatval($i->sub_total) + $otherfee) / floatval($i->qty), 4);
+                        $total = round((floatval($i->sub_total) + $otherfee), 4);
+
+                        $stock->stockinAVG($IINNO,$purchase_no, $i->item_code, $i->unit_code, $data['transaction_date'],$cogs, floatval($i->qty) ,$total);
                     }
     
                     $purchase = new purchase();
@@ -423,12 +431,13 @@ class PurchaseController extends AdminController
                     $datapurchasedetails = json_decode($data['purchase_detail']);
                     $data['transaction_date'] = Carbon::createFromFormat('d/m/Y',$data['transaction_date'])->format('Y-m-d');
         
-                    Stock::where('ref_no', $code)->delete();
+                    // Stock::where('ref_no', $code)->delete();
                     $otherfee = floatval($data['other_fee']) / count($datapurchasedetails);
                     foreach($datapurchasedetails as $i){
-                        $stock = new StockController();
-                        $cogs = (floatval($i->sub_total) + $otherfee) / floatval($i->qty);
-                        $stock->stockin($code, $i->item_code, $i->unit_code, $data['transaction_date'], floatval($i->qty), floatval($cogs));
+                        $stock = new StockController(); 
+                        $cogs = round((floatval($i->sub_total) + $otherfee) / floatval($i->qty), 4);
+                        $total = round((floatval($i->sub_total) + $otherfee), 4);
+                        $stock->revertstockinAVG($code, $i->item_code, $i->unit_code, $data['transaction_date'],$cogs, floatval($i->qty) ,$total);
                     }
     
                     $purchase = Purchase::where("purchase_no", $code)->first();
@@ -473,7 +482,7 @@ class PurchaseController extends AdminController
                 } catch (\Throwable $th) {
                     DB::rollBack();
                     // throw new \Exception($th->getMessage());
-                    $this->errorException2($th, $code );
+                    throw new \Exception($th->getMessage());
                 }
     
     

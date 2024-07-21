@@ -477,11 +477,11 @@ class AccountingController extends AdminController
 
         $Variation_COA_Item = Purchase_Detail::join("items",'purchase_details.item_code', '=', 'items.code')
         ->join("categories", "items.category_code", "=", 'categories.code')
-        ->join("stocks" , function ($join){
-            $join->on("stocks.item_code", "=", "items.code")
-            ->on("stocks.ref_no", "=", "purchase_details.purchase_no");
+        ->join("stocksin_avg" , function ($join){
+            $join->on("stocksin_avg.item_code", "=", "items.code")
+            ->on("stocksin_avg.ref_no", "=", "purchase_details.purchase_no");
         })
-        ->select("categories.coa_code",DB::raw("SUM(stocks.actual_stock * stocks.cogs) as totalcogs"))
+        ->select("categories.coa_code",DB::raw("SUM(stocksin_avg.total) as totalcogs"))
         ->where("purchase_details.purchase_no", $ref_no)
         ->groupBy("categories.coa_code")
         ->get();
@@ -503,7 +503,8 @@ class AccountingController extends AdminController
         // Insert Persediaan Masuk Jurnal Detail
         foreach ($Variation_COA_Item as $coa){
 
-            $nominal =  round(floatval($coa->totalcogs), 2) ==  (floatval($purchase->total) + floatval($purchase->other_fee)) ? round(floatval($coa->totalcogs), 2)  : (floatval($purchase->total) + floatval($purchase->other_fee));
+            // $nominal =  round(floatval($coa->totalcogs), 2) ==  (floatval($purchase->total) + floatval($purchase->other_fee)) ? round(floatval($coa->totalcogs), 2)  : (floatval($purchase->total) + floatval($purchase->other_fee));
+            $nominal =  round(floatval($coa->totalcogs), 2);
 
             $totalUtang += $nominal;
             $journalDetail  = New Journal_Detail();
